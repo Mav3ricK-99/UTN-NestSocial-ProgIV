@@ -1,9 +1,9 @@
-<div class="min-h-screen flex items-center justify-center p-8
+<div class="min-h-screen flex justify-around p-8
          moving-background">
-    <div class="w-full max-w-2xl rounded-3xl register-card
-         backdrop-blur-md p-11 shadow-2xl">
+    <div class="w-full max-w-xl rounded-3xl register-card animate-slide-from-bottom
+         backdrop-blur-md p-10 shadow-2xl">
 
-        <div class="flex items-center justify-center gap-3 mb-8">
+        <div class="flex items-center justify-center gap-3 mb-4">
             <h1 class="text-3xl">
                 <span class="font-extrabold text-red-600 tracking-tight font-nest">
                     Nest
@@ -15,15 +15,15 @@
             <lucide-icon [img]="Heart" class="size-6 text-red-600 fill-current"></lucide-icon>
         </div>
 
-        <h2 class="text-center text-2xl font-semibold mb-2">
+        <h2 class="text-center text-2xl font-semibold mb-1">
             Crear cuenta
         </h2>
 
-        <p class="text-center text-gray-500 mb-8">
+        <p class="text-center text-gray-500 mb-4">
             Únete a la comunidad
         </p>
 
-        <form class="space-y-5">
+        <form class="space-y-2">
 
             <div class="grid md:grid-cols-2 gap-4">
 
@@ -132,13 +132,13 @@
                 </div>
             </div>
 
-            <div class="flex flex-row gap-22">
+            <div class="flex flex-row gap-12">
                 <div>
                     <label class="mb-2 font-medium">
                         Descripción breve
                     </label>
 
-                    <textarea rows="4" maxlength="250"
+                    <textarea rows="3" maxlength="250"
                         class="w-full rounded-xl border border-gray-300 p-3 resize-none"></textarea>
                 </div>
                 <div class="flex flex-col justify-center align-center">
@@ -151,13 +151,13 @@
 
                     @if(imagePreview()) {
                     <div (click)="avatarInput.click()"
-                        class="w-29 h-29 cursor-pointer rounded-full border-4 border-blue-300 bg-gray-100 flex items-center justify-center">
-                        <img [src]="imagePreview()" alt="Preview" class="w-28 h-28 rounded-full object-cover" />
+                        class="w-26 h-26 cursor-pointer rounded-full border-4 border-blue-300 bg-gray-100 flex items-center justify-center">
+                        <img [src]="imagePreview()" alt="Preview" class="w-25 h-25 rounded-full object-cover" />
                     </div>
                     } @else {
                     <div (click)="avatarInput.click()"
-                        class="w-29 h-29 cursor-pointer rounded-full border-4 border-blue-300 bg-gray-100 flex items-center justify-center">
-                        <lucide-icon [img]="Plus" class="size-12 text-blue-300 fill-current"></lucide-icon>
+                        class="w-26 h-26 cursor-pointer rounded-full border-4 border-blue-300 bg-gray-100 flex items-center justify-center">
+                        <lucide-icon [img]="Plus" class="size-10 text-blue-300 fill-current"></lucide-icon>
                     </div>
                     }
 
@@ -182,4 +182,7 @@
         </form>
 
     </div>
+
+    <app-post class="animate-slide-in-right" [post]="demoPost"></app-post>
+    
 </div>

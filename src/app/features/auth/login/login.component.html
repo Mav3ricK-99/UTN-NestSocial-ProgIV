@@ -1,0 +1,88 @@
+<div class="min-h-screen flex items-center justify-center p-8
+         moving-background">
+  <div class="w-full max-w-md rounded-3xl login-card
+           backdrop-blur-md p-12 shadow-2xl">
+
+    <div class="flex items-center justify-center gap-3 mb-8">
+      <h1 class="text-3xl">
+        <span class="font-extrabold text-red-600 tracking-tight font-nest">
+          Nest
+        </span>
+        <span class="text-blue-600 italic font-semibold font-social ">
+          Social
+        </span>
+      </h1>
+      <lucide-icon [img]="Heart" class="size-6 text-red-600 fill-current"></lucide-icon>
+    </div>
+
+    <h2 class="text-center text-2xl font-semibold mb-2">
+      ¡Bienvenido de vuelta!
+    </h2>
+
+    <p class="text-center text-gray-500 mb-6">
+      Inicia sesión para continuar
+    </p>
+
+    <form class="space-y-4">
+
+      <div>
+        <label class="block mb-2 font-medium">
+          Email
+        </label>
+
+        <input type="email" placeholder="tu@email.com" class="w-full h-12 px-4 rounded-xl border border-gray-300
+                 focus:outline-none focus:ring-2 focus:ring-blue-500
+                 focus:border-blue-500">
+      </div>
+
+      <div>
+        <label class="block mb-2 font-medium">
+          Contraseña
+        </label>
+
+        <input type="password" placeholder="********" class="w-full h-12 px-4 rounded-xl border border-gray-300
+                 focus:outline-none focus:ring-2 focus:ring-blue-500
+                 focus:border-blue-500">
+      </div>
+
+      <div class="flex items-center justify-between text-sm">
+
+        <label class="flex items-center gap-2">
+          <input type="checkbox">
+          <span>Recordarme</span>
+        </label>
+
+        <a href="#" class="text-blue-600 hover:text-blue-700">
+          ¿Olvidaste tu contraseña?
+        </a>
+
+      </div>
+
+      <button type="submit" class="w-full h-13 rounded-xl bg-blue-600 text-white
+               font-semibold hover:bg-blue-700 transition-colors">
+        Iniciar sesión
+      </button>
+
+      <div class="relative py-4">
+
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-gray-200"></div>
+        </div>
+
+      </div>
+
+      <p class="text-center text-gray-600 ">
+
+        ¿No tienes cuenta?
+
+        <a routerLink="/auth/register" class="ml-1 font-semibold text-blue-600 hover:text-blue-700">
+          Regístrate
+        </a>
+
+      </p>
+
+    </form>
+
+  </div>
+
+</div>

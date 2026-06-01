@@ -1,0 +1,19 @@
+.register-card {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+@keyframes fall {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 0px 1000px;
+    }
+}
+
+.moving-background {
+    background-image: url('../../../../assets/images/nestSocialBckg.png');
+    background-repeat: repeat;
+    animation: fall 30s linear infinite;
+}

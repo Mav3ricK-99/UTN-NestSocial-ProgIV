@@ -1,0 +1,42 @@
+.login-card {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.login-card::before {
+    content: '';
+    z-index: -1;
+
+    position: absolute;
+    inset: 0;
+
+    padding: 2px;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(90deg,
+            #dc2626,
+            #2563eb);
+
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    mask-composite: exclude;
+}
+
+@keyframes fall {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 0px 1000px;
+    }
+}
+
+.moving-background {
+    background-image: url('../../../../assets/images/nestSocialBckg.png');
+    background-repeat: repeat;
+    animation: fall 30s linear infinite;
+}

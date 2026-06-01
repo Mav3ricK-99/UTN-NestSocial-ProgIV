@@ -1,3 +1,29 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+@import "tailwindcss-primeui";
+
+.p-inputtext:focus {
+  border-color: #2563eb !important;
+}
+
+.p-floatlabel:has(input:focus) label,
+.p-floatlabel:has(input:-webkit-autofill) label,
+.p-floatlabel:has(textarea:focus) label,
+.p-floatlabel:has(.p-inputwrapper-focus) label {
+  color: #2563eb !important;
+}
+
+@font-face {
+  font-family: "NestFont";
+  src: url("./assets/fonts/poppins.black.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SocialFont";
+  src: url("./assets/fonts/CormorantGaramond-BoldItalic.ttf") format("truetype");
+  font-weight: 600;
+  font-style: italic;
+}

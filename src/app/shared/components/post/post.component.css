@@ -1,0 +1,34 @@
+.likeButton:hover {
+    color: var(--color-red-500) !important;
+
+    lucide-icon {
+        color: var(--color-red-500) !important;
+    }
+}
+
+.repostButton:hover {
+    color: var(--color-green-500) !important;
+
+    lucide-icon {
+        color: var(--color-green-500) !important;
+    }
+}
+
+.commentButton:hover {
+    color: var(--color-blue-500) !important;
+
+    lucide-icon {
+        color: var(--color-blue-500) !important;
+    }
+}
+
+.typing-cursor::after {
+    content: '|';
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}

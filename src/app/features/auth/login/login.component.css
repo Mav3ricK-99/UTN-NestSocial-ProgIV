@@ -25,6 +25,11 @@
     mask-composite: exclude;
 }
 
+.p-password-input,
+.p-inputtext {
+    width: 100% !important;
+}
+
 @keyframes fall {
     from {
         background-position: 0 0;

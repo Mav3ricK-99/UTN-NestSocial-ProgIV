@@ -23,16 +23,31 @@
       Inicia sesión para continuar
     </p>
 
-    <form class="space-y-4">
+    <form class="space-y-4" [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
 
       <div>
         <label class="block mb-2 font-medium">
           Email
         </label>
 
-        <input type="email" placeholder="tu@email.com" class="w-full h-12 px-4 rounded-xl border border-gray-300
-                 focus:outline-none focus:ring-2 focus:ring-blue-500
-                 focus:border-blue-500">
+        <p-floatlabel variant="in">
+          <input type="email" pInputText id="label_email" formControlName="email"
+            class="w-full rounded-xl border border-gray-300 p-3" />
+          <label for="label_email">Correo electrónico</label>
+        </p-floatlabel>
+
+        @if(isInvalid('email')){
+        @if(errorCheck('email', 'email')){
+        <p-message severity="error" variant="simple" size="small">
+          El email no es válido
+        </p-message>
+        }
+        @if(errorCheck('email', 'required')){
+        <p-message severity="error" variant="simple" size="small">
+          El email es requerido
+        </p-message>
+        }
+        }
       </div>
 
       <div>
@@ -40,15 +55,30 @@
           Contraseña
         </label>
 
-        <input type="password" placeholder="********" class="w-full h-12 px-4 rounded-xl border border-gray-300
-                 focus:outline-none focus:ring-2 focus:ring-blue-500
-                 focus:border-blue-500">
+        <p-floatlabel variant="in">
+          <p-password formControlName="password" inputId="on_password" [toggleMask]="true" placeholder="********"
+            class="w-full rounded-xl border border-gray-300" [feedback]="false" autocomplete="off" />
+          <label for="on_password">Contraseña</label>
+        </p-floatlabel>
+
+        @if(isInvalid('password')){
+        @if(errorCheck('password', 'minlength')){
+        <p-message severity="error" variant="simple" size="small">
+          La contraseña debe tener al menos 8 caracteres
+        </p-message>
+        }
+        @if(errorCheck('password', 'required')){
+        <p-message severity="error" variant="simple" size="small">
+          La contraseña es requerida
+        </p-message>
+        }
+        }
       </div>
 
       <div class="flex items-center justify-between text-sm">
 
         <label class="flex items-center gap-2">
-          <input type="checkbox">
+          <p-checkbox formControlName="rememberMe" [binary]="true" />
           <span>Recordarme</span>
         </label>
 
@@ -58,8 +88,9 @@
 
       </div>
 
-      <button type="submit" class="w-full h-13 rounded-xl bg-blue-600 text-white
-               font-semibold hover:bg-blue-700 transition-colors">
+      <button type="submit" [disabled]="!loginForm.valid || disableSubmit" class="w-full h-12 rounded-xl
+             bg-blue-600 text-white font-semibold cursor-pointer disabled:bg-blue-300 disabled:cursor-not-allowed
+             hover:bg-blue-700 transition">
         Iniciar sesión
       </button>
 

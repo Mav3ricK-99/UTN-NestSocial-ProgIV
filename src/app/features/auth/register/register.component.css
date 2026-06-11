@@ -12,6 +12,24 @@
     }
 }
 
+.svg-container {
+    position: absolute;
+    width: 100%;
+    left: -50%;
+    top: -34%;
+    animation: rotate 350s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .moving-background {
     background-image: url('../../../../assets/images/nestSocialBckg.png');
     background-repeat: repeat;

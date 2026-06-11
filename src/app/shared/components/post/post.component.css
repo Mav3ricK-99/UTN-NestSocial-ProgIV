@@ -1,3 +1,11 @@
+.likeButton {
+    animation: grow .5s 1s ease-in-out;
+}
+
+.repostButton {
+    animation: grow .5s 2s ease-in-out;
+}
+
 .likeButton:hover {
     color: var(--color-red-500) !important;
 
@@ -25,6 +33,12 @@
 .typing-cursor::after {
     content: '|';
     animation: blink 1s infinite;
+}
+
+@keyframes grow {
+    50% {
+        transform: scale(1.2);
+    }
 }
 
 @keyframes blink {

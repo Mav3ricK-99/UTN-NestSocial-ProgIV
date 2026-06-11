@@ -30,13 +30,18 @@
                 </div>
 
                 <div class="min-w-xl mt-4 text-gray-800 whitespace-pre-line" [class.typing-cursor]="showPrompter">
-                      {{ displayedText() }}
+                    {{ displayedText() }}
                 </div>
 
                 @if(post().image) {
 
-                <img [src]="post().image" alt="post image" class="mt-4 rounded-2xl w-full max-h-[450px] object-cover" />
+                @if(!imageLoaded()) {
+                <div class="block w-[720px] h-[450px] mt-4 bg-gray-200 animate-pulse rounded-2xl"></div>
+                }
 
+                <img [src]="post().image" alt="post image" [class.opacity-0]="!imageLoaded()"
+                    [class.opacity-100]="imageLoaded()" (load)="imageLoaded.set(true)"
+                    class="mt-4 rounded-2xl w-full max-h-[450px] object-cover transition-opacity duration-500" />
                 }
             </div>
 

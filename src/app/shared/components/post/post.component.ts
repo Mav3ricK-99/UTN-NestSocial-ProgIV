@@ -19,6 +19,7 @@ export class PostComponent {
   showPrompter: boolean = true;
 
   displayedText = signal('');
+  imageLoaded = signal(false);
 
   ngOnInit() {
 

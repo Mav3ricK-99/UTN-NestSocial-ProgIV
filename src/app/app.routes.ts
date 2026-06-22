@@ -7,6 +7,12 @@ export const routes: Routes = [
         pathMatch: 'full'
     },
     {
+        path: 'feed',
+        loadChildren: () =>
+            import('./core/routes/feed/feed.routes')
+                .then(m => m.FEED_ROUTES)
+    },
+    {
         path: 'auth',
         loadChildren: () =>
             import('./core/routes/auth.routes')

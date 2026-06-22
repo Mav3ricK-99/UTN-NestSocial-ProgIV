@@ -1,40 +1,127 @@
+import { User } from "../user/user";
+
 export class Post {
 
-    public id: string;
-    public authorName: string;
-    public username: string;
-    public profileImage: string;
-    public content: string;
-    public image?: string;
-    public likes: number;
-    public comments: number;
-    public reposts: number;
-    public createdAt: Date;
-    public liked: boolean = true;
+    id: string;
+    content: string;
+    postImage: string | undefined;
+    likesCount: number;
+    commentsCount: number;
+    sharesCount: number;
+    deleted: boolean;
+    liked: boolean;
+    op: User | undefined;
+    createdAt: Date;
+
+    constructor(id: string, content: string, postImage: string)
 
     constructor(
         id: string,
-        authorName: string,
-        username: string,
-        profileImage: string,
         content: string,
-        image: string | undefined,
-        likes: number,
-        comments: number,
-        reposts: number,
+        postImage: string | undefined,
+        likesCount: number,
+        commentsCount: number,
+        sharesCount: number,
+        deleted: boolean,
+        userLiked: boolean,
         createdAt: Date,
+        op?: User
+    )
+
+    constructor(
+        id: string,
+        content: string,
+        postImage?: string,
+        likesCount?: number,
+        commentsCount?: number,
+        sharesCount?: number,
+        deleted?: boolean,
+        userLiked?: boolean,
+        createdAt?: Date,
+        op?: User
     ) {
         this.id = id;
-        this.authorName = authorName;
-        this.username = username;
-        this.profileImage = profileImage;
         this.content = content;
-        this.image = image;
-        this.likes = likes;
-        this.comments = comments;
-        this.reposts = reposts;
-        this.createdAt = createdAt;
-        this.liked = true;
+        this.postImage = postImage;
+        this.likesCount = likesCount ?? 0;
+        this.commentsCount = commentsCount ?? 0;
+        this.sharesCount = sharesCount ?? 0;
+        this.deleted = deleted ?? false;
+        this.liked = userLiked ?? false;
+        this.createdAt = createdAt ?? new Date();
+        this.op = op;
     }
 
+    public getId(): string {
+        return this.id;
+    }
+
+    public getContent(): string {
+        return this.content;
+    }
+
+    public getPostImage(): string | undefined {
+        return this.postImage;
+    }
+
+    public getLikesCount(): number {
+        return this.likesCount;
+    }
+
+    public getCommentsCount(): number {
+        return this.commentsCount;
+    }
+
+    public getLiked(): boolean {
+        return this.liked;
+    }
+
+    public getSharesCount(): number {
+        return this.sharesCount;
+    }
+
+    public getCreatedAt(): Date {
+        return this.createdAt;
+    }
+
+    public setOp(user: User): void {
+        this.op = user;
+    }
+
+    public setLiked(liked: boolean): void {
+        this.liked = liked;
+    }
+
+    public setLikesCount(likesCount: number): void {
+        this.likesCount = likesCount;
+    }
+
+    public setCommentsCount(commentsCount: number): void {
+        this.commentsCount = commentsCount;
+    }
+
+    public setSharesCount(sharesCount: number): void {
+        this.sharesCount = sharesCount;
+    }
+
+    public setCounts(post: Post): void {
+        this.setLikesCount(post.getLikesCount());
+        this.setCommentsCount(post.getCommentsCount());
+        this.setSharesCount(post.getSharesCount());
+    }
+
+    copy(): Post {
+        return new Post(
+            this.id,
+            this.content,
+            this.postImage,
+            this.likesCount,
+            this.commentsCount,
+            this.sharesCount,
+            this.deleted,
+            this.liked,
+            this.createdAt,
+            this.op
+        );
+    }
 }

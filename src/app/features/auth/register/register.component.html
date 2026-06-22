@@ -1,5 +1,6 @@
 <div class="min-h-screen flex justify-around p-8
          moving-background">
+    <p-toast />
     <div class="w-full max-w-xl rounded-3xl register-card animate-slide-from-bottom
          backdrop-blur-md p-10 shadow-2xl relative overflow-hidden">
 
@@ -156,6 +157,11 @@
                     El correo electrónico no es válido
                 </p-message>
                 }
+                }
+                @if(errorCheck('email', 'emailExists')){
+                <p-message severity="error" variant="simple" size="small">
+                    El correo electronico ingresado ya pertenece a una cuenta
+                </p-message>
                 }
             </div>
 
@@ -349,8 +355,8 @@
                         Imagen de perfil
                     </label>
 
-                    <input type="file" #avatarInput accept=".jpg,.jpeg,.png,.webp" formControlName="avatar" (change)="onAvatarChange($event)"
-                        style="display:none" />
+                    <input type="file" #avatarInput accept=".jpg,.jpeg,.png,.webp" formControlName="avatar"
+                        (change)="onAvatarChange($event)" style="display:none" />
 
                     @if(imagePreview()) {
                     <div (click)="avatarInput.click()"
@@ -385,7 +391,7 @@
                 <lucide-icon [img]="Dices" (click)="randomizeData()"
                     class="size-5 text-gray-600 cursor-pointer transition ease-in-out active:scale-110"></lucide-icon>
 
-                <button type="submit" [disabled]="!registerForm.valid || disableSubmit" class="w-full h-12 rounded-xl
+                <button type="submit" [disabled]="!registerForm.valid || submitBtnDisabled()" class="w-full h-12 rounded-xl
              bg-blue-600 text-white font-semibold cursor-pointer disabled:bg-blue-300 disabled:cursor-not-allowed
              hover:bg-blue-700 transition">
                     Crear cuenta
@@ -404,6 +410,6 @@
 
     </div>
 
-    <app-post class="animate-slide-in-right" [post]="demoPost"></app-post>
+    <app-post class="animate-slide-in-right" [post]="demoPost" [isDummyPost]="true"></app-post>
 
 </div>

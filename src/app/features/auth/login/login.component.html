@@ -1,5 +1,6 @@
 <div class="min-h-screen flex items-center justify-center p-8
          moving-background">
+  <p-toast />
   <div class="w-full max-w-md rounded-3xl login-card animate-slide-from-bottom
            backdrop-blur-md p-12 shadow-2xl">
 
@@ -73,6 +74,11 @@
         </p-message>
         }
         }
+        @if(errorCheck('password', 'wrongCredentials')){
+        <p-message severity="error" variant="simple" size="small">
+          El email o contraseña ingresados son incorrectos
+        </p-message>
+        }
       </div>
 
       <div class="flex items-center justify-between text-sm">
@@ -82,13 +88,13 @@
           <span>Recordarme</span>
         </label>
 
-        <a href="#" class="text-blue-600 hover:text-blue-700">
+        <!-- <a href="#" class="text-blue-600 hover:text-blue-700">
           ¿Olvidaste tu contraseña?
-        </a>
+        </a> -->
 
       </div>
 
-      <button type="submit" [disabled]="!loginForm.valid || disableSubmit" class="w-full h-12 rounded-xl
+      <button type="submit" [disabled]="!loginForm.valid || loginBtnDisabled()" class="w-full h-12 rounded-xl
              bg-blue-600 text-white font-semibold cursor-pointer disabled:bg-blue-300 disabled:cursor-not-allowed
              hover:bg-blue-700 transition">
         Iniciar sesión

@@ -1,0 +1,112 @@
+<aside class="border-r border-surface-800 sidebar">
+    <div class="flex items-center p-3 pb-0 cursor-pointer justify-center select-none">
+        <span class="smallTitleNest font-extrabold text-red-400/90 tracking-tight font-nest">
+            Nest
+        </span>
+        <span class="smallTitleSocial text-blue-400/90 italic font-semibold font-social ">
+            Social
+        </span>
+    </div>
+    <div class="flex cursor-default flex-col items-center justify-center p-4 gap">
+        <p-avatar class="miAvatar cursor-pointer" size="xlarge" image="https://i.pravatar.cc/150?img=12" shape="circle">
+        </p-avatar>
+        <div class="text-xl text-slate-100">
+            Federico Gutierrez
+        </div>
+
+        <div class="text-sm cursor-pointer text-slate-300">
+            @fedegutierrez
+            <p-button icon="pi pi-clipboard" severity="secondary" size="small" aria-label="Save" />
+        </div>
+
+        <div class="text-base text-slate-400">
+            1.2k seguidores
+        </div>
+    </div>
+    <p-menu [model]="items" class="flex justify-center" styleClass="sideBarMenu w-full">
+        <ng-template #submenuheader let-item>
+            <span class="text-primary font-bold">{{ item.label }}</span>
+        </ng-template>
+        <ng-template #item let-item>
+            <a pRipple class="flex items-center px-3 py-2 cursor-pointer" [class]="item.linkClass">
+                <span [class]="item.icon"></span>
+                <span class="ms-2">{{ item.label }}</span>
+                <p-badge *ngIf="item.badge" class="ms-auto" [value]="item.badge" />
+                <span *ngIf="item.shortcut"
+                    class="ms-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{
+                    item.shortcut }}</span>
+            </a>
+        </ng-template>
+    </p-menu>
+    <div class="flex cursor-pointer items-center gap-1 rounded-xl p-1 transition-colors hover:bg-slate-800">
+
+        <p-avatar size="large" image="https://i.pravatar.cc/150?img=12" shape="circle">
+        </p-avatar>
+
+        <div class="flex-1">
+            <div class="font-medium text-slate-100">
+                Federico Gutierrez
+            </div>
+            <div class="text-xs text-slate-300">
+                @fedegutierrez
+            </div>
+            <div class="text-sm text-slate-400">
+                1.2k seguidores
+            </div>
+        </div>
+
+        <i class="pi pi-angle-right followAngle text-slate-500"></i>
+
+    </div>
+    <div class="flex cursor-pointer items-center gap-1 rounded-xl p-1 transition-colors hover:bg-slate-800">
+
+        <p-avatar size="large" image="https://i.pravatar.cc/150?img=12" shape="circle">
+        </p-avatar>
+
+        <div class="flex-1">
+            <div class="font-medium text-slate-100">
+                Federico Gutierrez
+            </div>
+            <div class="text-xs text-slate-300">
+                @fedegutierrez
+            </div>
+            <div class="text-sm text-slate-400">
+                1.2k seguidores
+            </div>
+        </div>
+
+        <i class="pi pi-angle-right followAngle text-slate-500"></i>
+
+    </div>
+    <!-- } @else {
+    <div class="flex items-center px-3 cursor-pointer justify-center select-none">
+        <span class="smallTitleNest font-extrabold text-red-600 tracking-tight font-nest">
+            N
+        </span>
+        <span class="smallTitleSocial text-blue-600 italic font-semibold font-social ">
+            s
+        </span>
+    </div>
+    <p-divider />
+    <div class="flex flex-wrap p-3 gap-4 justify-center">
+        <p-button label="Search" styleClass="smallButton" icon="pi pi-search" rounded="true" size="small"
+            iconPos="top" />
+        <p-button label="Search" styleClass="smallButton" icon="pi pi-search" rounded="true" size="small"
+            iconPos="top" />
+        <p-button label="Search" styleClass="smallButton" icon="pi pi-search" rounded="true" size="small"
+            iconPos="top" />
+
+    </div>
+    <p-divider />
+    <div class="flex flex-wrap p-3 gap-y-3">
+        <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" size="large"
+            shape="circle" />
+        <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/asiyajavayant.png" size="large"
+            shape="circle" />
+        <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/onyamalimba.png" size="large"
+            shape="circle" />
+    </div>
+    } -->
+
+
+</aside>

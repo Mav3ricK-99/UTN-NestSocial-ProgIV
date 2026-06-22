@@ -1,0 +1,68 @@
+<div class="flex bg-olive-50/90">
+
+    <app-sidebar></app-sidebar>
+
+    <!-- Feed -->
+    <main class="flex-1 flex justify-center grow-5">
+
+        <div class="p-6">
+
+            <app-new-post-in-feed (newPostEmitted)="addNewPost($event)" />
+
+            @if(posts().length > 0) {
+            @for(post of posts(); track post.getId()) {
+            <app-post [post]="post" [isDummyPost]="false" (likeGiven)="giveLike($event)"/>
+
+            <p-divider />
+            }
+            }
+        </div>
+
+    </main>
+
+    <section class="flex flex-col bg-olive-100 p-3">
+        <article>
+            <p-card class="sticky filterCard top-10 mb-5">
+                <h1 class="mb-3 cursor-default text-slate-700 font-semibold">
+                    Feed <span class="ml-2 pi pi-sliders-h"></span>
+                </h1>
+
+                <p-selectbutton [options]="feedOptions">
+                </p-selectbutton>
+
+                <form class="p-card-content" [formGroup]="formFilter" (ngSubmit)="onSubmit()">
+                    <div class="filtrosInput">
+                        <p-floatlabel variant="on">
+                            <p-autocomplete inputId="multiple-ac-1" formControlName="createdByUser" multiple fluid
+                                separator="," minQueryLength="2" autoHighlight="true" [suggestions]="items"
+                                (completeMethod)="search($event)" />
+                            <label for="on_label">Usuario</label>
+                        </p-floatlabel>
+                    </div>
+
+                    <div class="flex justify-center filtrosInput">
+                        <p-floatlabel variant="on">
+                            <p-datepicker formControlName="createdAtRange" [maxDate]="today" dateFormat="dd/mm/y"
+                                [showIcon]="true" selectionMode="range" ngSkipHydration />
+                            <label for="on_label">Fecha</label>
+                        </p-floatlabel>
+                    </div>
+                </form>
+            </p-card>
+        </article>
+        <article>
+            <p-card class="mb-2">
+                <h1 class="mb-3 cursor-default text-slate-700 font-semibold">
+                    Destacados <span class="ml-2 pi pi-crown"></span>
+                </h1>
+                @if(posts().length > 0) {
+                @for(post of posts(); track post.getId()) {
+                <app-post [post]="post" [isDummyPost]="false" [inAside]="true" />
+
+                <p-divider />
+                }
+                }
+            </p-card>
+        </article>
+    </section>
+</div>

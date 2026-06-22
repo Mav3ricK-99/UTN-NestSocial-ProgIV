@@ -1,0 +1,23 @@
+<div class="max-w-[900px] sticky flex flex-col top-8 mb-5 z-90 bg-olive/70 backdrop-blur-md rounded-3xl shadow-xl p-4">
+    <p-toast />
+    <form [formGroup]="formNewPost" (ngSubmit)="onSubmit()">
+        <h2 class="text-center text-2xl font-social">Nuevo Post</h2>
+        <p-editor formControlName="content" [invalid]="isInvalid('content')" class="post-editor my-2" />
+
+        @if(isDirty('content') && formNewPost.errors?.['postMinLength']){
+        <p-message severity="error" variant="simple" size="small">La publicación debe tener al menos 3
+            caracteres.</p-message>
+        }
+        @if(isDirty('content') && formNewPost.errors?.['postMaxLength']){
+        <p-message severity="error" variant="simple" size="small">La publicación puede tener 255 caracteres como
+            maximo.</p-message>
+        }
+        @if(isDirty('content') && formNewPost.errors?.['postMaxImages']){
+        <p-message severity="error" variant="simple" size="small">La publicación puede tener como maximo una sola
+            imagen.</p-message>
+        }
+
+        <p-button type="submit" class="place-self-end" icon="pi pi-send" label="Enviar" [rounded]="true"
+            [raised]="true" />
+    </form>
+</div>

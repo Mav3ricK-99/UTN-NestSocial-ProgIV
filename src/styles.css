@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-
+@import "primeicons/primeicons.css";
+@import 'quill/dist/quill.snow.css';
+@import 'quill-emoji/dist/quill-emoji.css';
 @import 'tailwindcss';
 @import "tailwindcss-primeui";
 
@@ -10,6 +12,7 @@
   --p-select-option-selected-color: #2563eb !important;
   --p-list-option-selected-focus-color: #4f80eb !important;
   --p-select-placeholder-color: var(--p-floatlabel-color) !important;
+  --p-content-border-color: var(--color-slate-500) !important;
 }
 
 .p-password-input {

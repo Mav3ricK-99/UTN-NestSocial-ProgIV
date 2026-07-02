@@ -11,6 +11,9 @@ import { UserService } from '../../../core/services/User/user.service';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { map } from 'rxjs';
+import { User } from '../../../classes/user/user';
 @Component({
   selector: 'app-login',
   imports: [LucideAngularModule, RouterLink, ReactiveFormsModule, MessageModule, CheckboxModule, PasswordModule, InputTextModule, FloatLabelModule, ToastModule],
@@ -22,6 +25,8 @@ export class LoginComponent {
   readonly Heart = Heart
 
   private messageService = inject(MessageService);
+
+  private router = inject(Router);
 
   public loginForm: FormGroup;
 
@@ -35,16 +40,30 @@ export class LoginComponent {
     });
   }
 
-  onLoginSubmit() {
+  async onLoginSubmit() {
     if (this.loginForm.valid) {
       this.loginBtnDisabled.set(true);
       const email: string = this.loginForm.get('email')!.value;
       const password: string = this.loginForm.get('password')!.value;
       //const rememberMe: boolean = this.loginForm.get('rememberMe')!.value;
 
-      this.userService.login(email, password).subscribe({
-        next: () => {
+      await this.userService.login(email, password).subscribe({
+        next: async () => {
           this.loginBtnDisabled.set(false);
+
+          try {
+            await this.userService.me().pipe(
+              map((rawUser: any) => {
+                const user: User = this.userService.buildUser(rawUser);
+                this.userService.setCurrentUser(user);
+                this.userService.setTokenExpireTime(new Date(rawUser.exp * 1000));
+                return true;
+              }));
+            this.router.navigate(['/feed']);
+          } catch (err: unknown) {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al procesar la solicitud. Intentelo nuevamente mas tarde.', life: 3000 });
+          }
+
         },
         error: (err: HttpErrorResponse) => {
           switch (err.status) {

@@ -1,0 +1,64 @@
+<div class="bg-olive-50 rounded-2xl border mt-3 border-slate-200 p-4 transition-all duration-200 hover:shadow-sm">
+
+    <div class="flex flex-col">
+
+        <div class="flex gap-3">
+            <img [src]="comment().getAuthor()?.getAvatarPathUrl()" alt="avatar"
+                class="w-12 h-12 rounded-full object-cover shrink-0" />
+
+            <div class="flex-1">
+
+                <div class="flex items-center gap-2 flex-wrap">
+
+                    <span class="font-semibold text-slate-800">
+                        {{ comment().getAuthor()?.getUserFullName() }}
+                    </span>
+
+                    <span class="text-sm text-slate-500">
+                        @{{ comment().getAuthor()?.getUserName() }}
+                    </span>
+
+                    <span class="text-xs text-slate-400">
+                        ·
+                    </span>
+
+                    <span class="text-xs text-slate-400">
+                        {{ comment().getCreatedAt() }}
+                    </span>
+
+                </div>
+
+                <div class="mt-2 text-slate-700 leading-6" [innerHTML]="comment().getContent()">
+                </div>
+
+                <div class="flex items-center gap-4 mt-4 justify-end">
+                    <button pButton text size="small" icon="pi pi-comment" label="Responder" (click)="replyComment()"
+                        severity="secondary">
+                    </button>
+                </div>
+
+                <!-- @if(comment().getReplies()?.length) {
+
+            <div class="mt-4 pl-6 border-l-2 border-slate-200">
+
+                @for(reply of comment().getReplies(); track reply.getId()) {
+
+                <app-comment [comment]="reply">
+                </app-comment>
+
+                }
+
+            </div>
+
+            } -->
+
+            </div>
+        </div>
+
+        @if(showNewComment()) {
+        <app-create-comment [comment]="comment()" [postId]="postId()" />
+        }
+
+    </div>
+
+</div>

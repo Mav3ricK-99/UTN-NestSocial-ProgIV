@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { User } from '../../../classes/user/user';
 import { enviroment } from '../../../app.config';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -15,9 +15,15 @@ export class UserService {
 
   loggedInUser = this._user.asReadonly();
 
+  private _exp = signal<Date | null>(null);
+
+  expToken = this._exp.asReadonly();
+
   isUserLoggedIn = computed(() => !!this._user());
 
   private httpClient = inject(HttpClient);
+
+  public isRefreshing = false;
 
   constructor() { }
 
@@ -43,19 +49,42 @@ export class UserService {
       password: password
     };
 
-    return this.httpClient.post<User>(this.apiPath + 'login', loginBody);
+    return this.httpClient.post<User>(this.apiPath + 'login', loginBody, {
+      withCredentials: true
+    });
+  }
+
+  me(): Observable<User> {
+    return this.httpClient.get<User>(this.apiPath + 'me', {
+      withCredentials: true
+    });
   }
 
   refreshToken() {
-    /* this.httpClient.post<User>(this.apiPath + 'update', user).subscribe((resp) => {
-      console.log('wtf is this:', resp);
-    }); */
+    this.isRefreshing = true;
+    return this.httpClient.post(this.apiPath + 'refresh-token', {}, {
+      withCredentials: true
+    });
   }
 
-  updateUser(user: User) {
-    /* this.httpClient.post<User>(this.apiPath + 'update', user).subscribe((resp) => {
-      console.log('wtf is this:', resp);
-    }); */
+  logOut(): Observable<any> {
+    return this.httpClient.post(this.apiPath + 'logout', {}, {
+      withCredentials: true
+    });
+  }
+
+  public setCurrentUser(user: User) {
+    this._user.set(user);
+  }
+
+  public setTokenExpireTime(date: Date) {
+    this._exp.set(date);
+  }
+
+  getUserByUsername(username: string): Observable<User> {
+    return this.httpClient.get<User>(this.apiPath + `getUserByUsername/${username}`, {
+      withCredentials: true
+    });
   }
 
   public buildUser(rawUser: any): User {

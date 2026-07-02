@@ -1,23 +1,23 @@
-import { Component, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card'
-import { DrawerModule } from 'primeng/drawer';
-import { AccordionModule } from 'primeng/accordion'
 import { BadgeModule } from 'primeng/badge'
 import { SplitterModule } from 'primeng/splitter'
-import { PanelModule } from 'primeng/panel'
 import { DividerModule } from 'primeng/divider';
 import { LucideAngularModule, Heart } from 'lucide-angular';
 import { TabsModule } from 'primeng/tabs';
 import { MenuModule } from 'primeng/menu';
-import { MenuItem, MessageService } from 'primeng/api';
-import { RippleModule } from 'primeng/ripple';
-import { NgIf } from '@angular/common';
+import { MenuItem } from 'primeng/api';
+import { RouterLink } from '@angular/router';
+import { TooltipModule } from 'primeng/tooltip';
+import { UserService } from '../../../core/services/User/user.service';
+import { Router } from '@angular/router';
+import { ClosingSessionComponent } from '../closing-session/closing-session.component';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [NgIf, MenuModule, TabsModule, LucideAngularModule, AvatarModule, DividerModule, PanelModule, ButtonModule, CardModule, DrawerModule, AccordionModule, BadgeModule, SplitterModule],
+  imports: [MenuModule, TabsModule, LucideAngularModule, AvatarModule, DividerModule, ButtonModule, CardModule, BadgeModule, SplitterModule, RouterLink, TooltipModule, ClosingSessionComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
 })
@@ -25,8 +25,15 @@ export class SidebarComponent {
   readonly Heart = Heart
   items: MenuItem[] | undefined;
 
+  private router = inject(Router);
 
-  constructor() {
+  currentTime = signal(Date.now());
+
+  timeLeft = signal('');
+
+  modalShown: boolean = false;
+
+  constructor(private userService: UserService) {
     this.items = [
       {
         separator: true
@@ -59,7 +66,10 @@ export class SidebarComponent {
           {
             label: 'Cerrar sesion',
             icon: 'pi pi-sign-out',
-            linkClass: '!text-red-500 dark:!text-red-400'
+            linkClass: '!text-red-500 dark:!text-red-400',
+            command: () => {
+              this.logOut
+            }
           }
         ]
       },
@@ -86,6 +96,37 @@ export class SidebarComponent {
         label: 'Seguidores',
       },
     ];
+
+    setInterval(() => {
+      this.currentTime.set(Date.now());
+    }, 60000);
+
+    effect(() => {
+
+      const exp = this.userService.expToken();
+
+      if (!exp) {
+        return;
+      }
+      const msDiff = exp.getTime() - this.currentTime();
+
+      this.timeLeft.set(`Quedan ${Math.floor((msDiff / 1000) / 60)} minutos`);
+
+      if (msDiff < 300000 && !this.modalShown) {
+        this.modalShown = true;
+      }
+    });
+  }
+
+  logOut() {
+    this.userService.logOut().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+
+      }
+    });
   }
 
 }

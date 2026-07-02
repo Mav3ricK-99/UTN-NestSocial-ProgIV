@@ -11,7 +11,7 @@
 
             @if(posts().length > 0) {
             @for(post of posts(); track post.getId()) {
-            <app-post [post]="post" [isDummyPost]="false" (likeGiven)="giveLike($event)"/>
+            <app-post [post]="post" [isDummyPost]="false" (likeGiven)="giveLike($event)" />
 
             <p-divider />
             }
@@ -27,10 +27,10 @@
                     Feed <span class="ml-2 pi pi-sliders-h"></span>
                 </h1>
 
-                <p-selectbutton [options]="feedOptions">
-                </p-selectbutton>
+                <form class="p-card-content" [formGroup]="formFilter">
 
-                <form class="p-card-content" [formGroup]="formFilter" (ngSubmit)="onSubmit()">
+                    <p-selectbutton formControlName="orderBy" [options]="feedOptions">
+                    </p-selectbutton>
                     <div class="filtrosInput">
                         <p-floatlabel variant="on">
                             <p-autocomplete inputId="multiple-ac-1" formControlName="createdByUser" multiple fluid
@@ -55,9 +55,9 @@
                 <h1 class="mb-3 cursor-default text-slate-700 font-semibold">
                     Destacados <span class="ml-2 pi pi-crown"></span>
                 </h1>
-                @if(posts().length > 0) {
-                @for(post of posts(); track post.getId()) {
-                <app-post [post]="post" [isDummyPost]="false" [inAside]="true" />
+                @if(sidePosts().length > 0) {
+                @for(sidePost of sidePosts(); track sidePost.getId()) {
+                <app-post [post]="sidePost" [isDummyPost]="false" [inAside]="true" />
 
                 <p-divider />
                 }

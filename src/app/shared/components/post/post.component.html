@@ -1,16 +1,17 @@
 <div [class]="inAside() ? 'asidePost' : 'w-180'" class="bg-olive-100 rounded-3xl shadow-lg p-5">
     <div>
         <p-toast />
-        <div class="flex flex-row gap-3">
-            <img [src]="post().op?.getAvatarPathUrl()" alt="profile" class="w-12 h-12 rounded-full object-cover">
+        <div class="flex flex-row gap-3" (click)="showPost()">
+            <img [src]="post().op?.getAvatarPathUrl()" alt="profile" class="w-14 h-14 rounded-full object-cover">
             <div>
                 <div class="flex justify-between">
                     <div class="flex gap-3">
                         <div>
-                            <div class="font-semibold cursor-pointer hover:underline">
+                            <div class="font-semibold cursor-default hover:underline">
                                 {{ post().op?.getUserFullName() }}
                             </div>
-                            <div class="text-sm text-gray-500">
+                            <div class="text-sm text-gray-500 cursor-pointer"
+                                routerLink="/profile/{{post().op?.getUserName()}}">
                                 @{{ post().op?.getUserName() }}
                             </div>
                             <div class="text-xs text-gray-400">
@@ -30,12 +31,13 @@
                 @if(post().getPostImage() != undefined && post().getPostImage()?.length != 0) {
 
                 @if(!imageLoaded()) {
-                <div class="block w-[720px] h-[450px] mt-4 bg-gray-200 animate-pulse rounded-2xl"></div>
-                } @else {
-                <img [src]="post().getPostImage()" alt="post image" [class.opacity-0]="!imageLoaded()"
-                    [class.opacity-100]="imageLoaded()" (load)="imageLoaded.set(true)"
-                    class="mt-4 rounded-2xl w-full max-h-[450px] object-cover transition-opacity duration-500" />
+                <div class="absolute inset-0 bg-gray-200 animate-pulse rounded-2xl">
+                </div>
                 }
+
+                <img [src]="post().getPostImage()" alt="post image" (load)="imageLoaded.set(true)"
+                    [class.opacity-0]="!imageLoaded()" [class.opacity-100]="imageLoaded()"
+                    class="mt-4 rounded-2xl w-full max-h-[450px] object-cover transition-opacity duration-500" />
                 }
             </div>
 
@@ -66,6 +68,18 @@
                 {{ post().getSharesCount() }}
             </button>
 
+        </div>
+        <div>
+            <hr class="text-olive-200 my-2">
+            @if(comments().length > 0) {
+            @for(comment of comments(); track comment.getId()) {
+            <app-comment [comment]="comment"/>
+            }
+            }
+        </div>
+
+        <div>
+            <app-create-comment [postId]="post().getId()" (newCommentEmitted)="addNewComment($event)"/>
         </div>
     </div>
 

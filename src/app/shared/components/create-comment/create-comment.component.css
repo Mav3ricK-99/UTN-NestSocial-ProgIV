@@ -1,0 +1,30 @@
+:host ::ng-deep .p-card {
+    background: var(--color-olive-50);
+}
+
+:host ::ng-deep .comment-editor .p-editor-toolbar {
+    background: var(--color-slate-900);
+    border: none !important;
+    border-radius: .75rem .75rem 0 0 !important;
+    padding: .5rem .75rem;
+}
+
+:host ::ng-deep .comment-editor .ql-picker-label {
+    color: var(--color-surface-300) !important;
+}
+
+:host ::ng-deep .comment-editor .p-editor-content {
+    border: none !important;
+}
+
+:host ::ng-deep .comment-editor .ql-editor {
+    border-radius: 0 0 .75rem .75rem !important;
+    padding: .5rem .75rem;
+    border-left: 1px solid var(--color-slate-900) !important;
+    border-right: 1px solid var(--color-slate-900) !important;
+    border-bottom: 1px solid var(--color-slate-900) !important;
+
+    color: var(--color-slate-800) !important;
+    background: var(--color-olive-50) !important;
+    font-size: .95rem;
+}

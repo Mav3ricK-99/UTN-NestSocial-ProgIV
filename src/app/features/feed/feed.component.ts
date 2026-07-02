@@ -15,6 +15,7 @@ import { PostService } from '../../core/services/Post/post.service';
 import { orders, PostFilter } from '../../classes/postFilter/post-filter';
 import { UserService } from '../../core/services/User/user.service';
 import { User } from '../../classes/user/user';
+import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-feed',
   imports: [ReactiveFormsModule, FormsModule, SidebarComponent, PostComponent, NewPostInFeedComponent, DividerModule, CardModule, SelectButtonModule, DatePickerModule, FloatLabelModule, AutoCompleteModule],
@@ -25,13 +26,13 @@ export class FeedComponent implements OnInit {
 
   public posts = signal<Post[]>([]);
 
+  public sidePosts = signal<Post[]>([]);
+
   today: Date;
 
   feedOptions: any = orders;
 
   formFilter: FormGroup;
-  formSubmitted: boolean = false;
-
 
   visible: boolean = true;
 
@@ -39,6 +40,7 @@ export class FeedComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private postService: PostService, private userService: UserService) {
     this.formFilter = this.formBuilder.group({
+      orderBy: ['Recientes'],
       createdAtRange: [''],
       createdByUser: [],
     });
@@ -49,8 +51,47 @@ export class FeedComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.postService.getMostLiked().subscribe({
+      next: rawPosts => {
+        const posts = rawPosts.map((rawPost) => {
+          const op: User = this.userService.buildUser(rawPost.op);
+          const post: Post = this.postService.buildPost(rawPost);
+
+          post.setOp(op);
+
+          return post;
+        });
+        this.sidePosts.set(posts);
+      },
+      error: err => {
+        console.log(err.status);
+      }
+    });
+
     const filters: PostFilter = new PostFilter();
 
+    this.callGetPosts(filters);
+
+    this.formFilter.valueChanges
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        filter(() => this.formFilter.valid),
+      )
+      .subscribe(filterValues => {
+        if (Array.isArray(filterValues.createdAtRange) && filterValues.createdAtRange.filter((date: any) => date == null).length == 1) return;
+        const filters = new PostFilter(filterValues.createdAtRange[0], filterValues.createdAtRange[1], filterValues.orderBy, undefined, 5);
+
+        this.callGetPosts(filters);
+      });
+  }
+
+  addNewPost(post: Post) {
+    this.posts().unshift(post);
+  }
+
+  callGetPosts(filters: PostFilter) {
     this.postService.getPosts(filters).subscribe({
       next: rawPosts => {
         const posts = rawPosts.map((rawPost) => {
@@ -64,23 +105,9 @@ export class FeedComponent implements OnInit {
         this.posts.set(posts);
       },
       error: err => {
-        console.log(err);
+        console.log(err.status);
       }
     });
-
-    this.formFilter.valueChanges
-      .pipe(
-        debounceTime(400),
-        distinctUntilChanged(),
-        filter(() => this.formFilter.valid),
-      )
-      .subscribe(formValues => {
-        this.onSubmit();
-      });
-  }
-
-  addNewPost(post: Post) {
-    this.posts().push(post);
   }
 
   giveLike(postLiked: Post) {
@@ -100,24 +127,6 @@ export class FeedComponent implements OnInit {
     this.items = [...Array(10).keys()].map((item) => event.query + '-' + item);
   }
 
-  onSubmit() {
-    const createdAtRange: Array<any> = this.formFilter.get('createdAtRange')?.value;
-    if (Array.isArray(createdAtRange) && createdAtRange.filter((date) => date == null).length == 1) return;
-
-    const createdByUser: any = this.formFilter.get('createdByUser')?.value;
-    console.log(createdByUser);
-
-    this.formSubmitted = true;
-    if (this.formFilter.valid) {
-      //this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Form is submitted', life: 3000 });
-      this.formSubmitted = false;
-    }
-  }
-
-  isInvalid(controlName: string) {
-    const control = this.formFilter.get(controlName);
-    return control?.invalid && (control.touched || this.formSubmitted);
-  }
 }
 
 interface AutoCompleteCompleteEvent {

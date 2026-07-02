@@ -1,0 +1,7 @@
+<p-dialog [(visible)]="visible" header="La sesion esta a punto de expirar" draggable="false" [modal]="true" position="bottom" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-8">Quedan menos de 5 minutos antes de que se le pida ingresar nuevamente<br><br> ¿Desea renovar la sesion?.</span>
+    <ng-template #footer>
+        <p-button label="Continuar" [text]="true" severity="secondary" (click)="visible = false" />
+        <p-button label="Renovar Sesion" [outlined]="true" severity="secondary" (click)="refreshSession()" />
+    </ng-template>
+</p-dialog>

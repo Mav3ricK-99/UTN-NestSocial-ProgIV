@@ -1,5 +1,3 @@
-import { enviroment } from "../../app.config";
-
 export class User {
 
     id: string;

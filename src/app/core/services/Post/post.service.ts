@@ -1,17 +1,16 @@
 import { inject, Injectable } from '@angular/core';
-import { enviroment } from '../../../app.config';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Post } from '../../../classes/post/post';
 import { PostFilter } from '../../../classes/postFilter/post-filter';
 import { Observable } from 'rxjs';
 import { Comment } from '../../../classes/comment/comment';
-
+import { environment } from '../../../../../src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class PostService {
 
-  apiPath: string = (enviroment.BASE_URI + 'api/post');
+  apiPath: string = (environment.BASE_URI + 'api/post');
 
   private httpClient = inject(HttpClient);
 

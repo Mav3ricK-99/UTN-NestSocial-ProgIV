@@ -26,13 +26,3 @@ export const appConfig: ApplicationConfig = {
     })
   ]
 };
-
-export const PROD_enviroment: any = {
-  BASE_URI: "http://utn-nest-social-api-prog-iv.vercel.app:80/"
-}
-
-export const LOCAL_enviroment: any = {
-  BASE_URI: "http://localhost:3000/"
-}
-export const enviroment: any = LOCAL_enviroment;
-

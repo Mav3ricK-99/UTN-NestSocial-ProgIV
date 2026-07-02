@@ -1,15 +1,15 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { User } from '../../../classes/user/user';
-import { enviroment } from '../../../app.config';
 import { Observable, Subscription } from 'rxjs';
+import { environment } from '../../../../../src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
 
-  apiPath: string = (enviroment.BASE_URI + 'api/authentication/');
+  apiPath: string = (environment.BASE_URI + 'api/authentication/');
 
   private _user = signal<User | null>(null);
 

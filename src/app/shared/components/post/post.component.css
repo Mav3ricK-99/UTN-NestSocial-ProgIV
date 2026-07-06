@@ -26,6 +26,10 @@
     }
 }
 
+.post-content, .post-content p {
+    word-break: break-all !important;
+}
+
 .commentButton:hover {
     color: var(--color-blue-500) !important;
 

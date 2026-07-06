@@ -85,16 +85,6 @@
     margin-right: 10px;
 }
 
-.socialCard {
-    display: flex !important;
-    flex-direction: row !important;
-    overflow: hidden;
-}
-
-.followAngle:hover {
-    color: var(--color-slate-400);
-}
-
 :host ::ng-deep .p-card-body {
     padding: 0;
     gap: 0

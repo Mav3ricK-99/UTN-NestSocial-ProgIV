@@ -34,4 +34,11 @@ export const routes: Routes = [
                 .then(m => m.ProfileComponent),
         canActivate: [loggedUsersOnlyGuard]
     },
+    {
+        path: 'dashboard',
+        loadComponent: () =>
+            import('./features/dashboard/dashboard.component')
+                .then(m => m.DashboardComponent),
+        canActivate: [loggedUsersOnlyGuard]
+    },
 ];

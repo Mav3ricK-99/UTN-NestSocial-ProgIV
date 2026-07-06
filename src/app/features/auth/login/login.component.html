@@ -79,6 +79,11 @@
           El email o contraseña ingresados son incorrectos
         </p-message>
         }
+        @if(errorCheck('password', 'banned')){
+        <p-message severity="error" variant="simple" size="small">
+          El usuario no se encuentra disponible
+        </p-message>
+        }
       </div>
 
       <div class="flex items-center justify-between text-sm">

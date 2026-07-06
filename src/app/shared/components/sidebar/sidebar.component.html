@@ -1,6 +1,6 @@
 <aside class="border-r border-surface-800 sidebar">
     <app-closing-session [visible]="modalShown"/>
-    <div class="flex items-center p-3 pb-0 cursor-pointer justify-center select-none">
+    <div routerLink="/feed" class="flex items-center p-3 pb-0 cursor-pointer justify-center select-none">
         <span class="smallTitleNest font-extrabold text-red-400/90 tracking-tight font-nest">
             Nest
         </span>
@@ -9,15 +9,15 @@
         </span>
     </div>
     <div class="flex cursor-default flex-col items-center justify-center p-4 gap">
-        <p-avatar class="miAvatar cursor-pointer" routerLink="/profile/Mav3ricK99" size="xlarge"
-            image="https://i.pravatar.cc/150?img=12" shape="circle">
+        <p-avatar class="cursor-pointer" routerLink="/profile/{{ currentUser()?.getUserName() }}" size="xlarge"
+            image="{{ currentUser()?.getAvatarPathUrl() }}" shape="circle">
         </p-avatar>
         <div class="text-xl text-slate-100">
-            Federico Gutierrez
+            {{ currentUser()?.getUserFullName() }}
         </div>
 
-        <div class="text-sm cursor-pointer text-slate-300">
-            @fedegutierrez
+        <div class="text-sm cursor-pointer text-slate-300" (click)="copyUsername()">
+            @{{ currentUser()?.getUserName() }}
             <p-button icon="pi pi-clock" [pTooltip]="timeLeft()" severity="secondary" size="small" aria-label="Save" />
         </div>
 
@@ -83,35 +83,4 @@
         <i class="pi pi-angle-right followAngle text-slate-500"></i>
 
     </div>
-    <!-- } @else {
-    <div class="flex items-center px-3 cursor-pointer justify-center select-none">
-        <span class="smallTitleNest font-extrabold text-red-600 tracking-tight font-nest">
-            N
-        </span>
-        <span class="smallTitleSocial text-blue-600 italic font-semibold font-social ">
-            s
-        </span>
-    </div>
-    <p-divider />
-    <div class="flex flex-wrap p-3 gap-4 justify-center">
-        <p-button label="Search" styleClass="smallButton" icon="pi pi-search" rounded="true" size="small"
-            iconPos="top" />
-        <p-button label="Search" styleClass="smallButton" icon="pi pi-search" rounded="true" size="small"
-            iconPos="top" />
-        <p-button label="Search" styleClass="smallButton" icon="pi pi-search" rounded="true" size="small"
-            iconPos="top" />
-
-    </div>
-    <p-divider />
-    <div class="flex flex-wrap p-3 gap-y-3">
-        <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" size="large"
-            shape="circle" />
-        <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/asiyajavayant.png" size="large"
-            shape="circle" />
-        <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/onyamalimba.png" size="large"
-            shape="circle" />
-    </div>
-    } -->
-
-
 </aside>

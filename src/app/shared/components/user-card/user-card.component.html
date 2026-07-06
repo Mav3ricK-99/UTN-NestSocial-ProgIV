@@ -1,0 +1,28 @@
+<div routerLink="/profile/{{ user().getUserName() }}"
+    class="flex cursor-pointer min-w-3xs items-center gap-1 rounded-xl p-1 transition-colors bg-slate-700 hover:bg-slate-800">
+
+    <div class="flex flex-row items-center w-full">
+
+        <p-avatar size="large" image="{{ user().getAvatarPathUrl() }}" shape="circle">
+        </p-avatar>
+        <div class="flex-1">
+            <div class="font-medium text-slate-100">
+                {{ user().userFullName }}
+            </div>
+            <div class="text-xs text-slate-300">
+                @{{ user().username }}
+            </div>
+            <div class="text-sm text-slate-400">
+                1.2k seguidores
+            </div>
+        </div>
+        @if(userService.loggedInUser()?.isAdmin()) {
+        <form [formGroup]="activateUserForm">
+            <p-checkbox (click)="setUserDisable(); $event.stopPropagation()" formControlName="enabled" [binary]="true" />
+        </form>
+        }
+    </div>
+
+    <i class="pi pi-angle-right followAngle text-slate-500"></i>
+
+</div>

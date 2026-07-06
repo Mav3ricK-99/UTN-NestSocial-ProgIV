@@ -39,7 +39,7 @@ export class PostService {
     return this.httpClient.get<Post>(this.apiPath + '/get', { params, withCredentials: true });
   }
 
-  getPosts(postFilter: PostFilter): Observable<Post[]> {
+  getPosts(postFilter: PostFilter, cursor?: string): Observable<Post[]> {
     let params = new HttpParams({
       fromObject: {
         minDate: postFilter.minDate,
@@ -49,11 +49,20 @@ export class PostService {
       }
     });
 
-    return this.httpClient.get<Post[]>(this.apiPath, { params, withCredentials: true });
+    if (cursor) {
+      params = params.set('cursor', cursor);
+    }
+
+    return this.httpClient.get<any>(this.apiPath, { params, withCredentials: true });
   }
 
-  getComments(postId: string): Observable<Comment[]> {
-    return this.httpClient.get<Comment[]>(this.apiPath + `/${postId}/comment`, { withCredentials: true });
+  getComments(postId: string, cursor?: string): Observable<Comment[]> {
+    let params = new HttpParams();
+    if (cursor) {
+      params = params.set('cursor', cursor);
+    }
+
+    return this.httpClient.get<Comment[]>(this.apiPath + `/${postId}/comment`, { params, withCredentials: true });
   }
 
   postComment(postId: string, comment: Comment): Observable<Comment> {
@@ -75,7 +84,7 @@ export class PostService {
       }
     });
 
-    return this.httpClient.get<Post[]>(this.apiPath, { params, withCredentials: true });
+    return this.httpClient.get<any>(this.apiPath, { params, withCredentials: true });
   }
 
   likeAPost(id: string): Observable<Post> {
@@ -88,16 +97,20 @@ export class PostService {
     });
   }
 
-  deletePost(id: string) {
-    this.httpClient.delete<Post>(this.apiPath + `/delete/${id}`, {
+  deletePost(id: string): Observable<Post> {
+    return this.httpClient.patch<Post>(this.apiPath + `/${id}/delete`, {}, {
       withCredentials: true
-    }).subscribe((resp) => {
-      console.log('wtf is this:', resp);
-    });
+    })
   }
 
-  getPostsFromUser(username: string): Observable<Post[]> {
-    return this.httpClient.get<Post[]>(this.apiPath + `/getPostsFromUser/${username}`, {
+  getPostsFromUser(username: string, cursor?: string): Observable<any> {
+    let params = new HttpParams();
+    if (cursor) {
+      params = params.set('cursor', cursor);
+    }
+
+    return this.httpClient.get<any>(this.apiPath + `/getPostsFromUser/${username}`, {
+      params,
       withCredentials: true
     });
   }
@@ -107,7 +120,7 @@ export class PostService {
   }
 
   public buildComment(rawComment: any): Comment {
-    return new Comment(rawComment.id, rawComment.content, rawComment.deleted, rawComment.createdAt);
+    return new Comment(rawComment._id, rawComment.content, rawComment.deleted, rawComment.createdAt);
   }
 
   public base64ToBlob(base64: string): Blob {

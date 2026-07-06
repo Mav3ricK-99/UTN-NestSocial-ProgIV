@@ -110,6 +110,18 @@ export class Post {
         this.setSharesCount(post.getSharesCount());
     }
 
+    public setDeleted(deleted: boolean): void {
+        this.deleted = deleted;
+    }
+
+    public getDeleted(): boolean {
+        return this.deleted;
+    }
+
+    public getOp(): User | undefined {
+        return this.op;
+    }
+
     copy(): Post {
         return new Post(
             this.id,

@@ -1,0 +1,102 @@
+<div class="flex bg-olive-50/90">
+    <p-toast />
+    <app-sidebar></app-sidebar>
+
+    <main class="flex-1 flex w-full flex-col items-center">
+
+        <p-tabs class="profileTabs shadow-xl" value="0">
+
+            <p-tablist class="tabLists">
+
+                <p-tab value="0">
+                    Usuarios
+                </p-tab>
+
+                <p-tab value="1">
+                    Crear usuario
+                </p-tab>
+
+                <p-tab value="2">
+                    Publicaciones por usuario
+                </p-tab>
+
+                <p-tab value="3">
+                    Comentarios por usuario
+                </p-tab>
+
+                <p-tab value="4">
+                    Comentarios por publicacion
+                </p-tab>
+
+                <p-tab value="5">
+                    Ingresos de usuario
+                </p-tab>
+
+                <p-tab value="6">
+                    Visitas al Perfil
+                </p-tab>
+
+                <p-tab value="7">
+                    Me gusta por dia
+                </p-tab>
+
+            </p-tablist>
+
+            <p-tabpanels>
+                <p-tabpanel value="0">
+                    @if(users() != null && users()!.length > 0) {
+                    <div class="flex flex-row gap-2 w-full p-4">
+                        @for(user of users(); track user.getId()) {
+                        <app-user-card [user]="user" />
+                        }
+                    </div>
+                    }
+                </p-tabpanel>
+
+                <p-tabpanel value="1">
+
+                    <app-register-form />
+
+                </p-tabpanel>
+
+                <p-tabpanel value="2">
+
+                    <app-post-per-user-chart class="w-full" />
+
+                </p-tabpanel>
+
+                <p-tabpanel value="3">
+
+                    <app-comments-chart class="w-full" />
+
+                </p-tabpanel>
+
+                <p-tabpanel value="4">
+
+                    <app-comments-per-post-chart class="w-full" />
+
+                </p-tabpanel>
+
+                <p-tabpanel value="5">
+
+                    <app-loggins-per-user-chart class="w-full" />
+
+                </p-tabpanel>
+
+                <p-tabpanel value="6">
+
+                    <app-profile-visits-chart class="w-full" />
+
+                </p-tabpanel>
+
+                <p-tabpanel value="7">
+
+                    <app-likes-per-day-chart class="w-full" />
+
+                </p-tabpanel>
+
+            </p-tabpanels>
+
+        </p-tabs>
+    </main>
+</div>

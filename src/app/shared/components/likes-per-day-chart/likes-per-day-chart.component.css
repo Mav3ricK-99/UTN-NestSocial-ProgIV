@@ -1,0 +1,10 @@
+:host ::ng-deep .filterCard .p-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(15px);
+}
+
+:host ::ng-deep .p-motion {
+    z-index: 99999999;
+}

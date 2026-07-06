@@ -23,7 +23,7 @@
     background: var(--bg-olive-50) 0.9 !important;
 }
 
-:host ::ng-deep .profileTabs .p-ripple {
+:host ::ng-deep .tabLists .p-ripple {
     width: 25% !important;
     text-align: center;
 }

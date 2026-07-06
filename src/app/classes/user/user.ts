@@ -7,6 +7,8 @@ export class User {
     birthDate: Date;
     bio: string;
     avatarPathUrl: string;
+    role: string;
+    enabled: boolean;
     createdAt: Date;
 
     constructor(
@@ -17,6 +19,8 @@ export class User {
         birthDate: Date,
         bio: string,
         avatarPathUrl: string,
+        role: string,
+        enabled: boolean,
         createdAt: Date) {
         this.id = id;
         this.userFullName = userFullName;
@@ -25,7 +29,17 @@ export class User {
         this.birthDate = birthDate;
         this.bio = bio;
         this.avatarPathUrl = avatarPathUrl;
+        this.role = role;
+        this.enabled = enabled;
         this.createdAt = createdAt;
+    }
+
+    public setEnabled(enabled: boolean) {
+        this.enabled = enabled;
+    }
+
+    public getId(): string {
+        return this.id;
     }
 
     public getUserFullName(): string {
@@ -55,4 +69,21 @@ export class User {
     public getCreatedAt(): Date {
         return this.createdAt;
     }
+
+    public getRole(): string {
+        return this.role;
+    }
+
+    public getEnabled(): boolean {
+        return this.enabled;
+    }
+
+    public isAdmin(): boolean {
+        return this.getRole() == UserRole.ADMIN ? true : false;
+    }
+}
+
+export enum UserRole {
+    USER = 'USER',
+    ADMIN = 'ADMIN',
 }

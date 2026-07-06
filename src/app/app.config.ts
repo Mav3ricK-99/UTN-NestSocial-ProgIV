@@ -1,8 +1,7 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
-
+import { provideServiceWorker } from '@angular/service-worker';
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -12,8 +11,8 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(
       withInterceptors([
-      authInterceptor
-    ])),
+        authInterceptor
+      ])),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding()),
     providePrimeNG({
@@ -23,6 +22,10 @@ export const appConfig: ApplicationConfig = {
           darkModeSelector: false // Ensures it locks to light mode, or use '.my-dark-mode'
         }
       },
+    }),
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
     })
   ]
 };

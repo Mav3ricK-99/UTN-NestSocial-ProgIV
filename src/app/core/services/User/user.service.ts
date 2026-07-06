@@ -1,7 +1,7 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { User } from '../../../classes/user/user';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../../../../src/environments/environment';
 
 @Injectable({
@@ -73,7 +73,7 @@ export class UserService {
     });
   }
 
-  public setCurrentUser(user: User) {
+  public setCurrentUser(user: User | null) {
     this._user.set(user);
   }
 
@@ -87,8 +87,27 @@ export class UserService {
     });
   }
 
+  getAllUsers(): Observable<User[]> {
+    return this.httpClient.get<User[]>(this.apiPath + 'getAllUsers', {
+      withCredentials: true
+    });
+  }
+
+  activateUser(id: string): Observable<User> {
+    return this.httpClient.put<User>(this.apiPath + `${id}}/enable`, {}, {
+      withCredentials: true
+    });
+  }
+
+  disableUser(id: string): Observable<User> {
+    return this.httpClient.patch<User>(this.apiPath + `${id}}/disable`, {}, {
+      withCredentials: true
+    });
+  }
+
   public buildUser(rawUser: any): User {
     const id = rawUser._id ?? '';
-    return new User(id, rawUser.userFullName, rawUser.email, rawUser.username, rawUser.birthDate, rawUser.bio, rawUser.avatarPathUrl, rawUser.createdAt);
+    const enabled = !rawUser.deleted;
+    return new User(id, rawUser.userFullName, rawUser.email, rawUser.username, rawUser.birthDate, rawUser.bio, rawUser.avatarPathUrl, rawUser.role, enabled, rawUser.createdAt);
   }
 }

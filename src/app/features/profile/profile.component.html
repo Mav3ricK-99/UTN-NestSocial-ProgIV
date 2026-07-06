@@ -44,7 +44,7 @@
 
         <p-tabs class="profileTabs shadow-xl" value="0">
 
-            <p-tablist>
+            <p-tablist class="tabLists">
 
                 <p-tab value="0">
                     Publicaciones
@@ -74,6 +74,9 @@
                     <p-divider />
                     }
                     }
+                    <div #loadMoreTrigger class="h-10 flex justify-center items-center p-2">
+                        <i class="pi pi-spin pi-spinner text-gray-700" style="font-size: 3rem;"></i>
+                    </div>
                 </p-tabpanel>
 
                 <p-tabpanel value="1">

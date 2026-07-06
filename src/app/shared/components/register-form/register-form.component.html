@@ -1,0 +1,408 @@
+<div class="w-full max-w-xl rounded-3xl register-card animate-slide-from-bottom
+         backdrop-blur-md p-10 shadow-2xl relative overflow-hidden">
+
+    <div class="svg-container">
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+            xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 800 800">
+            <defs>
+                <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="vvvortex-grad">
+                    <stop stop-color="#2563eb" stop-opacity="1" offset="0%"></stop>
+                    <stop stop-color="#dc2626" stop-opacity="1" offset="100%"></stop>
+                </linearGradient>
+            </defs>
+            <g stroke="url(#vvvortex-grad)" fill="none" stroke-linecap="round">
+                <circle r="363" cx="400" cy="400" stroke-width="11" stroke-dasharray="24 46" stroke-dashoffset="25"
+                    transform="rotate(31, 400, 400)" opacity="0.05"></circle>
+                <circle r="346.5" cx="400" cy="400" stroke-width="11" stroke-dasharray="39 52" stroke-dashoffset="25"
+                    transform="rotate(264, 400, 400)" opacity="0.10"></circle>
+                <circle r="330" cx="400" cy="400" stroke-width="10" stroke-dasharray="23 23" stroke-dashoffset="25"
+                    transform="rotate(80, 400, 400)" opacity="0.14"></circle>
+                <circle r="313.5" cx="400" cy="400" stroke-width="10" stroke-dasharray="53 31" stroke-dashoffset="25"
+                    transform="rotate(141, 400, 400)" opacity="0.19"></circle>
+                <circle r="297" cx="400" cy="400" stroke-width="10" stroke-dasharray="38 32" stroke-dashoffset="25"
+                    transform="rotate(166, 400, 400)" opacity="0.23"></circle>
+                <circle r="280.5" cx="400" cy="400" stroke-width="10" stroke-dasharray="46 30" stroke-dashoffset="25"
+                    transform="rotate(296, 400, 400)" opacity="0.28"></circle>
+                <circle r="264" cx="400" cy="400" stroke-width="9" stroke-dasharray="33 34" stroke-dashoffset="25"
+                    transform="rotate(343, 400, 400)" opacity="0.32"></circle>
+                <circle r="247.5" cx="400" cy="400" stroke-width="9" stroke-dasharray="18 29" stroke-dashoffset="25"
+                    transform="rotate(341, 400, 400)" opacity="0.37"></circle>
+                <circle r="231" cx="400" cy="400" stroke-width="9" stroke-dasharray="28 16" stroke-dashoffset="25"
+                    transform="rotate(82, 400, 400)" opacity="0.41"></circle>
+                <circle r="214.5" cx="400" cy="400" stroke-width="8" stroke-dasharray="32 11" stroke-dashoffset="25"
+                    transform="rotate(210, 400, 400)" opacity="0.46"></circle>
+                <circle r="198" cx="400" cy="400" stroke-width="8" stroke-dasharray="34 19" stroke-dashoffset="25"
+                    transform="rotate(314, 400, 400)" opacity="0.50"></circle>
+                <circle r="181.5" cx="400" cy="400" stroke-width="8" stroke-dasharray="18 19" stroke-dashoffset="25"
+                    transform="rotate(129, 400, 400)" opacity="0.55"></circle>
+                <circle r="165" cx="400" cy="400" stroke-width="8" stroke-dasharray="22 45" stroke-dashoffset="25"
+                    transform="rotate(170, 400, 400)" opacity="0.59"></circle>
+                <circle r="148.5" cx="400" cy="400" stroke-width="7" stroke-dasharray="49 13" stroke-dashoffset="25"
+                    transform="rotate(245, 400, 400)" opacity="0.64"></circle>
+                <circle r="132" cx="400" cy="400" stroke-width="7" stroke-dasharray="23 44" stroke-dashoffset="25"
+                    transform="rotate(111, 400, 400)" opacity="0.68"></circle>
+                <circle r="115.5" cx="400" cy="400" stroke-width="7" stroke-dasharray="53 18" stroke-dashoffset="25"
+                    transform="rotate(112, 400, 400)" opacity="0.73"></circle>
+                <circle r="99" cx="400" cy="400" stroke-width="6" stroke-dasharray="39 37" stroke-dashoffset="25"
+                    transform="rotate(347, 400, 400)" opacity="0.77"></circle>
+                <circle r="82.5" cx="400" cy="400" stroke-width="6" stroke-dasharray="32 20" stroke-dashoffset="25"
+                    transform="rotate(134, 400, 400)" opacity="0.82"></circle>
+                <circle r="66" cx="400" cy="400" stroke-width="6" stroke-dasharray="29 16" stroke-dashoffset="25"
+                    transform="rotate(90, 400, 400)" opacity="0.86"></circle>
+                <circle r="49.5" cx="400" cy="400" stroke-width="6" stroke-dasharray="47 45" stroke-dashoffset="25"
+                    transform="rotate(354, 400, 400)" opacity="0.91"></circle>
+                <circle r="33" cx="400" cy="400" stroke-width="5" stroke-dasharray="50 53" stroke-dashoffset="25"
+                    transform="rotate(271, 400, 400)" opacity="0.95"></circle>
+                <circle r="16.5" cx="400" cy="400" stroke-width="5" stroke-dasharray="51 33" stroke-dashoffset="25"
+                    transform="rotate(281, 400, 400)" opacity="1.00"></circle>
+            </g>
+        </svg>
+    </div>
+
+    <div class="flex items-center justify-center gap-3 mb-4">
+        <h1 class="text-3xl">
+            <span class="font-extrabold text-red-600 tracking-tight font-nest">
+                Nest
+            </span>
+            <span class="text-blue-600 italic font-semibold font-social ">
+                Social
+            </span>
+        </h1>
+        <lucide-icon [img]="Heart" class="size-6 text-red-600 fill-current"></lucide-icon>
+    </div>
+
+    <h2 class="text-center text-2xl font-semibold mb-1">
+        Crear cuenta
+    </h2>
+
+    <p class="text-center text-gray-500 mb-4">
+        Únete a la comunidad
+    </p>
+
+    <form class="space-y-2" [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+
+        <div class="grid md:grid-cols-2 gap-4">
+
+            <div>
+                <label class="block mb-2 font-medium">
+                    Nombre
+                </label>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="label_nombre" autofocus formControlName="name"
+                        class="w-full rounded-xl border border-gray-300 p-3" autocomplete="off" />
+                    <label for="label_nombre">Nombre</label>
+                </p-floatlabel>
+                @if(isInvalid('name')){
+                @if(errorCheck('name', 'required')){
+                <p-message severity="error" variant="simple" size="small">
+                    El nombre es requerido
+                </p-message>
+                }
+                @if(errorCheck('name', 'minlength')){
+                <p-message severity="error" variant="simple" size="small">
+                    El nombre debe tener al menos 2 caracteres
+                </p-message>
+                }
+                }
+            </div>
+
+            <div>
+                <label class="block mb-2 font-medium">
+                    Apellido
+                </label>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="label_apellido" formControlName="surname"
+                        class="w-full rounded-xl border border-gray-300 p-3" autocomplete="off" />
+                    <label for="label_apellido">Apellido</label>
+                </p-floatlabel>
+                @if(isInvalid('surname')){
+                @if(errorCheck('surname', 'required')){
+                <p-message severity="error" variant="simple" size="small">
+                    El apellido es requerido
+                </p-message>
+                }
+                @if(errorCheck('surname', 'minlength')){
+                <p-message severity="error" variant="simple" size="small">
+                    El apellido debe tener al menos 2 caracteres
+                </p-message>
+                }
+                }
+            </div>
+
+        </div>
+
+        <div>
+            <label class="block mb-2 font-medium">
+                Correo electrónico
+            </label>
+
+            <p-floatlabel variant="on">
+                <input type="email" pInputText id="label_email" formControlName="email"
+                    class="w-full rounded-xl border border-gray-300 p-3" />
+                <label for="label_email">Correo electrónico</label>
+            </p-floatlabel>
+            @if(isInvalid('email')){
+            @if(errorCheck('email', 'required')){
+            <p-message severity="error" variant="simple" size="small">
+                El correo electrónico es requerido
+            </p-message>
+            }
+            @if(errorCheck('email', 'email')){
+            <p-message severity="error" variant="simple" size="small">
+                El correo electrónico no es válido
+            </p-message>
+            }
+            }
+            @if(errorCheck('email', 'emailExists')){
+            <p-message severity="error" variant="simple" size="small">
+                El correo electronico ingresado ya pertenece a una cuenta
+            </p-message>
+            }
+        </div>
+
+        <div>
+            <label class="block mb-2 font-medium">
+                Nombre de usuario
+            </label>
+
+            <p-floatlabel variant="on">
+                <input type="text" pInputText id="label_username" formControlName="username"
+                    class="w-full rounded-xl border border-gray-300 p-3" />
+                <label for="label_username">Nombre de usuario</label>
+            </p-floatlabel>
+            @if(isInvalid('username')){
+            @if(errorCheck('username', 'required')){
+            <p-message severity="error" variant="simple" size="small">
+                El nombre de usuario es requerido
+            </p-message>
+            }
+            @if(errorCheck('username', 'pattern')){
+            <p-message severity="error" variant="simple" size="small">
+                El nombre de usuario solo puede contener letras, números, puntos y guiones bajos
+            </p-message>
+            }
+            @if(errorCheck('username', 'minlength')){
+            <p-message severity="error" variant="simple" size="small">
+                El nombre de usuario debe tener al menos 5 caracteres
+            </p-message>
+            }
+            }
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+
+            <div>
+                <label class="block mb-2 font-medium">
+                    Contraseña
+                </label>
+
+                <p-floatlabel variant="on">
+                    <p-password formControlName="password" inputId="on_password" [toggleMask]="true"
+                        placeholder="********" class="rounded-xl border border-gray-300" weakLabel="Demasiado simple"
+                        mediumLabel="Complejidad media" promptLabel="Ingrese una contraseña"
+                        strongLabel="Contraseña segura">
+                        <ng-template #header>
+                            <div class="font-semibold text-xm mb-4">Contraseña</div>
+                        </ng-template>
+                        <ng-template #footer>
+                            <p-divider />
+                            <ul class="pl-2 my-0 leading-normal text-sm">
+                                <li>Al menos una letra mayúscula</li>
+                                <li>Al menos un número</li>
+                                <li>Mínimo 8 caracteres</li>
+                            </ul>
+                        </ng-template></p-password>
+                    <label for="on_password">Contraseña</label>
+                </p-floatlabel>
+
+                @if(isInvalid('password')){
+                @if(errorCheck('password', 'required')){
+                <p-message severity="error" variant="simple" size="small">
+                    La contraseña es requerida
+                </p-message>
+                }
+                @if(errorCheck('password', 'minlength')){
+                <p-message severity="error" variant="simple" size="small">
+                    La contraseña debe tener al menos 8 caracteres
+                </p-message>
+                }
+                }
+            </div>
+
+            <div>
+                <label class="block mb-2 font-medium">
+                    Repetir contraseña
+                </label>
+
+                <p-floatlabel variant="on">
+                    <p-password formControlName="confirmPassword" inputId="on_repeatPassword" [toggleMask]="true"
+                        placeholder="********" class="rounded-xl border border-gray-300" [feedback]="false" />
+                    <label for="on_repeatPassword">Repetir contraseña</label>
+                </p-floatlabel>
+                @if(isInvalid('confirmPassword')){
+                @if(errorCheck('confirmPassword', 'required')){
+                <p-message severity="error" variant="simple" size="small">
+                    Las contraseñas no coinciden
+                </p-message>
+                }
+                } @else{
+                @if(registerForm.errors?.['noMatch']){
+                <p-message severity="error" variant="simple" size="small">
+                    Las contraseñas no coinciden
+                </p-message>
+                }
+                @if(registerForm.errors?.['notSecure']){
+                <p-message severity="error" variant="simple" size="small">
+                    La contraseña debe contener al menos una letra mayúscula y un número.
+                </p-message>
+                }
+                }
+            </div>
+
+        </div>
+
+        <div class="flex flex-col">
+            <label class="block mb-2 font-medium">
+                Fecha de nacimiento
+            </label>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div>
+                    <p-floatlabel variant="on">
+                        <input pInputText type="number" id="label_dia" formControlName="birthDay"
+                            class="w-full rounded-xl border border-gray-300 p-3" autocomplete="off" />
+                        <label for="label_dia">Dia</label>
+                    </p-floatlabel>
+                    @if(isInvalid('birthDay')){
+                    @if(errorCheck('birthDay', 'required')){
+                    <p-message severity="error" variant="simple" size="small">
+                        El día de nacimiento es requerido
+                    </p-message>
+                    }
+                    @if(errorCheck('birthDay', 'min') || errorCheck('birthDay', 'max')){
+                    <p-message severity="error" variant="simple" size="small">
+                        El día de nacimiento debe ser un número entre 1 y 31
+                    </p-message>
+                    }
+                    }
+                </div>
+                <div>
+                    <p-select [options]="meses" placeholder="Mes" formControlName="birthMonth" [editable]="true"
+                        optionLabel="name" class="w-full" autofocus="false" />
+                    @if(isInvalid('birthMonth')){
+                    @if(errorCheck('birthMonth', 'required')){
+                    <p-message severity="error" variant="simple" size="small">
+                        El mes de nacimiento es requerido
+                    </p-message>
+                    }
+                    @if(errorCheck('birthMonth', 'min') || errorCheck('birthMonth', 'max')){
+                    <p-message severity="error" variant="simple" size="small">
+                        El mes de nacimiento debe ser un número entre 1 y 12
+                    </p-message>
+                    }
+                    }
+                </div>
+                <div>
+                    <p-floatlabel variant="on">
+                        <input pInputText type="number" id="label_anio" formControlName="birthYear"
+                            class="w-full rounded-xl border border-gray-300 p-3" autocomplete="off" />
+                        <label for="label_anio">Año</label>
+                    </p-floatlabel>
+                    @if(isInvalid('birthYear')){
+                    @if(errorCheck('birthYear', 'required')){
+                    <p-message severity="error" variant="simple" size="small">
+                        El año de nacimiento es requerido
+                    </p-message>
+                    }
+                    @if(errorCheck('birthYear', 'min') || errorCheck('birthYear', 'max')){
+                    <p-message severity="error" variant="simple" size="small">
+                        El año de nacimiento debe ser un número entre 1900 y {{currentYear}}
+                    </p-message>
+                    }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-row gap-12">
+            <div>
+                <label class="mb-2 font-medium">
+                    Descripción breve
+                </label>
+
+                <textarea rows="4" maxlength="250" formControlName="bio"
+                    class="w-full rounded-xl border border-gray-300 p-3 resize-none"></textarea>
+                @if(isInvalid('bio')){
+                @if(errorCheck('bio', 'required')){
+                <p-message severity="error" variant="simple" size="small">
+                    La descripción es requerida
+                </p-message>
+                }
+                @if(errorCheck('bio', 'maxlength')){
+                <p-message severity="error" variant="simple" size="small">
+                    La descripción no debe exceder los 250 caracteres
+                </p-message>
+                }
+                }
+
+            </div>
+            <div class="flex flex-col justify-center align-center">
+                <label class="mb-2 font-medium">
+                    Imagen de perfil
+                </label>
+
+                <input type="file" #avatarInput accept=".jpg,.jpeg,.png,.webp" formControlName="avatar"
+                    (change)="onAvatarChange($event)" style="display:none" />
+
+                @if(imagePreview()) {
+                <div (click)="avatarInput.click()"
+                    class="w-26 h-26 cursor-pointer self-center rounded-full border-4 border-green-600 bg-gray-100 flex items-center justify-center">
+                    <img [src]="imagePreview()" alt="Preview" class="w-25 h-25 rounded-full object-cover" />
+                </div>
+                } @else {
+                <div (click)="avatarInput.click()"
+                    class="w-26 h-26 cursor-pointer self-center rounded-full border-4 border-red-200 bg-gray-100 flex items-center justify-center">
+                    <lucide-icon [img]="Upload" class="size-10 text-red-300 fill-current"></lucide-icon>
+                </div>
+                }
+
+                @if(isInvalid('avatar')){
+                @if(errorCheck('avatar', 'required')){
+                <p-message severity="error" variant="simple" size="small">
+                    La imagen de perfil es requerida
+                </p-message>
+                }
+                }
+                @if (registerForm.get('avatar')?.hasError('invalidFileType') == true) {
+                <p-message severity="error" variant="simple" size="small">
+                    Solo se permiten archivos de imagen (jpg, png, webp)
+                </p-message>
+                }
+
+            </div>
+
+        </div>
+
+        <div class="flex flex-row items-center gap-4 mt-4">
+            <lucide-icon [img]="Dices" (click)="randomizeData()"
+                class="size-5 text-gray-600 cursor-pointer transition ease-in-out active:scale-110"></lucide-icon>
+
+            <button type="submit" [disabled]="!registerForm.valid || submitBtnDisabled()" class="w-full h-12 rounded-xl
+             bg-blue-600 text-white font-semibold cursor-pointer disabled:bg-blue-300 disabled:cursor-not-allowed
+             hover:bg-blue-700 transition">
+                Crear cuenta
+            </button>
+        </div>
+
+        <p class="text-center text-gray-600">
+            ¿Ya tienes cuenta?
+
+            <a routerLink="/auth/login" class="text-blue-600 font-semibold">
+                Inicia sesión
+            </a>
+        </p>
+
+    </form>
+
+</div>

@@ -1,10 +1,9 @@
-import { Component, inject, Input, input, signal } from '@angular/core';
+import { Component, effect, Input, viewChild, signal, ElementRef } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { TabsModule } from 'primeng/tabs';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 import { User } from '../../classes/user/user';
 import { UserService } from '../../core/services/User/user.service';
-import { ActivatedRoute } from '@angular/router';
 import { PostService } from '../../core/services/Post/post.service';
 import { Post } from '../../classes/post/post';
 import { PostComponent } from '../../shared/components/post/post.component';
@@ -18,14 +17,42 @@ import { DividerModule } from 'primeng/divider';
 })
 export class ProfileComponent {
 
-  private route = inject(ActivatedRoute);
-
   user = signal<User | null>(null);
-  posts = signal<Post[] | null>(null);
+  posts = signal<Post[]>([]);
+
+  public loadMorePost = signal<boolean>(false);
+
+  public postLoaded = signal<boolean>(false);
 
   @Input() username!: string;
 
-  constructor(private userService: UserService, private postService: PostService) { }
+  loadMoreTrigger = viewChild<ElementRef>('loadMoreTrigger');
+
+  private observer?: IntersectionObserver;
+
+  constructor(private userService: UserService, private postService: PostService) {
+    effect(() => {
+
+      const trigger = this.loadMoreTrigger();
+
+      if (!trigger || this.observer) {
+        return;
+      }
+
+      this.observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && this.loadMorePost() && this.postLoaded()) {
+          const cursor = this.posts()[this.posts().length - 1].getId();
+          this.getUserPosts(cursor);
+        } else {
+          this.postLoaded.set(true);
+        }
+      }, {
+        threshold: 0.5,
+      },
+      );
+      this.observer.observe(trigger.nativeElement);
+    });
+  }
 
   ngOnInit() {
 
@@ -39,15 +66,27 @@ export class ProfileComponent {
       }
     });
 
-    this.postService.getPostsFromUser(this.username).subscribe({
-      next: (rawPosts: any) => {
-        const posts = rawPosts.map((rawPost: any) => {
+    this.getUserPosts();
+  }
+
+  getUserPosts(cursor?: string) {
+    this.postService.getPostsFromUser(this.username, cursor).subscribe({
+      next: (obj: any) => {
+        const posts = obj.posts.map((rawPost: any) => {
           const post: Post = this.postService.buildPost(rawPost);
           post.setOp(this.user()!);
 
           return post;
         });
-        this.posts.set(posts);
+        if (cursor) {
+          this.posts.set([...this.posts(), ...posts]);
+        } else {
+          this.posts.set(posts);
+        }
+
+        if (!obj.hasMorePosts) {
+          this.loadMorePost.set(false);
+        }
       },
       error: (err: any) => {
         console.log(err);

@@ -10,8 +10,7 @@
                             <div class="font-semibold cursor-default hover:underline">
                                 {{ post().op?.getUserFullName() }}
                             </div>
-                            <div class="text-sm text-gray-500 cursor-pointer"
-                                routerLink="/profile/{{post().op?.getUserName()}}">
+                            <div class="text-sm text-gray-500 cursor-pointer" (click)="goToProfile()">
                                 @{{ post().op?.getUserName() }}
                             </div>
                             <div class="text-xs text-gray-400">
@@ -25,15 +24,10 @@
                     @if(isDummyPost()!) {
                     {{ displayedText() }}
                     } @else {
-                    <div [innerHTML]="post().getContent()"></div>
+                    <div [innerHTML]="post().getContent()" class="post-content"></div>
                     }
                 </div>
                 @if(post().getPostImage() != undefined && post().getPostImage()?.length != 0) {
-
-                @if(!imageLoaded()) {
-                <div class="absolute inset-0 bg-gray-200 animate-pulse rounded-2xl">
-                </div>
-                }
 
                 <img [src]="post().getPostImage()" alt="post image" (load)="imageLoaded.set(true)"
                     [class.opacity-0]="!imageLoaded()" [class.opacity-100]="imageLoaded()"
@@ -41,9 +35,47 @@
                 }
             </div>
 
-            <button class="place-self-start cursor-pointer text-gray-500 hover:text-black">
+            <button class="place-self-start cursor-pointer text-gray-500 hover:text-black"
+                (click)="postConfig.toggle($event); $event.stopPropagation()">
                 <lucide-icon [img]="Ellipsis" class="size-5"></lucide-icon>
             </button>
+            <p-popover #postConfig>
+                <div class="flex flex-col p-1">
+                    <div>
+                        <span class="font-medium text-surface-900 block mb-2">Opciones</span>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <button class="flex items-center gap-2 w-full cursor-pointer text-gray-500 hover:text-gray-800">
+                            <lucide-icon [img]="UserRoundPlus" class="size-4"></lucide-icon>
+                            Seguir a @{{ post().op?.getUserName() }}
+                        </button>
+                        <button (click)="showPost()"
+                            class="flex items-center gap-2 w-full cursor-pointer text-gray-500 hover:text-gray-800">
+                            <lucide-icon [img]="Eye" class="size-4"></lucide-icon>
+                            Ir al post
+                        </button>
+                        @if((post().getOp()!.getId() == this.userService.loggedInUser()?.getId() ||
+                        this.userService.loggedInUser()?.getRole() == "ADMIN"))
+                        {
+                        @if(!post().getDeleted())
+                        {
+                        <button (click)="deletePost()"
+                            class="flex items-center gap-2 w-full cursor-pointer text-red-400 hover:text-red-600">
+                            <lucide-icon [img]="Trash" class="size-4"></lucide-icon>
+                            Eliminar
+                        </button>
+                        } @else {
+                        <button (click)="deletePost()"
+                            class="flex items-center gap-2 w-full cursor-pointer text-green-400 hover:text-green-600">
+                            <lucide-icon [img]="ArchiveRestore" class="size-4"></lucide-icon>
+                            Restaurar
+                        </button>
+                        }
+                        }
+
+                    </div>
+                </div>
+            </p-popover>
         </div>
         <div class="w-full flex justify-around mt-5 pt-4 border-t border-gray-100">
 
@@ -57,7 +89,7 @@
             <button [class.text-red-500]="post().getLiked()" [class.text-red-300]="!post().getLiked()"
                 [disabled]="likeBtnDisabled"
                 class="flex items-center gap-2 cursor-pointer transition duration-300 ease-in-out likeButton">
-                <lucide-icon [img]="Heart" (click)="giveLike()" [class.text-red-500]="post().getLiked()"
+                <lucide-icon [img]="Heart" (click)="giveLike()" [class.text-red-500]="post().getLiked() "
                     [class.text-red-300]="!post().getLiked()" class="size-4 fill-current"></lucide-icon>
                 {{ post().getLikesCount() }}
             </button>
@@ -69,18 +101,29 @@
             </button>
 
         </div>
+
+        @if(!isDummyPost()!) {
         <div>
             <hr class="text-olive-200 my-2">
             @if(comments().length > 0) {
             @for(comment of comments(); track comment.getId()) {
-            <app-comment [comment]="comment"/>
+            <app-comment [comment]="comment" />
             }
+            }
+            @if(loadMoreComments()) {
+            <div (click)="loadComments()" class="cursor-pointer flex justify-center flex-col p-2 mt-4 bg-olive-200">
+                <button class="text-olive-500 hover:text-olive-700">
+                    Cargar más comentarios
+                </button>
+            </div>
             }
         </div>
-
+        @if(!inAside()) {
         <div>
-            <app-create-comment [postId]="post().getId()" (newCommentEmitted)="addNewComment($event)"/>
+            <app-create-comment [postId]="post().getId()" (newCommentEmitted)="addNewComment($event)" />
         </div>
+        }
+        }
     </div>
 
 </div>

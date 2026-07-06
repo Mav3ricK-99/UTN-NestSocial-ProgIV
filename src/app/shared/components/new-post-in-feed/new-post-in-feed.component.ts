@@ -1,4 +1,4 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EditorModule } from 'primeng/editor';
 import { ButtonModule } from 'primeng/button';
@@ -25,6 +25,10 @@ export class NewPostInFeedComponent {
 
   private messageService = inject(MessageService);
 
+  showForm = signal<boolean>(false);
+
+  showButton = signal<boolean>(true);
+
   formNewPost: FormGroup;
   formSubmitted: boolean = false;
 
@@ -34,7 +38,7 @@ export class NewPostInFeedComponent {
     this.formNewPost = this.formBuilder.group({
       content: ['', Validators.required]
     }, {
-      validators: [postMinLength(3), postMaxLength(255), postMaxImages()]
+      validators: [postMinLength(3), postMaxLength(512), postMaxImages()]
     });
   }
 
@@ -75,6 +79,13 @@ export class NewPostInFeedComponent {
     const doc = parser.parseFromString(html, 'text/html');
 
     return Array.from(doc.querySelectorAll('img')).map(img => img.src);
+  }
+
+  showPostForm() {
+    this.showButton.set(false);
+    setTimeout(() => {
+      this.showForm.set(true)
+    }, 1000);
   }
 
   isInvalid(controlName: string) {

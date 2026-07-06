@@ -31,3 +31,32 @@
 :host ::ng-deep .post-editor .ql-editor:focus {
     height: 150px !important;
 }
+
+.showFormButton {
+    left: 43rem !important;
+    transition: all .6s ease-in-out;
+}
+
+.hideButton {
+    top: -10rem;
+    animation: moveButtonUp .6s ease-in-out;
+}
+
+.showPost {
+    top: calc(var(--spacing) * 8);
+    animation: moveButtonUp .6s reverse ease-in-out;
+}
+
+@keyframes moveButtonUp {
+    0% {
+        top: calc(var(--spacing) * 8);
+    }
+
+    50% {
+        top: calc(var(--spacing) * 10);
+    }
+
+    100% {
+        top: calc(var(--spacing) * -50);
+    }
+}

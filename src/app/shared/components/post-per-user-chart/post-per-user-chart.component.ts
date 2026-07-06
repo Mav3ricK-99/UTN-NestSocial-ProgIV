@@ -1,0 +1,114 @@
+import { Component, OnInit } from '@angular/core';
+import { ChartModule } from 'primeng/chart';
+import { StatsService } from '../../../core/services/Stats/stats.service';
+import { map } from 'rxjs';
+import { CardModule } from 'primeng/card';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { DatePickerModule } from 'primeng/datepicker';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-post-per-user-chart',
+  imports: [ChartModule, CardModule, FloatLabelModule, DatePickerModule, ReactiveFormsModule],
+  templateUrl: './post-per-user-chart.component.html',
+  styleUrl: './post-per-user-chart.component.css',
+})
+export class PostPerUserChartComponent implements OnInit {
+
+  today: Date;
+
+  public data: any;
+  public options: any;
+
+  formFilter: FormGroup;
+
+  constructor(private formBuilder: FormBuilder, private statsService: StatsService) {
+    this.formFilter = this.formBuilder.group({
+      createdAtRange: [''],
+    });
+
+    this.options = {
+      responsive: true,
+      maintainAspectRatio: false,
+
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top'
+        },
+
+        title: {
+          display: true,
+          text: 'Publicaciones por usuario'
+        }
+      },
+
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 5
+          }
+        }
+      }
+    };
+
+    this.today = new Date();
+  }
+
+  ngOnInit() {
+
+    this.getPostPerUser();
+
+    this.formFilter.valueChanges
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        filter(() => this.formFilter.valid),
+      )
+      .subscribe(filterValues => {
+        if (Array.isArray(filterValues.createdAtRange) && filterValues.createdAtRange.filter((date: any) => date == null).length == 1) return;
+
+        const minDate = filterValues.createdAtRange[0].getTime() / 1000;
+        const maxDate = (filterValues.createdAtRange[1].getTime() + 86400) / 1000;
+        this.getPostPerUser(minDate, maxDate);
+      });
+
+  }
+
+  getPostPerUser(minDate?: number, maxDate?: number) {
+    this.statsService.postsPerUser(minDate, maxDate).pipe(
+      map((response: any) => ({
+        labels: response.map((x: any) => x.username),
+        datasets: [
+          {
+            label: 'Cantidad de publicaciones',
+            data: response.map((x: any) => x.postsCount),
+            backgroundColor: [
+              '#42A5F5',
+              '#66BB6A',
+              '#FFA726',
+              '#AB47BC',
+              '#EF5350'
+            ],
+            borderColor: [
+              '#1E88E5',
+              '#43A047',
+              '#FB8C00',
+              '#8E24AA',
+              '#E53935'
+            ],
+            borderWidth: 1
+          }
+        ]
+      }))).subscribe({
+        next: (chartData) => {
+          this.data = chartData;
+        },
+        error: (err) => {
+          console.error(err);
+        }
+      });
+  }
+}

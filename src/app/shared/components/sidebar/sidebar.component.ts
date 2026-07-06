@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card'
@@ -14,14 +14,14 @@ import { TooltipModule } from 'primeng/tooltip';
 import { UserService } from '../../../core/services/User/user.service';
 import { Router } from '@angular/router';
 import { ClosingSessionComponent } from '../closing-session/closing-session.component';
-
+import { User, UserRole } from '../../../classes/user/user';
 @Component({
   selector: 'app-sidebar',
   imports: [MenuModule, TabsModule, LucideAngularModule, AvatarModule, DividerModule, ButtonModule, CardModule, BadgeModule, SplitterModule, RouterLink, TooltipModule, ClosingSessionComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   readonly Heart = Heart
   items: MenuItem[] | undefined;
 
@@ -32,6 +32,8 @@ export class SidebarComponent {
   timeLeft = signal('');
 
   modalShown: boolean = false;
+
+  currentUser = signal<User | null>(null);
 
   constructor(private userService: UserService) {
     this.items = [
@@ -44,6 +46,9 @@ export class SidebarComponent {
           {
             label: 'Mis datos',
             icon: 'pi pi-user',
+            command: () => {
+              this.router.navigate(['/profile', this.currentUser()!.getUserName()]);
+            }
           },
           {
             label: 'Mensajes',
@@ -68,7 +73,7 @@ export class SidebarComponent {
             icon: 'pi pi-sign-out',
             linkClass: '!text-red-500 dark:!text-red-400',
             command: () => {
-              this.logOut
+              this.logOut();
             }
           }
         ]
@@ -118,13 +123,32 @@ export class SidebarComponent {
     });
   }
 
+  ngOnInit() {
+    this.currentUser.set(this.userService.loggedInUser());
+
+    if (this.currentUser() && this.currentUser()!.getRole() === UserRole.ADMIN) {
+      this.items![1].items?.splice(1, 0, {
+        label: 'Dashboard',
+        icon: 'pi pi-users',
+        command: () => {
+          this.router.navigate(['/dashboard']);
+        }
+      });
+    }
+  }
+
+  copyUsername() {
+    navigator.clipboard.writeText(this.currentUser()!.getUserName());
+  }
+
   logOut() {
     this.userService.logOut().subscribe({
       next: () => {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/auth/login']);
       },
       error: () => {
-
+        this.userService.setCurrentUser(null);
+        this.router.navigate(['/auth/login']);
       }
     });
   }

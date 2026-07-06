@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, OnInit, signal, viewChild, effect } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 import { PostComponent } from '../../shared/components/post/post.component';
@@ -15,7 +15,6 @@ import { PostService } from '../../core/services/Post/post.service';
 import { orders, PostFilter } from '../../classes/postFilter/post-filter';
 import { UserService } from '../../core/services/User/user.service';
 import { User } from '../../classes/user/user';
-import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-feed',
   imports: [ReactiveFormsModule, FormsModule, SidebarComponent, PostComponent, NewPostInFeedComponent, DividerModule, CardModule, SelectButtonModule, DatePickerModule, FloatLabelModule, AutoCompleteModule],
@@ -28,11 +27,19 @@ export class FeedComponent implements OnInit {
 
   public sidePosts = signal<Post[]>([]);
 
+  public loadMorePost = signal<boolean>(false);
+
+  public postLoaded = signal<boolean>(false);
+
   today: Date;
 
   feedOptions: any = orders;
 
   formFilter: FormGroup;
+
+  loadMoreTrigger = viewChild<ElementRef>('loadMoreTrigger');
+
+  private observer?: IntersectionObserver;
 
   visible: boolean = true;
 
@@ -45,16 +52,37 @@ export class FeedComponent implements OnInit {
       createdByUser: [],
     });
 
+    effect(() => {
+
+      const trigger = this.loadMoreTrigger();
+
+      if (!trigger || this.observer) {
+        return;
+      }
+
+      this.observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && this.loadMorePost() && this.postLoaded()) {
+          const filters = new PostFilter(this.formFilter.value.createdAtRange[0], this.formFilter.value.createdAtRange[1], this.formFilter.value.orderBy, undefined, 5);
+          const cursor = this.posts()[this.posts().length - 1].getId();
+          this.callGetPosts(filters, cursor);
+        } else {
+          this.postLoaded.set(true);
+        }
+      }, {
+        threshold: 0.5,
+      },
+      );
+      this.observer.observe(trigger.nativeElement);
+    });
 
     this.today = new Date();
     this.items = [];
   }
 
   ngOnInit() {
-
     this.postService.getMostLiked().subscribe({
-      next: rawPosts => {
-        const posts = rawPosts.map((rawPost) => {
+      next: (obj: any) => {
+        const posts = obj.posts.map((rawPost: any) => {
           const op: User = this.userService.buildUser(rawPost.op);
           const post: Post = this.postService.buildPost(rawPost);
 
@@ -91,10 +119,10 @@ export class FeedComponent implements OnInit {
     this.posts().unshift(post);
   }
 
-  callGetPosts(filters: PostFilter) {
-    this.postService.getPosts(filters).subscribe({
-      next: rawPosts => {
-        const posts = rawPosts.map((rawPost) => {
+  callGetPosts(filters: PostFilter, cursor?: string) {
+    this.postService.getPosts(filters, cursor).subscribe({
+      next: (obj: any) => {
+        const posts = obj.posts.map((rawPost: any) => {
           const op: User = this.userService.buildUser(rawPost.op);
           const post: Post = this.postService.buildPost(rawPost);
 
@@ -102,7 +130,16 @@ export class FeedComponent implements OnInit {
 
           return post;
         });
-        this.posts.set(posts);
+
+        if (cursor) {
+          this.posts.set([...this.posts(), ...posts]);
+        } else {
+          this.posts.set(posts);
+        }
+
+        if(!obj.hasMorePosts) {
+          this.loadMorePost.set(false);
+        }
       },
       error: err => {
         console.log(err.status);
@@ -111,7 +148,6 @@ export class FeedComponent implements OnInit {
   }
 
   giveLike(postLiked: Post) {
-
     this.posts().forEach((post: Post) => {
       if (post.getId() == postLiked.getId()) {
         const liked: boolean = post.getLiked();
@@ -120,7 +156,6 @@ export class FeedComponent implements OnInit {
         post.setCounts(postLiked);
       }
     });
-
   }
 
   search(event: AutoCompleteCompleteEvent) {

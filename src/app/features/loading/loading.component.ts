@@ -20,7 +20,7 @@ export class LoadingComponent implements OnInit {
   ngOnInit() {
     this.userService.me().subscribe({
       next: () => this.router.navigate(['/feed']),
-      error: () => this.router.navigate(['/login'])
+      error: () => this.router.navigate(['/auth/login'])
     });
   }
 }

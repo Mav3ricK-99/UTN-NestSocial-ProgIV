@@ -15,7 +15,7 @@
                                 @{{ post()!.op?.getUserName() }}
                             </div>
                             <div class="text-xs text-gray-400">
-                                {{ post()!.getCreatedAt() }}
+                                {{ post()!.getCreatedAt() | timeAgo }}
                             </div>
                         </div>
                     </div>
@@ -108,7 +108,7 @@
             <hr class="text-olive-200 my-2">
             @if(comments().length > 0) {
             @for(comment of comments(); track comment.getId()) {
-            <app-comment [comment]="comment" />
+            <app-comment [comment]="comment" (newCommentEmitted)="addNewComment($event)"/>
             }
             }
             @if(loadMoreComments()) {

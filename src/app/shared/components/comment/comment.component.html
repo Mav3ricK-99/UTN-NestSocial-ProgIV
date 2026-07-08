@@ -23,10 +23,16 @@
                     </span>
 
                     <span class="text-xs text-slate-400">
-                        {{ comment().getCreatedAt() }}
+                        {{ comment().getCreatedAt() | timeAgo }}
                     </span>
 
                 </div>
+
+                @if(comment().getParentAuthor(); as parent) {
+                <div class="text-slate-400 italic text-xs">
+                    Respondiendole a @{{ parent.username }}
+                </div>
+                }
 
                 <div class="mt-2 text-slate-700 leading-6" [innerHTML]="comment().getContent()">
                 </div>
@@ -37,26 +43,11 @@
                     </button>
                 </div>
 
-                <!-- @if(comment().getReplies()?.length) {
-
-            <div class="mt-4 pl-6 border-l-2 border-slate-200">
-
-                @for(reply of comment().getReplies(); track reply.getId()) {
-
-                <app-comment [comment]="reply">
-                </app-comment>
-
-                }
-
-            </div>
-
-            } -->
-
             </div>
         </div>
 
         @if(showNewComment()) {
-        <app-create-comment [comment]="comment()" [postId]="postId()" />
+        <app-create-comment [parentComment]="comment()" [postId]="postId()" (newCommentEmitted)="addNewReply($event)" />
         }
 
     </div>

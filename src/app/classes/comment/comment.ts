@@ -6,9 +6,10 @@ export class Comment {
     id: string;
     content: string;
     deleted: boolean;
-    post: Post | undefined;
+    postId: string | undefined;
     author: User | undefined;
     parentComment: Comment | undefined;
+    parentAuthor: User | undefined;
     createdAt: Date;
 
     constructor(
@@ -17,16 +18,18 @@ export class Comment {
         deleted?: boolean,
         createdAt?: Date,
         author?: User,
-        post?: Post,
-        parentComment?: Comment | undefined
+        postId?: string,
+        parentComment?: Comment | undefined,
+        parentAuthor?: User | undefined
     ) {
         this.id = id;
         this.content = content;
         this.deleted = deleted ?? false;
         this.createdAt = createdAt ?? new Date();
         this.author = author;
-        this.post = post;
+        this.postId = postId;
         this.parentComment = parentComment;
+        this.parentAuthor = parentAuthor;
     }
 
     public getId(): string {
@@ -41,8 +44,8 @@ export class Comment {
         return this.createdAt;
     }
 
-    public getPost(): Post | undefined {
-        return this.post;
+    public getPostId(): string | undefined {
+        return this.postId;
     }
 
     public getAuthor(): User | undefined {
@@ -53,8 +56,8 @@ export class Comment {
         this.author = user;
     }
 
-    public setPost(post: Post): void {
-        this.post = post;
+    public setPostId(post: string): void {
+        this.postId = post;
     }
 
     public setParentComment(comment: Comment): void {
@@ -63,6 +66,14 @@ export class Comment {
 
     public getParentComment(): Comment | undefined {
         return this.parentComment;
+    }
+
+    public setParentAuthor(user: User): void {
+        this.parentAuthor = user;
+    }
+
+    public getParentAuthor(): User | undefined {
+        return this.parentAuthor;
     }
 
 }

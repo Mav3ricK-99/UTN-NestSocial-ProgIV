@@ -71,7 +71,8 @@ export class PostService {
     }
 
     if (comment.getParentComment()) {
-      rawData.parentComment = comment.getParentComment()?.getId()!;
+      rawData.parentComment = comment.getParentComment()!.getId();
+      rawData.parentAuthor = comment.getParentAuthor()!.getId();
     }
 
     return this.httpClient.post<Comment>(this.apiPath + `/${postId}/comment`, rawData, { withCredentials: true });
@@ -120,7 +121,7 @@ export class PostService {
   }
 
   public buildComment(rawComment: any): Comment {
-    return new Comment(rawComment._id, rawComment.content, rawComment.deleted, rawComment.createdAt);
+    return new Comment(rawComment._id, rawComment.content, rawComment.deleted, rawComment.createdAt, rawComment.author, rawComment.post, rawComment.parentComment, rawComment.parentAuthor);
   }
 
   public base64ToBlob(base64: string): Blob {

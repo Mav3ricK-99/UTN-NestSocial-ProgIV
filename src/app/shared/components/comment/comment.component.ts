@@ -1,16 +1,17 @@
-import { Component, input, OnInit, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { Comment } from '../../../classes/comment/comment';
 import { EditorModule } from 'primeng/editor';
 import { ButtonModule } from 'primeng/button';
 import { CreateCommentComponent } from '../create-comment/create-comment.component';
+import { TimeAgoPipe } from '../../pipes/timeAgo/time-ago.pipe';
 
 @Component({
   selector: 'app-comment',
-  imports: [EditorModule, ButtonModule, CreateCommentComponent],
+  imports: [EditorModule, ButtonModule, CreateCommentComponent, TimeAgoPipe],
   templateUrl: './comment.component.html',
   styleUrl: './comment.component.css',
 })
-export class CommentComponent implements OnInit {
+export class CommentComponent {
 
   comment = input.required<Comment>();
 
@@ -18,11 +19,17 @@ export class CommentComponent implements OnInit {
 
   postId = signal<string>("");
 
+  newCommentEmitted = output<Comment>();
+
   ngOnInit() {
-    this.postId.set(this.comment().getPost()?.getId()!);
+    this.postId.set(this.comment().getPostId()!);
   }
 
   replyComment() {
     this.showNewComment.set(!this.showNewComment());
+  }
+
+  addNewReply(comment: Comment) {
+    this.newCommentEmitted.emit(comment);
   }
 }

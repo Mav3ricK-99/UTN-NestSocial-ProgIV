@@ -13,9 +13,10 @@ import { CommentComponent } from '../comment/comment.component';
 import { CreateCommentComponent } from '../create-comment/create-comment.component';
 import { PopoverModule } from 'primeng/popover';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TimeAgoPipe } from '../../pipes/timeAgo/time-ago.pipe';
 @Component({
   selector: 'app-post',
-  imports: [LucideAngularModule, ToastModule, PopoverModule, CommentComponent, CreateCommentComponent, SkeletonModule],
+  imports: [LucideAngularModule, ToastModule, PopoverModule, CommentComponent, CreateCommentComponent, SkeletonModule, TimeAgoPipe],
   templateUrl: './post.component.html',
   styleUrl: './post.component.css',
   providers: [MessageService]
@@ -78,7 +79,7 @@ export class PostComponent {
           const comment: Comment = this.postService.buildComment(rawComment);
 
           comment.setAuthor(author);
-          comment.setPost(this.post()!);
+          comment.setPostId(this.post()?.getId()!);
 
           return comment;
         });

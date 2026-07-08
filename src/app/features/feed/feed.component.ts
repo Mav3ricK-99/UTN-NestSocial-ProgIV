@@ -137,9 +137,7 @@ export class FeedComponent implements OnInit {
           this.posts.set(posts);
         }
 
-        if(!obj.hasMorePosts) {
-          this.loadMorePost.set(false);
-        }
+        this.loadMorePost.set(obj.hasMore);
       },
       error: err => {
         console.log(err.status);
@@ -149,6 +147,15 @@ export class FeedComponent implements OnInit {
 
   giveLike(postLiked: Post) {
     this.posts().forEach((post: Post) => {
+      if (post.getId() == postLiked.getId()) {
+        const liked: boolean = post.getLiked();
+        post.setLiked(!liked);
+
+        post.setCounts(postLiked);
+      }
+    });
+
+    this.sidePosts().forEach((post: Post) => {
       if (post.getId() == postLiked.getId()) {
         const liked: boolean = post.getLiked();
         post.setLiked(!liked);

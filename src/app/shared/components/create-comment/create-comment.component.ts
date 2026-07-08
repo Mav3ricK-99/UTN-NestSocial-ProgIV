@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { EditorModule } from 'primeng/editor';
@@ -22,13 +22,12 @@ export class CreateCommentComponent {
 
   postId = input.required<string>();
 
-  comment = input<Comment>();
+  parentComment = input<Comment>();
 
   formNewComment: FormGroup;
   formSubmitted: boolean = false;
 
   newCommentEmitted = output<Comment>();
-  newReplyEmitted = output<Comment>();
 
   constructor(private formBuilder: FormBuilder, private userService: UserService, private postService: PostService) {
     this.formNewComment = this.formBuilder.group({
@@ -45,8 +44,9 @@ export class CreateCommentComponent {
     if (this.formNewComment.valid) {
       const comment: Comment = new Comment('0', content);
 
-      if (this.comment()) {
-        this.comment()!.setParentComment(comment);
+      if (this.parentComment()) {
+        comment.setParentComment(this.parentComment()!);
+        comment.setParentAuthor(this.parentComment()?.getAuthor()!);
       }
 
       this.postService.postComment(this.postId(), comment).subscribe({
@@ -54,11 +54,7 @@ export class CreateCommentComponent {
           const comment: Comment = this.postService.buildComment(rawComment);
           this.formSubmitted = false;
           comment.setAuthor(this.userService.loggedInUser()!);
-          if (!this.comment()) {
-            this.newCommentEmitted.emit(comment);
-          } else {
-            this.newReplyEmitted.emit(comment);
-          }
+          this.newCommentEmitted.emit(comment);
           this.formNewComment.reset();
         }, error: (error: HttpErrorResponse) => {
           this.formSubmitted = false;

@@ -1,5 +1,58 @@
+@if(!currentUser()) {
 <aside class="border-r border-surface-800 sidebar">
-    <app-closing-session [visible]="modalShown"/>
+    <app-closing-session [visible]="modalShown" />
+    <div routerLink="/feed" class="flex items-center p-3 pb-0 cursor-pointer justify-center select-none">
+        <span class="smallTitleNest font-extrabold text-red-400/90 tracking-tight font-nest">
+            Nest
+        </span>
+        <span class="smallTitleSocial text-blue-400/90 italic font-semibold font-social ">
+            Social
+        </span>
+    </div>
+    <div class="flex cursor-default flex-col items-center justify-center p-4 gap gap-y-3">
+        <p-skeleton class="bg-surface-900!" shape="circle" size="5rem" />
+        <p-skeleton class="bg-surface-900!" width="12rem" borderRadius="16px" />
+
+        <p-skeleton class="bg-surface-900!" width="6rem" borderRadius="16px" />
+
+        <p-skeleton class="bg-surface-900!" width="5rem" borderRadius="16px" />
+    </div>
+    <p-menu [model]="items" [style.pointer-events]="'none'" class="flex justify-center" styleClass="sideBarMenu w-full">
+        <ng-template #submenuheader let-item>
+            <span class="text-primary font-bold">{{ item.label }}</span>
+        </ng-template>
+        <ng-template #item let-item>
+            <a pRipple class="flex items-center px-3 py-2 cursor-pointer" [class]="item.linkClass">
+                <span [class]="item.icon"></span>
+                <span class="ms-2">{{ item.label }}</span>
+                @if(item.badge) {
+                <p-badge class="ms-auto" [value]="item.badge" />
+                }
+                @if(item.shortcut) {
+                <span class="ms-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{
+                    item.shortcut }}</span>
+                }
+            </a>
+        </ng-template>
+    </p-menu>
+    <div class="flex gap-4 max-w-xs mx-auto mb-3">
+        <p-skeleton class="bg-surface-900!" shape="circle" size="2.5rem" />
+        <div class="flex-1 flex flex-col gap-1.5 py-0.5">
+            <p-skeleton class="bg-surface-900!" width="100%" borderRadius="4px" class="h-auto! flex-1" />
+            <p-skeleton class="bg-surface-900!" width="90%" borderRadius="4px" class="h-auto! flex-1" />
+        </div>
+    </div>
+    <div class="flex gap-4 max-w-xs mx-auto">
+        <p-skeleton class="bg-surface-900!" shape="circle" size="2.5rem" />
+        <div class="flex-1 flex flex-col gap-1.5 py-0.5">
+            <p-skeleton class="bg-surface-900!" width="100%" borderRadius="4px" class="h-auto! flex-1" />
+            <p-skeleton class="bg-surface-900!" width="90%" borderRadius="4px" class="h-auto! flex-1" />
+        </div>
+    </div>
+</aside>
+} @else {
+<aside class="border-r border-surface-800 sidebar">
+    <app-closing-session [visible]="modalShown" />
     <div routerLink="/feed" class="flex items-center p-3 pb-0 cursor-pointer justify-center select-none">
         <span class="smallTitleNest font-extrabold text-red-400/90 tracking-tight font-nest">
             Nest
@@ -84,3 +137,4 @@
 
     </div>
 </aside>
+}

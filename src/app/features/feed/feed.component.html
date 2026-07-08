@@ -11,10 +11,18 @@
 
             @if(posts().length > 0) {
             @for(post of posts(); track post.getId()) {
-            <app-post [post]="post" [isDummyPost]="false" (likeGiven)="giveLike($event)" />
+            <app-post [post]="post" (likeGiven)="giveLike($event)" />
 
             <p-divider />
             }
+            } @else {
+            <app-post [isLoading]="true" />
+
+            <p-divider />
+
+            <app-post [isLoading]="true" />
+
+            <p-divider />
             }
             <div #loadMoreTrigger class="h-10 flex justify-center items-center p-2">
                 <i class="pi pi-spin pi-spinner text-gray-700" style="font-size: 3rem;"></i>
@@ -60,10 +68,18 @@
                 </h1>
                 @if(sidePosts().length > 0) {
                 @for(sidePost of sidePosts(); track sidePost.getId()) {
-                <app-post [post]="sidePost" [isDummyPost]="false" [inAside]="true" />
+                <app-post [post]="sidePost" [inAside]="true" />
 
                 <p-divider />
                 }
+                } @else {
+                <app-post [isLoading]="true" [inAside]="true"/>
+
+                <p-divider />
+
+                <app-post [isLoading]="true" [inAside]="true"/>
+
+                <p-divider />
                 }
             </p-card>
         </article>

@@ -4,8 +4,9 @@ import { loggedUsersOnlyGuard } from './guards/LoggedUsersOnly/logged-users-only
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: 'auth/login',
-        pathMatch: 'full'
+        loadComponent: () =>
+            import('./features/loading/loading.component')
+                .then(m => m.LoadingComponent),
     },
     {
         path: 'feed',

@@ -1,0 +1,36 @@
+<div class="flex bg-olive-50/90">
+
+    <app-sidebar></app-sidebar>
+
+    <!-- Feed -->
+    <main class="flex-1 flex justify-center grow-5">
+
+        <div class="p-6">
+            <app-post [isLoading]="true" />
+            <p-divider />
+            <app-post [isLoading]="true" />
+        </div>
+
+    </main>
+
+    <section class="flex flex-col bg-olive-100 p-3">
+        <article class="w-xs mb-2">
+            <div class="p-4 rounded-lg bg-surface-50">
+                <p-skeleton width="100%" height="10rem" />
+                <div class="mt-4 flex items-start gap-3">
+                    <p-skeleton shape="circle" size="2.5rem" />
+                    <div class="flex-1 flex flex-col gap-2">
+                        <p-skeleton width="100%" borderRadius="4px" />
+                        <p-skeleton width="90%" borderRadius="4px" />
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article>
+            <app-post [isLoading]="true" [inAside]="true" />
+            <p-divider />
+            <app-post [isLoading]="true" [inAside]="true" />
+            <p-divider />
+        </article>
+    </section>
+</div>

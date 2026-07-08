@@ -12,9 +12,10 @@ import { Comment } from '../../../classes/comment/comment';
 import { CommentComponent } from '../comment/comment.component';
 import { CreateCommentComponent } from '../create-comment/create-comment.component';
 import { PopoverModule } from 'primeng/popover';
+import { SkeletonModule } from 'primeng/skeleton';
 @Component({
   selector: 'app-post',
-  imports: [LucideAngularModule, ToastModule, PopoverModule, CommentComponent, CreateCommentComponent],
+  imports: [LucideAngularModule, ToastModule, PopoverModule, CommentComponent, CreateCommentComponent, SkeletonModule],
   templateUrl: './post.component.html',
   styleUrl: './post.component.css',
   providers: [MessageService]
@@ -35,7 +36,7 @@ export class PostComponent {
 
   public comments = signal<Comment[]>([])
 
-  post = input.required<Post>();
+  post = input<Post>();
 
   likeGiven = output<Post>();
 
@@ -43,6 +44,7 @@ export class PostComponent {
 
   inAside = input<boolean>(false);
   isDummyPost = input<boolean>(false);
+  isLoading = input<boolean>(false);
 
   loadMoreComments = signal<boolean>(false);
 
@@ -56,13 +58,13 @@ export class PostComponent {
   ngOnInit() {
     if (this.isDummyPost()) {
       this.writeDummyPost();
-    } else {
+    } else if(!this.isLoading()){
       this.loadComments();
     }
   }
 
   loadComments() {
-    const postId = this.post().getId();
+    const postId = this.post()!.getId();
 
     let cursor: string | undefined = undefined;
     if (this.comments().length > 0) {
@@ -76,7 +78,7 @@ export class PostComponent {
           const comment: Comment = this.postService.buildComment(rawComment);
 
           comment.setAuthor(author);
-          comment.setPost(this.post());
+          comment.setPost(this.post()!);
 
           return comment;
         });
@@ -101,7 +103,7 @@ export class PostComponent {
     if (this.likeBtnDisabled) return;
     this.likeBtnDisabled = true;
 
-    const postId: string = this.post().getId();
+    const postId: string = this.post()!.getId();
 
     this.postService.likeAPost(postId).subscribe({
       next: (rawPost: any) => {
@@ -121,7 +123,7 @@ export class PostComponent {
 
   showPost() {
     if (this.isDummyPost()!) return;
-    this.router.navigate(["/post/" + this.post().getId()]);
+    this.router.navigate(["/post/" + this.post()!.getId()]);
   }
 
   addNewComment(comment: Comment) {
@@ -130,19 +132,19 @@ export class PostComponent {
 
   goToProfile() {
     if (this.isDummyPost()!) return;
-    this.router.navigate(["/profile/" + this.post().op?.getUserName()]);
+    this.router.navigate(["/profile/" + this.post()!.op?.getUserName()]);
   }
 
   deletePost() {
-    this.postService.deletePost(this.post().getId()).subscribe({
+    this.postService.deletePost(this.post()!.getId()).subscribe({
       next: () => {
-        const deleted = this.post().getDeleted();
+        const deleted = this.post()!.getDeleted();
         if (deleted) {
           this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'El post ha sido restaurado correctamente.', life: 3000 });
         } else {
           this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'El post ha sido eliminado correctamente.', life: 3000 });
         }
-        this.post().setDeleted(!deleted);
+        this.post()!.setDeleted(!deleted);
       },
       error: (err: HttpErrorResponse) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al procesar la solicitud. Intentelo nuevamente mas tarde.', life: 3000 });
@@ -156,11 +158,11 @@ export class PostComponent {
 
     const interval = setInterval(() => {
       this.displayedText.update(
-        value => value + this.post().content[index]
+        value => value + this.post()!.content[index]
       );
 
       index++;
-      if (index >= this.post().content.length) {
+      if (index >= this.post()!.content.length) {
         clearInterval(interval);
         this.showPrompter = false;
       }

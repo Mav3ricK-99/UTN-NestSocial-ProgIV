@@ -15,9 +15,10 @@ import { UserService } from '../../../core/services/User/user.service';
 import { Router } from '@angular/router';
 import { ClosingSessionComponent } from '../closing-session/closing-session.component';
 import { User, UserRole } from '../../../classes/user/user';
+import { SkeletonModule } from 'primeng/skeleton';
 @Component({
   selector: 'app-sidebar',
-  imports: [MenuModule, TabsModule, LucideAngularModule, AvatarModule, DividerModule, ButtonModule, CardModule, BadgeModule, SplitterModule, RouterLink, TooltipModule, ClosingSessionComponent],
+  imports: [MenuModule, TabsModule, LucideAngularModule, AvatarModule, DividerModule, ButtonModule, CardModule, BadgeModule, SplitterModule, RouterLink, TooltipModule, ClosingSessionComponent, SkeletonModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
 })

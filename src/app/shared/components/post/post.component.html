@@ -1,35 +1,36 @@
+@if(!isLoading()) {
 <div [class]="inAside() ? 'asidePost' : 'w-180'" class="bg-olive-100 rounded-3xl shadow-lg p-5">
     <div>
         <p-toast />
-        <div class="flex flex-row gap-3" (click)="showPost()">
-            <img [src]="post().op?.getAvatarPathUrl()" alt="profile" class="w-14 h-14 rounded-full object-cover">
+        <div class="flex flex-row gap-2" (click)="showPost()">
+            <img [src]="post()!.getOp()!.getAvatarPathUrl()" alt="profile" class="w-14 h-14 rounded-full object-cover">
             <div>
                 <div class="flex justify-between">
                     <div class="flex gap-3">
                         <div>
                             <div class="font-semibold cursor-default hover:underline">
-                                {{ post().op?.getUserFullName() }}
+                                {{ post()!.op?.getUserFullName() }}
                             </div>
                             <div class="text-sm text-gray-500 cursor-pointer" (click)="goToProfile()">
-                                @{{ post().op?.getUserName() }}
+                                @{{ post()!.op?.getUserName() }}
                             </div>
                             <div class="text-xs text-gray-400">
-                                {{ post().getCreatedAt() }}
+                                {{ post()!.getCreatedAt() }}
                             </div>
                         </div>
                     </div>
                 </div>
-                <div [class.min-w-xl]="!inAside()" [class.whitespace-pre-line]="!isDummyPost()!"
+                <div [class.min-w-xl]="!inAside()" [class.w-80]="!inAside()" [class.whitespace-pre-line]="!isDummyPost()!"
                     class="mt-4 text-gray-800" [class.typing-cursor]="showPrompter && isDummyPost()!">
                     @if(isDummyPost()!) {
                     {{ displayedText() }}
                     } @else {
-                    <div [innerHTML]="post().getContent()" class="post-content"></div>
+                    <div [innerHTML]="post()!.getContent()" class="post-content"></div>
                     }
                 </div>
-                @if(post().getPostImage() != undefined && post().getPostImage()?.length != 0) {
+                @if(post()!.getPostImage() != undefined && post()!.getPostImage()?.length != 0) {
 
-                <img [src]="post().getPostImage()" alt="post image" (load)="imageLoaded.set(true)"
+                <img [src]="post()!.getPostImage()" alt="post image" (load)="imageLoaded.set(true)"
                     [class.opacity-0]="!imageLoaded()" [class.opacity-100]="imageLoaded()"
                     class="mt-4 rounded-2xl w-full max-h-[450px] object-cover transition-opacity duration-500" />
                 }
@@ -47,17 +48,17 @@
                     <div class="flex flex-col gap-3">
                         <button class="flex items-center gap-2 w-full cursor-pointer text-gray-500 hover:text-gray-800">
                             <lucide-icon [img]="UserRoundPlus" class="size-4"></lucide-icon>
-                            Seguir a @{{ post().op?.getUserName() }}
+                            Seguir a @{{ post()!.op?.getUserName() }}
                         </button>
                         <button (click)="showPost()"
                             class="flex items-center gap-2 w-full cursor-pointer text-gray-500 hover:text-gray-800">
                             <lucide-icon [img]="Eye" class="size-4"></lucide-icon>
                             Ir al post
                         </button>
-                        @if((post().getOp()!.getId() == this.userService.loggedInUser()?.getId() ||
-                        this.userService.loggedInUser()?.getRole() == "ADMIN"))
+                        @if((post()!.getOp()!.getId() == this.userService.loggedInUser()?.getId() ||
+                        this.userService.loggedInUser()?.isAdmin()))
                         {
-                        @if(!post().getDeleted())
+                        @if(!post()!.getDeleted())
                         {
                         <button (click)="deletePost()"
                             class="flex items-center gap-2 w-full cursor-pointer text-red-400 hover:text-red-600">
@@ -83,21 +84,21 @@
                 class="flex items-center gap-2 cursor-pointer text-blue-300 transition duration-300 ease-in-out commentButton">
                 <lucide-icon [img]="MessageCircle" id="comment-icon"
                     class="size-4 text-blue-300 fill-current"></lucide-icon>
-                {{ post().getCommentsCount() }}
+                {{ post()!.getCommentsCount() }}
             </button>
 
-            <button [class.text-red-500]="post().getLiked()" [class.text-red-300]="!post().getLiked()"
+            <button [class.text-red-500]="post()!.getLiked()" [class.text-red-300]="!post()!.getLiked()"
                 [disabled]="likeBtnDisabled"
                 class="flex items-center gap-2 cursor-pointer transition duration-300 ease-in-out likeButton">
-                <lucide-icon [img]="Heart" (click)="giveLike()" [class.text-red-500]="post().getLiked() "
-                    [class.text-red-300]="!post().getLiked()" class="size-4 fill-current"></lucide-icon>
-                {{ post().getLikesCount() }}
+                <lucide-icon [img]="Heart" (click)="giveLike()" [class.text-red-500]="post()!.getLiked() "
+                    [class.text-red-300]="!post()!.getLiked()" class="size-4 fill-current"></lucide-icon>
+                {{ post()!.getLikesCount() }}
             </button>
 
             <button
                 class="flex items-center gap-2 cursor-pointer text-green-300 transition duration-300 ease-in-out repostButton">
                 <lucide-icon [img]="Repeat" id="repost-icon" class="size-4 text-green-300 fill-current"></lucide-icon>
-                {{ post().getSharesCount() }}
+                {{ post()!.getSharesCount() }}
             </button>
 
         </div>
@@ -120,10 +121,29 @@
         </div>
         @if(!inAside()) {
         <div>
-            <app-create-comment [postId]="post().getId()" (newCommentEmitted)="addNewComment($event)" />
+            <app-create-comment [postId]="post()!.getId()" (newCommentEmitted)="addNewComment($event)" />
         </div>
         }
         }
     </div>
 
 </div>
+} @else {
+<div [class]="inAside() ? 'asidePost' : 'w-180'" class="bg-olive-100 rounded-3xl shadow-lg p-5">
+    <div [class]="inAside() ? 'w-30' : 'w-180'" class="w-full space-y-4">
+        <div class="flex items-start gap-4">
+            <p-skeleton shape="circle" size="3.5rem" />
+            <div class="flex-1">
+                <div class="flex items-center justify-between">
+                    <p-skeleton width="40%" height="1.5rem" />
+                </div>
+                <div class="space-y-1.5 mt-3">
+                    <p-skeleton width="100%" borderRadius="4px" />
+                    <p-skeleton width="90%" borderRadius="4px" />
+                </div>
+                <p-skeleton class="mt-4 aspect-video w-full h-auto!" />
+            </div>
+        </div>
+    </div>
+</div>
+}

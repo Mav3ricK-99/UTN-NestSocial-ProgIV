@@ -7,11 +7,13 @@ import { UserRole } from "../../../classes/user/user";
 import { User } from '../../../classes/user/user';
 import { demoContents, demoNames, demoUsernames } from '../../../shared/dummyContent/dummy-content';
 import { RegisterFormComponent } from '../../../shared/components/register-form/register-form.component';
+import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-register',
   imports: [LucideAngularModule, PostComponent, RegisterFormComponent, SelectModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  styleUrl: './register.component.css',
+  providers: [MessageService]
 })
 export class RegisterComponent {
 

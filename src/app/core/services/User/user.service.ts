@@ -94,13 +94,13 @@ export class UserService {
   }
 
   activateUser(id: string): Observable<User> {
-    return this.httpClient.put<User>(this.apiPath + `${id}}/enable`, {}, {
+    return this.httpClient.put<User>(this.apiPath + `${id}/enable`, {}, {
       withCredentials: true
     });
   }
 
   disableUser(id: string): Observable<User> {
-    return this.httpClient.patch<User>(this.apiPath + `${id}}/disable`, {}, {
+    return this.httpClient.patch<User>(this.apiPath + `${id}/disable`, {}, {
       withCredentials: true
     });
   }

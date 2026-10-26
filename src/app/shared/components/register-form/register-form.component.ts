@@ -124,8 +124,8 @@ export class RegisterFormComponent {
       const userFullName: string = `${name} ${surname}`;
       const birthDate: Date = new Date();
       birthDate.setFullYear(birthYear);
-      birthDate.setDate(birthDay);
       birthDate.setMonth((Number(birthMonth.code) - 1));
+      birthDate.setDate(birthDay);
 
       const newUser: User = new User('0', userFullName, email, username, birthDate, bio, '', UserRole.USER, true, new Date());
       this.userService.createUser(newUser, password, confirmPassword, this.selectedFile).subscribe({

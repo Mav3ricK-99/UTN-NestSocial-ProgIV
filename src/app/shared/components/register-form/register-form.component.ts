@@ -144,14 +144,11 @@ export class RegisterFormComponent {
         error: (err: HttpErrorResponse) => {
           switch (err.status) {
             case 400: {
-              if(err.message.includes('email')) {
+              if(err.error.message.includes('email')) {
                 this.registerForm.get('email')?.setErrors({ emailExists: true });
               } else {
                 this.registerForm.get('username')?.setErrors({ usernameExists: true });
               }
-            } break;
-            case 401: {
-              this.registerForm.get('email')?.setErrors({ emailExists: true });
             } break;
             default: {
               this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al procesar la solicitud. Intentelo nuevamente mas tarde.', life: 3000 });

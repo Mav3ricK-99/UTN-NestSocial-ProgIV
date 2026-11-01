@@ -13,7 +13,7 @@ export const SKIP_TOKEN_REFRESH = new HttpContextToken<boolean>(() => false);
 export class UserService {
 
   apiPath: string = (environment.BASE_URI + 'api/authentication/');
-  userApiPath: string = (environment.BASE_URI + 'api/user/');
+  userApiPath: string = (environment.BASE_URI + 'api/users/');
 
   private _user = signal<User | null>(null);
 

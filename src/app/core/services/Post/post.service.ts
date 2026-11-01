@@ -132,7 +132,11 @@ export class PostService {
   }
 
   public buildComment(rawComment: any): Comment {
-    return new Comment(rawComment._id, rawComment.content, rawComment.deleted, rawComment.createdAt, rawComment.author, rawComment.post, rawComment.parentComment, rawComment.parentAuthor);
+    // El backend puede devolver el comentario padre populado (objeto plano) o solo su id.
+    const rawParent = rawComment.parentComment;
+    const parentComment = rawParent && typeof rawParent === 'object' ? this.buildComment(rawParent) : undefined;
+
+    return new Comment(rawComment._id, rawComment.content, rawComment.deleted, rawComment.createdAt, rawComment.author, rawComment.post, parentComment, rawComment.parentAuthor);
   }
 
   public base64ToBlob(base64: string): Blob {

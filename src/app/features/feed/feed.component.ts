@@ -27,6 +27,12 @@ export class FeedComponent implements OnInit {
 
   public sidePosts = signal<Post[]>([]);
 
+  public feedStatus = signal<LoadStatus>('loading');
+
+  public sidePostsStatus = signal<LoadStatus>('loading');
+
+  private lastFilters = new PostFilter();
+
   public loadMorePost = signal<boolean>(false);
 
   public postLoaded = signal<boolean>(false);
@@ -91,9 +97,11 @@ export class FeedComponent implements OnInit {
           return post;
         });
         this.sidePosts.set(posts);
+        this.sidePostsStatus.set('loaded');
       },
       error: err => {
         console.log(err.status);
+        this.sidePostsStatus.set('error');
       }
     });
 
@@ -116,10 +124,19 @@ export class FeedComponent implements OnInit {
   }
 
   addNewPost(post: Post) {
-    this.posts().unshift(post);
+    this.posts.set([post, ...this.posts()]);
+  }
+
+  retryLoadPosts() {
+    this.feedStatus.set('loading');
+    this.callGetPosts(this.lastFilters);
   }
 
   callGetPosts(filters: PostFilter, cursor?: string) {
+    if (!cursor) {
+      this.lastFilters = filters;
+    }
+
     this.postService.getPosts(filters, cursor).subscribe({
       next: (obj: any) => {
         const posts = obj.posts.map((rawPost: any) => {
@@ -138,28 +155,25 @@ export class FeedComponent implements OnInit {
         }
 
         this.loadMorePost.set(obj.hasMore);
+        this.feedStatus.set('loaded');
       },
       error: err => {
         console.log(err.status);
+        // Si falla la primera página no se deja el feed anterior en pantalla; si falla "cargar más", se conserva lo ya cargado.
+        if (!cursor) {
+          this.posts.set([]);
+          this.loadMorePost.set(false);
+          this.feedStatus.set('error');
+        }
       }
     });
   }
 
   giveLike(postLiked: Post) {
-    this.posts().forEach((post: Post) => {
+    // Un mismo post puede estar en el feed y en Destacados: se sincronizan ambas copias.
+    [...this.posts(), ...this.sidePosts()].forEach((post: Post) => {
       if (post.getId() == postLiked.getId()) {
-        const liked: boolean = post.getLiked();
-        post.setLiked(!liked);
-
-        post.setCounts(postLiked);
-      }
-    });
-
-    this.sidePosts().forEach((post: Post) => {
-      if (post.getId() == postLiked.getId()) {
-        const liked: boolean = post.getLiked();
-        post.setLiked(!liked);
-
+        post.setLiked(postLiked.getLiked());
         post.setCounts(postLiked);
       }
     });
@@ -170,6 +184,8 @@ export class FeedComponent implements OnInit {
   }
 
 }
+
+type LoadStatus = 'loading' | 'loaded' | 'error';
 
 interface AutoCompleteCompleteEvent {
   originalEvent: Event;

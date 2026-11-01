@@ -14,16 +14,17 @@ import { fileTypeMustBeValid } from '../../../core/directives/fileTypeMustBeVali
 import { User } from '../../../classes/user/user';
 import { UserService } from '../../../core/services/User/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { demoContents, demoNames, demoUsernames } from '../../../shared/dummyContent/dummy-content';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-register-form',
-  imports: [InputTextModule, FloatLabelModule, MessageModule, FormsModule, ReactiveFormsModule, PasswordModule, DividerModule, ToastModule, LucideAngularModule, SelectModule],
+  imports: [InputTextModule, FloatLabelModule, MessageModule, FormsModule, ReactiveFormsModule, PasswordModule, DividerModule, ToastModule, LucideAngularModule, SelectModule, RouterLink],
   templateUrl: './register-form.component.html',
   styleUrl: './register-form.component.css',
+  providers: [MessageService]
 })
 export class RegisterFormComponent {
   readonly Dices = Dices;
@@ -142,6 +143,9 @@ export class RegisterFormComponent {
         },
         error: (err: HttpErrorResponse) => {
           switch (err.status) {
+            case 400: {
+              this.registerForm.get('username')?.setErrors({ usernameExists: true });
+            } break;
             case 401: {
               this.registerForm.get('email')?.setErrors({ emailExists: true });
             } break;

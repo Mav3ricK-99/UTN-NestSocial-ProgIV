@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { loggedUsersOnlyGuard } from './guards/LoggedUsersOnly/logged-users-only.guard';
+import { adminOnlyGuard } from './guards/AdminOnly/admin-only.guard';
+import { guestOnlyGuard } from './guards/GuestOnly/guest-only.guard';
 
 export const routes: Routes = [
     {
@@ -26,7 +28,8 @@ export const routes: Routes = [
         path: 'auth',
         loadChildren: () =>
             import('./core/routes/auth.routes')
-                .then(m => m.AUTH_ROUTES)
+                .then(m => m.AUTH_ROUTES),
+        canActivate: [guestOnlyGuard]
     },
     {
         path: 'profile/:username',
@@ -40,6 +43,6 @@ export const routes: Routes = [
         loadComponent: () =>
             import('./features/dashboard/dashboard.component')
                 .then(m => m.DashboardComponent),
-        canActivate: [loggedUsersOnlyGuard]
+        canActivate: [adminOnlyGuard]
     },
 ];

@@ -15,6 +15,10 @@
 
             @if(post()) {
             <app-post [post]="post()!" />
+            } @else if(loadError()) {
+            <p class="py-10 text-center text-slate-500">
+                La publicación no existe o no está disponible.
+            </p>
             }
 
         </main>

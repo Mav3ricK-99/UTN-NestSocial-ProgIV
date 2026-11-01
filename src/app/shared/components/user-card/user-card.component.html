@@ -16,7 +16,7 @@
                 1.2k seguidores
             </div>
         </div>
-        @if(userService.loggedInUser()?.isAdmin()) {
+        @if(userService.loggedInUser()?.isAdmin() && !isOwnCard()) {
         <form [formGroup]="activateUserForm">
             <p-checkbox (click)="setUserDisable(); $event.stopPropagation()" formControlName="enabled" [binary]="true" />
         </form>

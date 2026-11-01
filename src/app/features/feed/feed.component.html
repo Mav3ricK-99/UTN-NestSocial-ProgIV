@@ -15,6 +15,18 @@
 
             <p-divider />
             }
+            } @else if(feedStatus() == 'error') {
+            <div class="w-180 py-10 flex flex-col items-center gap-3 text-slate-600">
+                <p>No se pudieron cargar las publicaciones.</p>
+                <button (click)="retryLoadPosts()"
+                    class="px-4 py-2 rounded-xl bg-blue-600 text-white cursor-pointer hover:bg-blue-700 transition">
+                    Reintentar
+                </button>
+            </div>
+            } @else if(feedStatus() == 'loaded') {
+            <p class="w-180 py-10 text-center text-slate-500">
+                No hay publicaciones para mostrar.
+            </p>
             } @else {
             <app-post [isLoading]="true" />
 
@@ -68,10 +80,14 @@
                 </h1>
                 @if(sidePosts().length > 0) {
                 @for(sidePost of sidePosts(); track sidePost.getId()) {
-                <app-post [post]="sidePost" [inAside]="true" />
+                <app-post [post]="sidePost" [inAside]="true" (likeGiven)="giveLike($event)" />
 
                 <p-divider />
                 }
+                } @else if(sidePostsStatus() == 'error') {
+                <p class="text-center text-slate-500">No se pudieron cargar los destacados.</p>
+                } @else if(sidePostsStatus() == 'loaded') {
+                <p class="text-center text-slate-500">Aún no hay publicaciones destacadas.</p>
                 } @else {
                 <app-post [isLoading]="true" [inAside]="true"/>
 

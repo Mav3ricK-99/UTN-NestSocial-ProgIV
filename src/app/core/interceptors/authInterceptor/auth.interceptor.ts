@@ -1,9 +1,16 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, map, switchMap, throwError } from 'rxjs';
-import { UserService } from '../../services/User/user.service';
+import { catchError, switchMap, throwError } from 'rxjs';
+import { SKIP_TOKEN_REFRESH, UserService } from '../../services/User/user.service';
 import { Router } from '@angular/router';
-import { User } from '../../../classes/user/user';
+
+// En estos endpoints un 401 es una respuesta esperada (credenciales incorrectas, email existente, etc.)
+const AUTH_URLS = [
+  '/authentication/refresh-token',
+  '/authentication/login',
+  '/authentication/logout',
+  '/authentication/register',
+];
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
@@ -11,35 +18,21 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
   return next(req).pipe(
-
     catchError((error: HttpErrorResponse) => {
 
-      if (error.status === 401 && error.message.includes("Unauthorized") && (!req.url.includes('/authentication/refresh-token') && !req.url.includes('/login') && !req.url.includes('/logout'))) {
-
-        if (!userService.isRefreshing) {
-          return userService.refreshToken().pipe(
-            switchMap(() => {
-              userService.isRefreshing = false;
-              userService.me().pipe(
-                map((rawUser: any) => {
-                  const user: User = userService.buildUser(rawUser);
-                  userService.setCurrentUser(user);
-                  userService.setTokenExpireTime(new Date(rawUser.exp * 1000));
-                  return true;
-                }));
-              return next(req);
-            }),
-            catchError(() => {
-              userService.isRefreshing = false;
-              router.navigate(['/auth/login']);
-              return throwError(
-                () => error
-              )
-            }),
-          )
-        }
+      if (error.status !== 401 || req.context.get(SKIP_TOKEN_REFRESH) || AUTH_URLS.some(url => req.url.includes(url))) {
+        return throwError(() => error);
       }
-      return throwError(() => error);
+
+      return userService.refreshSession().pipe(
+        catchError(() => {
+          userService.clearSession();
+          router.navigate(['/auth/login']);
+          return throwError(() => error);
+        }),
+        // Fuera del catchError anterior: si el reintento falla, ese error llega tal cual a quien hizo la petición.
+        switchMap(() => next(req)),
+      );
     }),
   );
 };

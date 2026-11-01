@@ -3,8 +3,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { UserService } from '../../../core/services/User/user.service';
-import { User } from '../../../classes/user/user';
-import { map } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-closing-session',
@@ -16,22 +15,15 @@ export class ClosingSessionComponent {
 
   @Input() visible!: boolean;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   refreshSession() {
     this.visible = false;
-    this.userService.refreshToken().subscribe({
-      next: () => {
-        this.userService.isRefreshing = false;
-        this.userService.me().subscribe({
-          next: (rawUser: any) => {
-            const user: User = this.userService.buildUser(rawUser);
-            this.userService.setCurrentUser(user);
-            this.userService.setTokenExpireTime(new Date(rawUser.exp * 1000));
-            return true;
-          }
-        })
+    this.userService.refreshSession().subscribe({
+      error: () => {
+        this.userService.clearSession();
+        this.router.navigate(['/auth/login']);
       }
-    })
+    });
   }
 }

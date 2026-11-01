@@ -19,9 +19,9 @@ export function fileTypeMustBeValid(
     }
     const lastDot = file.lastIndexOf('.');
 
-    const result = lastDot !== -1 ? file.substring(lastDot + 1) : "";
+    const result = lastDot !== -1 ? file.substring(lastDot + 1).toLowerCase() : "";
 
-    return allowedTypes.includes(result)
+    return allowedTypes.map(type => type.toLowerCase()).includes(result)
       ? null
       : { invalidFileType: true };
   };

@@ -1,4 +1,5 @@
-import { Component, effect, Input, viewChild, signal, ElementRef } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, signal } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { AvatarModule } from 'primeng/avatar';
 import { TabsModule } from 'primeng/tabs';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
@@ -9,97 +10,78 @@ import { Post } from '../../classes/post/post';
 import { PostComponent } from '../../shared/components/post/post.component';
 import { DividerModule } from 'primeng/divider';
 
+const MAX_PROFILE_POSTS = 3;
+
 @Component({
   selector: 'app-profile',
   imports: [SidebarComponent, PostComponent, AvatarModule, TabsModule, DividerModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnChanges, OnDestroy {
 
   user = signal<User | null>(null);
   posts = signal<Post[]>([]);
-
-  public loadMorePost = signal<boolean>(false);
-
-  public postLoaded = signal<boolean>(false);
+  postsLoaded = signal<boolean>(false);
+  loadError = signal<boolean>(false);
 
   @Input() username!: string;
 
-  loadMoreTrigger = viewChild<ElementRef>('loadMoreTrigger');
+  private loadSub = new Subscription();
 
-  private observer?: IntersectionObserver;
+  constructor(private userService: UserService, private postService: PostService) { }
 
-  constructor(private userService: UserService, private postService: PostService) {
-    effect(() => {
+  // Se ejecuta al crear el componente y cada vez que cambia :username en la ruta
+  // (Angular reutiliza la instancia al ir de /profile/a a /profile/b).
+  ngOnChanges() {
+    this.loadSub.unsubscribe();
+    this.loadSub = new Subscription();
 
-      const trigger = this.loadMoreTrigger();
+    this.user.set(null);
+    this.posts.set([]);
+    this.postsLoaded.set(false);
+    this.loadError.set(false);
 
-      if (!trigger || this.observer) {
-        return;
-      }
-
-      this.observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && this.loadMorePost() && this.postLoaded()) {
-          const cursor = this.posts()[this.posts().length - 1].getId();
-          this.getUserPosts(cursor);
-        } else {
-          this.postLoaded.set(true);
-        }
-      }, {
-        threshold: 0.5,
-      },
-      );
-      this.observer.observe(trigger.nativeElement);
-    });
-  }
-
-  ngOnInit() {
-
-    this.userService.getUserByUsername(this.username).subscribe({
+    this.loadSub.add(this.userService.getUserByUsername(this.username).subscribe({
       next: rawUser => {
         const user: User = this.userService.buildUser(rawUser);
         this.user.set(user);
+        this.getUserPosts();
       },
       error: err => {
         console.log(err);
+        this.loadError.set(true);
       }
-    });
-
-    this.getUserPosts();
+    }));
   }
 
-  getUserPosts(cursor?: string) {
-    this.postService.getPostsFromUser(this.username, cursor).subscribe({
+  ngOnDestroy() {
+    this.loadSub.unsubscribe();
+  }
+
+  getUserPosts() {
+    this.loadSub.add(this.postService.getPostsFromUser(this.username).subscribe({
       next: (obj: any) => {
-        const posts = obj.posts.map((rawPost: any) => {
+        const posts = obj.posts.slice(0, MAX_PROFILE_POSTS).map((rawPost: any) => {
           const post: Post = this.postService.buildPost(rawPost);
           post.setOp(this.user()!);
 
           return post;
         });
-        if (cursor) {
-          this.posts.set([...this.posts(), ...posts]);
-        } else {
-          this.posts.set(posts);
-        }
-
-        if (!obj.hasMorePosts) {
-          this.loadMorePost.set(false);
-        }
+        this.posts.set(posts);
+        this.postsLoaded.set(true);
       },
       error: (err: any) => {
         console.log(err);
+        this.loadError.set(true);
       }
-    });
+    }));
   }
 
   giveLike(postLiked: Post) {
     this.posts()!.forEach((post: Post) => {
       if (post.getId() == postLiked.getId()) {
-        const liked: boolean = post.getLiked();
-        post.setLiked(!liked);
-
+        post.setLiked(postLiked.getLiked());
         post.setCounts(postLiked);
       }
     });

@@ -49,6 +49,8 @@ export class PostComponent {
 
   loadMoreComments = signal<boolean>(false);
 
+  private commentsCursor?: string;
+
   showPrompter: boolean = true;
 
   displayedText = signal('');
@@ -67,10 +69,7 @@ export class PostComponent {
   loadComments() {
     const postId = this.post()!.getId();
 
-    let cursor: string | undefined = undefined;
-    if (this.comments().length > 0) {
-      cursor = this.comments()[this.comments().length - 1].getId();
-    }
+    const cursor = this.commentsCursor;
 
     this.postService.getComments(postId, cursor).subscribe({
       next: (obj: any) => {
@@ -83,8 +82,13 @@ export class PostComponent {
 
           return comment;
         });
+        if (comments.length > 0) {
+          this.commentsCursor = comments[comments.length - 1].getId();
+        }
         if (cursor) {
-          this.comments.set([...this.comments(), ...comments]);
+          // Un comentario escrito en esta sesión puede venir también en la página del servidor.
+          const loadedIds = new Set(this.comments().map((comment: Comment) => comment.getId()));
+          this.comments.set([...this.comments(), ...comments.filter((comment: Comment) => !loadedIds.has(comment.getId()))]);
         } else {
           this.comments.set(comments);
         }
@@ -104,22 +108,30 @@ export class PostComponent {
     if (this.likeBtnDisabled) return;
     this.likeBtnDisabled = true;
 
-    const postId: string = this.post()!.getId();
+    const currentPost: Post = this.post()!;
+    const postId: string = currentPost.getId();
+    const liked: boolean = !currentPost.getLiked();
 
-    this.postService.likeAPost(postId).subscribe({
+    const request$ = liked
+      ? this.postService.likeAPost(postId)
+      : this.postService.unlikeAPost(postId);
+
+    request$.subscribe({
       next: (rawPost: any) => {
         const post: Post = this.postService.buildPost(rawPost);
+        post.setLiked(liked);
+
+        currentPost.setLiked(liked);
+        currentPost.setCounts(post);
         this.likeGiven.emit(post);
+        this.likeBtnDisabled = false;
       },
       error: (err: HttpErrorResponse) => {
+        this.likeBtnDisabled = false;
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al procesar la solicitud. Intentelo nuevamente mas tarde.', life: 3000 });
         console.log(err);
       }
     });
-
-    setTimeout(() => {
-      this.likeBtnDisabled = false;
-    }, 1500);
   }
 
   showPost() {

@@ -3,7 +3,6 @@ import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } 
 import { LucideAngularModule, Heart } from 'lucide-angular';
 import { RouterLink } from "@angular/router";
 import { MessageModule } from 'primeng/message';
-import { CheckboxModule } from 'primeng/checkbox';
 import { PasswordModule } from "primeng/password";
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -13,10 +12,9 @@ import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { map, switchMap } from 'rxjs';
-import { User } from '../../../classes/user/user';
 @Component({
   selector: 'app-login',
-  imports: [LucideAngularModule, RouterLink, ReactiveFormsModule, MessageModule, CheckboxModule, PasswordModule, InputTextModule, FloatLabelModule, ToastModule],
+  imports: [LucideAngularModule, RouterLink, ReactiveFormsModule, MessageModule, PasswordModule, InputTextModule, FloatLabelModule, ToastModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   providers: [MessageService]
@@ -35,8 +33,7 @@ export class LoginComponent {
   constructor(private formBuilder: FormBuilder, private userService: UserService) {
     this.loginForm = this.formBuilder.group({
       email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required, Validators.minLength(8)]),
-      rememberMe: new FormControl(false)
+      password: new FormControl('', [Validators.required, Validators.minLength(8)])
     });
   }
 
@@ -45,7 +42,6 @@ export class LoginComponent {
       this.loginBtnDisabled.set(true);
       const email: string = this.loginForm.get('email')!.value;
       const password: string = this.loginForm.get('password')!.value;
-      //const rememberMe: boolean = this.loginForm.get('rememberMe')!.value;
 
       this.userService.login(email, password).pipe(
         switchMap(() => this.userService.me()),

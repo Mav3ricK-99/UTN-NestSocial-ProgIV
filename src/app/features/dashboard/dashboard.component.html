@@ -45,7 +45,7 @@
             <p-tabpanels>
                 <p-tabpanel value="0">
                     @if(users() != null && users()!.length > 0) {
-                    <div class="flex flex-row gap-2 w-full p-4">
+                    <div class="flex flex-col gap-2 w-full p-4">
                         @for(user of users(); track user.getId()) {
                         <app-user-card [user]="user" />
                         }

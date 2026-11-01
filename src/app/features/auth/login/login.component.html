@@ -86,19 +86,6 @@
         }
       </div>
 
-      <div class="flex items-center justify-between text-sm">
-
-        <label class="flex items-center gap-2">
-          <p-checkbox formControlName="rememberMe" [binary]="true" />
-          <span>Recordarme</span>
-        </label>
-
-        <!-- <a href="#" class="text-blue-600 hover:text-blue-700">
-          ¿Olvidaste tu contraseña?
-        </a> -->
-
-      </div>
-
       <button type="submit" [disabled]="!loginForm.valid || loginBtnDisabled()" class="w-full h-12 rounded-xl
              bg-blue-600 text-white font-semibold cursor-pointer disabled:bg-blue-300 disabled:cursor-not-allowed
              hover:bg-blue-700 transition">

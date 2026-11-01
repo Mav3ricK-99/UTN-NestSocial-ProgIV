@@ -1,8 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { User } from '../../../classes/user/user';
-import { Observable } from 'rxjs';
+import { catchError, finalize, Observable, of, shareReplay, switchMap, tap } from 'rxjs';
 import { environment } from '../../../../../src/environments/environment';
+
+/** Las peticiones con este token no intentan renovar la sesión ante un 401. */
+export const SKIP_TOKEN_REFRESH = new HttpContextToken<boolean>(() => false);
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +13,7 @@ import { environment } from '../../../../../src/environments/environment';
 export class UserService {
 
   apiPath: string = (environment.BASE_URI + 'api/authentication/');
+  userApiPath: string = (environment.BASE_URI + 'api/user/');
 
   private _user = signal<User | null>(null);
 
@@ -23,7 +27,7 @@ export class UserService {
 
   private httpClient = inject(HttpClient);
 
-  public isRefreshing = false;
+  private refreshSession$?: Observable<unknown>;
 
   constructor() { }
 
@@ -54,17 +58,39 @@ export class UserService {
     });
   }
 
-  me(): Observable<User> {
+  me(skipTokenRefresh = false): Observable<User> {
     return this.httpClient.get<User>(this.apiPath + 'me', {
-      withCredentials: true
+      withCredentials: true,
+      context: new HttpContext().set(SKIP_TOKEN_REFRESH, skipTokenRefresh)
     });
   }
 
-  refreshToken() {
-    this.isRefreshing = true;
-    return this.httpClient.post(this.apiPath + 'refresh-token', {}, {
-      withCredentials: true
-    });
+  /**
+   * Renueva el token y sincroniza usuario y expiración. Si ya hay una renovación en curso,
+   * todos los que la pidan comparten la misma petición en vez de lanzar otra.
+   */
+  refreshSession(): Observable<unknown> {
+    if (!this.refreshSession$) {
+      this.refreshSession$ = this.httpClient.post(this.apiPath + 'refresh-token', {}, {
+        withCredentials: true
+      }).pipe(
+        switchMap(() => this.httpClient.get<any>(this.apiPath + 'me', {
+          withCredentials: true,
+          context: new HttpContext().set(SKIP_TOKEN_REFRESH, true)
+        }).pipe(
+          tap((rawUser: any) => {
+            this.setCurrentUser(this.buildUser(rawUser));
+            this.setTokenExpireTime(new Date(rawUser.exp * 1000));
+          }),
+          // El token ya se renovó: que falle la sincronización no debe invalidar la renovación.
+          catchError(() => of(null))
+        )),
+        finalize(() => this.refreshSession$ = undefined),
+        shareReplay({ bufferSize: 1, refCount: false })
+      );
+    }
+
+    return this.refreshSession$;
   }
 
   logOut(): Observable<any> {
@@ -77,30 +103,35 @@ export class UserService {
     this._user.set(user);
   }
 
-  public setTokenExpireTime(date: Date) {
+  public setTokenExpireTime(date: Date | null) {
     this._exp.set(date);
   }
 
+  public clearSession() {
+    this._user.set(null);
+    this._exp.set(null);
+  }
+
   getUserByUsername(username: string): Observable<User> {
-    return this.httpClient.get<User>(this.apiPath + `getUserByUsername/${username}`, {
+    return this.httpClient.get<User>(this.userApiPath + `getUserByUsername/${username}`, {
       withCredentials: true
     });
   }
 
   getAllUsers(): Observable<User[]> {
-    return this.httpClient.get<User[]>(this.apiPath + 'getAllUsers', {
+    return this.httpClient.get<User[]>(this.userApiPath + 'getAllUsers', {
       withCredentials: true
     });
   }
 
   activateUser(id: string): Observable<User> {
-    return this.httpClient.put<User>(this.apiPath + `${id}/enable`, {}, {
+    return this.httpClient.put<User>(this.userApiPath + `${id}/enable`, {}, {
       withCredentials: true
     });
   }
 
   disableUser(id: string): Observable<User> {
-    return this.httpClient.patch<User>(this.apiPath + `${id}/disable`, {}, {
+    return this.httpClient.patch<User>(this.userApiPath + `${id}/disable`, {}, {
       withCredentials: true
     });
   }

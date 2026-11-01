@@ -16,6 +16,8 @@ import { Router } from '@angular/router';
 import { ClosingSessionComponent } from '../closing-session/closing-session.component';
 import { User, UserRole } from '../../../classes/user/user';
 import { SkeletonModule } from 'primeng/skeleton';
+const EXPIRY_WARNING_MS = 5 * 60 * 1000;
+
 @Component({
   selector: 'app-sidebar',
   imports: [MenuModule, TabsModule, LucideAngularModule, AvatarModule, DividerModule, ButtonModule, CardModule, BadgeModule, SplitterModule, RouterLink, TooltipModule, ClosingSessionComponent, SkeletonModule],
@@ -32,7 +34,7 @@ export class SidebarComponent implements OnInit {
 
   timeLeft = signal('');
 
-  modalShown: boolean = false;
+  modalShown = signal(false);
 
   currentUser = signal<User | null>(null);
 
@@ -112,15 +114,17 @@ export class SidebarComponent implements OnInit {
       const exp = this.userService.expToken();
 
       if (!exp) {
+        this.timeLeft.set('');
+        this.modalShown.set(false);
         return;
       }
       const msDiff = exp.getTime() - this.currentTime();
 
-      this.timeLeft.set(`Quedan ${Math.floor((msDiff / 1000) / 60)} minutos`);
+      this.timeLeft.set(this.formatTimeLeft(msDiff));
 
-      if (msDiff < 300000 && !this.modalShown) {
-        this.modalShown = true;
-      }
+      // Se recalcula en cada tick: al renovar la sesión vuelve a false y el aviso puede reaparecer
+      // en el próximo vencimiento. Si ya venció no se muestra: la próxima petición la renueva sola.
+      this.modalShown.set(msDiff > 0 && msDiff < EXPIRY_WARNING_MS);
     });
   }
 
@@ -138,6 +142,19 @@ export class SidebarComponent implements OnInit {
     }
   }
 
+  private formatTimeLeft(msDiff: number): string {
+    if (msDiff <= 0) {
+      return 'La sesión expiró';
+    }
+
+    const minutes = Math.floor(msDiff / 60000);
+    if (minutes < 1) {
+      return 'Queda menos de un minuto';
+    }
+
+    return minutes === 1 ? 'Queda 1 minuto' : `Quedan ${minutes} minutos`;
+  }
+
   copyUsername() {
     navigator.clipboard.writeText(this.currentUser()!.getUserName());
   }
@@ -145,10 +162,11 @@ export class SidebarComponent implements OnInit {
   logOut() {
     this.userService.logOut().subscribe({
       next: () => {
+        this.userService.clearSession();
         this.router.navigate(['/auth/login']);
       },
       error: () => {
-        this.userService.setCurrentUser(null);
+        this.userService.clearSession();
         this.router.navigate(['/auth/login']);
       }
     });

@@ -98,6 +98,17 @@ export class PostService {
     });
   }
 
+  unlikeAPost(id: string): Observable<Post> {
+    const rawData: any = {
+      "postId": id
+    };
+
+    return this.httpClient.delete<Post>(this.apiPath + '/like', {
+      body: rawData,
+      withCredentials: true
+    });
+  }
+
   deletePost(id: string): Observable<Post> {
     return this.httpClient.patch<Post>(this.apiPath + `/${id}/delete`, {}, {
       withCredentials: true

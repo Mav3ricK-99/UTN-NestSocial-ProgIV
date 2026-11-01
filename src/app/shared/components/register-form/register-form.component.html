@@ -1,3 +1,4 @@
+<p-toast />
 <div class="w-full max-w-xl rounded-3xl register-card animate-slide-from-bottom
          backdrop-blur-md p-10 shadow-2xl relative overflow-hidden">
 
@@ -186,6 +187,11 @@
             @if(errorCheck('username', 'minlength')){
             <p-message severity="error" variant="simple" size="small">
                 El nombre de usuario debe tener al menos 5 caracteres
+            </p-message>
+            }
+            @if(errorCheck('username', 'usernameExists')){
+            <p-message severity="error" variant="simple" size="small">
+                El nombre de usuario ya está registrado
             </p-message>
             }
             }

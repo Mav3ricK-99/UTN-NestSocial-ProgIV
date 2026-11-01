@@ -1,6 +1,6 @@
 @if(!currentUser()) {
 <aside class="border-r border-surface-800 sidebar">
-    <app-closing-session [visible]="modalShown" />
+    <app-closing-session [visible]="modalShown()" />
     <div routerLink="/feed" class="flex items-center p-3 pb-0 cursor-pointer justify-center select-none">
         <span class="smallTitleNest font-extrabold text-red-400/90 tracking-tight font-nest">
             Nest
@@ -52,7 +52,7 @@
 </aside>
 } @else {
 <aside class="border-r border-surface-800 sidebar">
-    <app-closing-session [visible]="modalShown" />
+    <app-closing-session [visible]="modalShown()" />
     <div routerLink="/feed" class="flex items-center p-3 pb-0 cursor-pointer justify-center select-none">
         <span class="smallTitleNest font-extrabold text-red-400/90 tracking-tight font-nest">
             Nest

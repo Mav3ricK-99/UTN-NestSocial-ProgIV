@@ -29,8 +29,9 @@
                 </div>
 
                 @if(comment().getParentAuthor(); as parent) {
+                @let parentContent = comment().getParentComment()?.getContent() ?? '';
                 <div class="text-slate-400 italic text-xs">
-                    Respondiendole a @{{ parent.username }}
+                    Respondiendole a @{{ parent.username }}: "{{ parentContent.slice(0, 10) }}{{ parentContent.length > 10 ? '...' : '' }}"
                 </div>
                 }
 

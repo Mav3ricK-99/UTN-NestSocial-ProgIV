@@ -144,7 +144,11 @@ export class RegisterFormComponent {
         error: (err: HttpErrorResponse) => {
           switch (err.status) {
             case 400: {
-              this.registerForm.get('username')?.setErrors({ usernameExists: true });
+              if(err.message.includes('email')) {
+                this.registerForm.get('email')?.setErrors({ emailExists: true });
+              } else {
+                this.registerForm.get('username')?.setErrors({ usernameExists: true });
+              }
             } break;
             case 401: {
               this.registerForm.get('email')?.setErrors({ emailExists: true });

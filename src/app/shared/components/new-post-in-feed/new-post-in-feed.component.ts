@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { EditorModule } from 'primeng/editor';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
-import { postMinLength } from '../../../core/directives/postMinLength/post-min-length.directive';
-import { postMaxLength } from '../../../core/directives/postMaxLength/post-max-length.directive';
-import { postMaxImages } from '../../../core/directives/postMaxImages/post-max-images.directive';
+import { postMinLength } from '../../../core/validators/postMinLength/post-min-length.validator';
+import { postMaxLength } from '../../../core/validators/postMaxLength/post-max-length.validator';
+import { postMaxImages } from '../../../core/validators/postMaxImages/post-max-images.validator';
 import { Post } from '../../../classes/post/post';
 import { PostService } from '../../../core/services/Post/post.service';
 import { User } from '../../../classes/user/user';

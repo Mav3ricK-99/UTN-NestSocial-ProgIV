@@ -80,7 +80,7 @@
         Únete a la comunidad
     </p>
 
-    <form class="space-y-2" [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+    <form class="space-y-2" ngNoForm novalidate (submit)="$event.preventDefault(); onRegisterSubmit()">
 
         <div class="grid md:grid-cols-2 gap-4">
 
@@ -90,17 +90,17 @@
                 </label>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="label_nombre" autofocus formControlName="name"
+                    <input pInputText id="label_nombre" autofocus [formField]="registerForm.name" [class.show-invalid]="isInvalid(registerForm.name)"
                         class="w-full rounded-xl border border-gray-300 p-3" autocomplete="off" />
                     <label for="label_nombre">Nombre</label>
                 </p-floatlabel>
-                @if(isInvalid('name')){
-                @if(errorCheck('name', 'required')){
+                @if(isInvalid(registerForm.name)){
+                @if(errorCheck(registerForm.name, 'required')){
                 <p-message severity="error" variant="simple" size="small">
                     El nombre es requerido
                 </p-message>
                 }
-                @if(errorCheck('name', 'minlength')){
+                @if(errorCheck(registerForm.name, 'minLength')){
                 <p-message severity="error" variant="simple" size="small">
                     El nombre debe tener al menos 2 caracteres
                 </p-message>
@@ -114,17 +114,17 @@
                 </label>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="label_apellido" formControlName="surname"
+                    <input pInputText id="label_apellido" [formField]="registerForm.surname" [class.show-invalid]="isInvalid(registerForm.surname)"
                         class="w-full rounded-xl border border-gray-300 p-3" autocomplete="off" />
                     <label for="label_apellido">Apellido</label>
                 </p-floatlabel>
-                @if(isInvalid('surname')){
-                @if(errorCheck('surname', 'required')){
+                @if(isInvalid(registerForm.surname)){
+                @if(errorCheck(registerForm.surname, 'required')){
                 <p-message severity="error" variant="simple" size="small">
                     El apellido es requerido
                 </p-message>
                 }
-                @if(errorCheck('surname', 'minlength')){
+                @if(errorCheck(registerForm.surname, 'minLength')){
                 <p-message severity="error" variant="simple" size="small">
                     El apellido debe tener al menos 2 caracteres
                 </p-message>
@@ -140,23 +140,23 @@
             </label>
 
             <p-floatlabel variant="on">
-                <input type="email" pInputText id="label_email" formControlName="email"
+                <input type="email" pInputText id="label_email" [formField]="registerForm.email" [class.show-invalid]="isInvalid(registerForm.email)"
                     class="w-full rounded-xl border border-gray-300 p-3" />
                 <label for="label_email">Correo electrónico</label>
             </p-floatlabel>
-            @if(isInvalid('email')){
-            @if(errorCheck('email', 'required')){
+            @if(isInvalid(registerForm.email)){
+            @if(errorCheck(registerForm.email, 'required')){
             <p-message severity="error" variant="simple" size="small">
                 El correo electrónico es requerido
             </p-message>
             }
-            @if(errorCheck('email', 'email')){
+            @if(errorCheck(registerForm.email, 'email')){
             <p-message severity="error" variant="simple" size="small">
                 El correo electrónico no es válido
             </p-message>
             }
             }
-            @if(errorCheck('email', 'emailExists')){
+            @if(errorCheck(registerForm.email, 'emailExists')){
             <p-message severity="error" variant="simple" size="small">
                 El correo electronico ingresado ya pertenece a una cuenta
             </p-message>
@@ -169,27 +169,27 @@
             </label>
 
             <p-floatlabel variant="on">
-                <input type="text" pInputText id="label_username" formControlName="username"
+                <input type="text" pInputText id="label_username" [formField]="registerForm.username" [class.show-invalid]="isInvalid(registerForm.username)"
                     class="w-full rounded-xl border border-gray-300 p-3" />
                 <label for="label_username">Nombre de usuario</label>
             </p-floatlabel>
-            @if(isInvalid('username')){
-            @if(errorCheck('username', 'required')){
+            @if(isInvalid(registerForm.username)){
+            @if(errorCheck(registerForm.username, 'required')){
             <p-message severity="error" variant="simple" size="small">
                 El nombre de usuario es requerido
             </p-message>
             }
-            @if(errorCheck('username', 'pattern')){
+            @if(errorCheck(registerForm.username, 'pattern')){
             <p-message severity="error" variant="simple" size="small">
                 El nombre de usuario solo puede contener letras, números, puntos y guiones bajos
             </p-message>
             }
-            @if(errorCheck('username', 'minlength')){
+            @if(errorCheck(registerForm.username, 'minLength')){
             <p-message severity="error" variant="simple" size="small">
                 El nombre de usuario debe tener al menos 5 caracteres
             </p-message>
             }
-            @if(errorCheck('username', 'usernameExists')){
+            @if(errorCheck(registerForm.username, 'usernameExists')){
             <p-message severity="error" variant="simple" size="small">
                 El nombre de usuario ya está registrado
             </p-message>
@@ -205,7 +205,7 @@
                 </label>
 
                 <p-floatlabel variant="on">
-                    <p-password formControlName="password" inputId="on_password" [toggleMask]="true"
+                    <p-password [ngModel]="registerForm.password().value()" (ngModelChange)="setValue(registerForm.password(), $event)" (onBlur)="registerForm.password().markAsTouched()" inputId="on_password" [toggleMask]="true"
                         placeholder="********" class="rounded-xl border border-gray-300" weakLabel="Demasiado simple"
                         mediumLabel="Complejidad media" promptLabel="Ingrese una contraseña"
                         strongLabel="Contraseña segura">
@@ -223,15 +223,20 @@
                     <label for="on_password">Contraseña</label>
                 </p-floatlabel>
 
-                @if(isInvalid('password')){
-                @if(errorCheck('password', 'required')){
+                @if(isInvalid(registerForm.password)){
+                @if(errorCheck(registerForm.password, 'required')){
                 <p-message severity="error" variant="simple" size="small">
                     La contraseña es requerida
                 </p-message>
                 }
-                @if(errorCheck('password', 'minlength')){
+                @if(errorCheck(registerForm.password, 'minLength')){
                 <p-message severity="error" variant="simple" size="small">
                     La contraseña debe tener al menos 8 caracteres
+                </p-message>
+                }
+                @if(errorCheck(registerForm.password, 'notSecure')){
+                <p-message severity="error" variant="simple" size="small">
+                    La contraseña debe contener al menos una letra mayúscula y un número.
                 </p-message>
                 }
                 }
@@ -243,25 +248,19 @@
                 </label>
 
                 <p-floatlabel variant="on">
-                    <p-password formControlName="confirmPassword" inputId="on_repeatPassword" [toggleMask]="true"
+                    <p-password [ngModel]="registerForm.confirmPassword().value()" (ngModelChange)="setValue(registerForm.confirmPassword(), $event)" (onBlur)="registerForm.confirmPassword().markAsTouched()" inputId="on_repeatPassword" [toggleMask]="true"
                         placeholder="********" class="rounded-xl border border-gray-300" [feedback]="false" />
                     <label for="on_repeatPassword">Repetir contraseña</label>
                 </p-floatlabel>
-                @if(isInvalid('confirmPassword')){
-                @if(errorCheck('confirmPassword', 'required')){
+                @if(isInvalid(registerForm.confirmPassword)){
+                @if(errorCheck(registerForm.confirmPassword, 'required')){
                 <p-message severity="error" variant="simple" size="small">
                     Las contraseñas no coinciden
                 </p-message>
                 }
-                } @else{
-                @if(registerForm.errors?.['noMatch']){
+                @if(errorCheck(registerForm.confirmPassword, 'noMatch')){
                 <p-message severity="error" variant="simple" size="small">
                     Las contraseñas no coinciden
-                </p-message>
-                }
-                @if(registerForm.errors?.['notSecure']){
-                <p-message severity="error" variant="simple" size="small">
-                    La contraseña debe contener al menos una letra mayúscula y un número.
                 </p-message>
                 }
                 }
@@ -276,17 +275,17 @@
             <div class="grid md:grid-cols-3 gap-4">
                 <div>
                     <p-floatlabel variant="on">
-                        <input pInputText type="number" id="label_dia" formControlName="birthDay"
+                        <input pInputText type="number" id="label_dia" [formField]="registerForm.birthDay" [class.show-invalid]="isInvalid(registerForm.birthDay)"
                             class="w-full rounded-xl border border-gray-300 p-3" autocomplete="off" />
                         <label for="label_dia">Dia</label>
                     </p-floatlabel>
-                    @if(isInvalid('birthDay')){
-                    @if(errorCheck('birthDay', 'required')){
+                    @if(isInvalid(registerForm.birthDay)){
+                    @if(errorCheck(registerForm.birthDay, 'required')){
                     <p-message severity="error" variant="simple" size="small">
                         El día de nacimiento es requerido
                     </p-message>
                     }
-                    @if(errorCheck('birthDay', 'min') || errorCheck('birthDay', 'max')){
+                    @if(errorCheck(registerForm.birthDay, 'min') || errorCheck(registerForm.birthDay, 'max')){
                     <p-message severity="error" variant="simple" size="small">
                         El día de nacimiento debe ser un número entre 1 y 31
                     </p-message>
@@ -294,15 +293,15 @@
                     }
                 </div>
                 <div>
-                    <p-select [options]="meses" placeholder="Mes" formControlName="birthMonth" [editable]="true"
+                    <p-select [options]="meses" placeholder="Mes" [ngModel]="registerForm.birthMonth().value()" (ngModelChange)="setValue(registerForm.birthMonth(), $event)" (onBlur)="registerForm.birthMonth().markAsTouched()" [editable]="true"
                         optionLabel="name" class="w-full" autofocus="false" />
-                    @if(isInvalid('birthMonth')){
-                    @if(errorCheck('birthMonth', 'required')){
+                    @if(isInvalid(registerForm.birthMonth)){
+                    @if(errorCheck(registerForm.birthMonth, 'required')){
                     <p-message severity="error" variant="simple" size="small">
                         El mes de nacimiento es requerido
                     </p-message>
                     }
-                    @if(errorCheck('birthMonth', 'min') || errorCheck('birthMonth', 'max')){
+                    @if(errorCheck(registerForm.birthMonth, 'invalidMonth')){
                     <p-message severity="error" variant="simple" size="small">
                         El mes de nacimiento debe ser un número entre 1 y 12
                     </p-message>
@@ -311,17 +310,17 @@
                 </div>
                 <div>
                     <p-floatlabel variant="on">
-                        <input pInputText type="number" id="label_anio" formControlName="birthYear"
+                        <input pInputText type="number" id="label_anio" [formField]="registerForm.birthYear" [class.show-invalid]="isInvalid(registerForm.birthYear)"
                             class="w-full rounded-xl border border-gray-300 p-3" autocomplete="off" />
                         <label for="label_anio">Año</label>
                     </p-floatlabel>
-                    @if(isInvalid('birthYear')){
-                    @if(errorCheck('birthYear', 'required')){
+                    @if(isInvalid(registerForm.birthYear)){
+                    @if(errorCheck(registerForm.birthYear, 'required')){
                     <p-message severity="error" variant="simple" size="small">
                         El año de nacimiento es requerido
                     </p-message>
                     }
-                    @if(errorCheck('birthYear', 'min') || errorCheck('birthYear', 'max')){
+                    @if(errorCheck(registerForm.birthYear, 'min') || errorCheck(registerForm.birthYear, 'max')){
                     <p-message severity="error" variant="simple" size="small">
                         El año de nacimiento debe ser un número entre 1900 y {{currentYear}}
                     </p-message>
@@ -337,15 +336,15 @@
                     Descripción breve
                 </label>
 
-                <textarea rows="4" maxlength="250" formControlName="bio"
+                <textarea rows="4" [formField]="registerForm.bio"
                     class="w-full rounded-xl border border-gray-300 p-3 resize-none"></textarea>
-                @if(isInvalid('bio')){
-                @if(errorCheck('bio', 'required')){
+                @if(isInvalid(registerForm.bio)){
+                @if(errorCheck(registerForm.bio, 'required')){
                 <p-message severity="error" variant="simple" size="small">
                     La descripción es requerida
                 </p-message>
                 }
-                @if(errorCheck('bio', 'maxlength')){
+                @if(errorCheck(registerForm.bio, 'maxLength')){
                 <p-message severity="error" variant="simple" size="small">
                     La descripción no debe exceder los 250 caracteres
                 </p-message>
@@ -358,7 +357,7 @@
                     Imagen de perfil
                 </label>
 
-                <input type="file" #avatarInput accept=".jpg,.jpeg,.png,.webp" formControlName="avatar"
+                <input type="file" #avatarInput accept=".jpg,.jpeg,.png,.webp"
                     (change)="onAvatarChange($event)" style="display:none" />
 
                 @if(imagePreview()) {
@@ -373,14 +372,14 @@
                 </div>
                 }
 
-                @if(isInvalid('avatar')){
-                @if(errorCheck('avatar', 'required')){
+                @if(isInvalid(registerForm.avatar)){
+                @if(errorCheck(registerForm.avatar, 'required')){
                 <p-message severity="error" variant="simple" size="small">
                     La imagen de perfil es requerida
                 </p-message>
                 }
                 }
-                @if (registerForm.get('avatar')?.hasError('invalidFileType') == true) {
+                @if (errorCheck(registerForm.avatar, 'invalidFileType')) {
                 <p-message severity="error" variant="simple" size="small">
                     Solo se permiten archivos de imagen (jpg, png, webp)
                 </p-message>
@@ -394,7 +393,7 @@
             <lucide-icon [img]="Dices" (click)="randomizeData()"
                 class="size-5 text-gray-600 cursor-pointer transition ease-in-out active:scale-110"></lucide-icon>
 
-            <button type="submit" [disabled]="!registerForm.valid || submitBtnDisabled()" class="w-full h-12 rounded-xl
+            <button type="submit" [disabled]="registerForm().invalid() || registerForm().submitting()" class="w-full h-12 rounded-xl
              bg-blue-600 text-white font-semibold cursor-pointer disabled:bg-blue-300 disabled:cursor-not-allowed
              hover:bg-blue-700 transition">
                 Crear cuenta

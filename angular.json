@@ -24,10 +24,6 @@
                 "input": "public"
               },
               {
-                "glob": "manifest.webmanifest",
-                "input": "src"
-              },
-              {
                 "glob": "**/*",
                 "input": "src/assets"
               }
@@ -54,6 +50,7 @@
                 }
               ],
               "outputHashing": "all",
+              "serviceWorker": "ngsw-config.json",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

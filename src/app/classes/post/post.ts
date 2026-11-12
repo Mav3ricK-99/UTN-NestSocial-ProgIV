@@ -1,3 +1,4 @@
+import { signal } from "@angular/core";
 import { User } from "../user/user";
 
 export class Post {
@@ -5,11 +6,11 @@ export class Post {
     id: string;
     content: string;
     postImage: string | undefined;
-    likesCount: number;
-    commentsCount: number;
-    sharesCount: number;
-    deleted: boolean;
-    liked: boolean;
+    private readonly likesCount = signal(0);
+    private readonly commentsCount = signal(0);
+    private readonly sharesCount = signal(0);
+    private readonly deleted = signal(false);
+    private readonly liked = signal(false);
     op: User | undefined;
     createdAt: Date;
 
@@ -43,11 +44,11 @@ export class Post {
         this.id = id;
         this.content = content;
         this.postImage = postImage;
-        this.likesCount = likesCount ?? 0;
-        this.commentsCount = commentsCount ?? 0;
-        this.sharesCount = sharesCount ?? 0;
-        this.deleted = deleted ?? false;
-        this.liked = userLiked ?? false;
+        this.likesCount.set(likesCount ?? 0);
+        this.commentsCount.set(commentsCount ?? 0);
+        this.sharesCount.set(sharesCount ?? 0);
+        this.deleted.set(deleted ?? false);
+        this.liked.set(userLiked ?? false);
         this.createdAt = createdAt ?? new Date();
         this.op = op;
     }
@@ -65,19 +66,19 @@ export class Post {
     }
 
     public getLikesCount(): number {
-        return this.likesCount;
+        return this.likesCount();
     }
 
     public getCommentsCount(): number {
-        return this.commentsCount;
+        return this.commentsCount();
     }
 
     public getLiked(): boolean {
-        return this.liked;
+        return this.liked();
     }
 
     public getSharesCount(): number {
-        return this.sharesCount;
+        return this.sharesCount();
     }
 
     public getCreatedAt(): Date {
@@ -89,19 +90,19 @@ export class Post {
     }
 
     public setLiked(liked: boolean): void {
-        this.liked = liked;
+        this.liked.set(liked);
     }
 
     public setLikesCount(likesCount: number): void {
-        this.likesCount = likesCount;
+        this.likesCount.set(likesCount);
     }
 
     public setCommentsCount(commentsCount: number): void {
-        this.commentsCount = commentsCount;
+        this.commentsCount.set(commentsCount);
     }
 
     public setSharesCount(sharesCount: number): void {
-        this.sharesCount = sharesCount;
+        this.sharesCount.set(sharesCount);
     }
 
     public setCounts(post: Post): void {
@@ -111,11 +112,11 @@ export class Post {
     }
 
     public setDeleted(deleted: boolean): void {
-        this.deleted = deleted;
+        this.deleted.set(deleted);
     }
 
     public getDeleted(): boolean {
-        return this.deleted;
+        return this.deleted();
     }
 
     public getOp(): User | undefined {
@@ -127,11 +128,11 @@ export class Post {
             this.id,
             this.content,
             this.postImage,
-            this.likesCount,
-            this.commentsCount,
-            this.sharesCount,
-            this.deleted,
-            this.liked,
+            this.likesCount(),
+            this.commentsCount(),
+            this.sharesCount(),
+            this.deleted(),
+            this.liked(),
             this.createdAt,
             this.op
         );

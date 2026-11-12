@@ -22,9 +22,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
       if (error.status !== 401 || req.context.get(SKIP_TOKEN_REFRESH) || AUTH_URLS.some(url => req.url.includes(url))) {
         return throwError(() => error);
-      }
+      } // Cuando una peticion devuelve 401 y no es endpoint de auth
 
-      return userService.refreshSession().pipe(
+      return userService.refreshSession().pipe( // Pipe para encadenar operadores RxJs
         catchError(() => {
           userService.clearSession();
           router.navigate(['/auth/login']);

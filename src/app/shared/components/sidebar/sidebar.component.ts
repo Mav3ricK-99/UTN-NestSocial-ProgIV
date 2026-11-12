@@ -100,9 +100,7 @@ export class SidebarComponent implements OnInit {
             disabled: true
           }
         ]
-      }, {
-        label: 'Seguidores',
-      },
+      }
     ];
 
     setInterval(() => {

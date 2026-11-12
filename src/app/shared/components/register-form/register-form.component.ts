@@ -1,16 +1,14 @@
-import { Component, signal, ElementRef, ViewChild, inject } from '@angular/core';
+import { Component, signal, inject, WritableSignal } from '@angular/core';
 import { LucideAngularModule, Dices, Heart, Upload } from 'lucide-angular';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { FormField, FieldTree, form, required, email, minLength, maxLength, min, max, pattern, validate, submit } from '@angular/forms/signals';
 import { SelectModule } from 'primeng/select';
 import { MessageModule } from 'primeng/message';
-import { passwordsMustMatch } from '../../../core/directives/passwordsMustMatch/passwords-must-match.directive';
 import { UserRole } from "../../../classes/user/user";
-import { passwordsMustBeSecure } from "../../../core/directives/passwordsMustBeSecure/passwords-must-be-secure.directive";
 import { PasswordModule } from "primeng/password";
 import { DividerModule } from 'primeng/divider';
-import { fileTypeMustBeValid } from '../../../core/directives/fileTypeMustBeValid/file-type-must-be-valid.directive';
 import { User } from '../../../classes/user/user';
 import { UserService } from '../../../core/services/User/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -18,10 +16,33 @@ import { Router, RouterLink } from '@angular/router';
 import { demoContents, demoNames, demoUsernames } from '../../../shared/dummyContent/dummy-content';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { firstValueFrom } from 'rxjs';
+
+interface Month {
+  name: string;
+  code: string;
+}
+
+interface RegisterModel {
+  email: string;
+  name: string;
+  surname: string;
+  username: string;
+  birthDay: number | null;
+  birthMonth: Month | null;
+  birthYear: number | null;
+  bio: string;
+  password: string;
+  confirmPassword: string;
+  /** Nombre del archivo seleccionado (el File en si se guarda en selectedFile) */
+  avatar: string;
+}
+
+const ALLOWED_AVATAR_TYPES = ['jpeg', 'png', 'webp', 'jpg', 'jfif'];
 
 @Component({
   selector: 'app-register-form',
-  imports: [InputTextModule, FloatLabelModule, MessageModule, FormsModule, ReactiveFormsModule, PasswordModule, DividerModule, ToastModule, LucideAngularModule, SelectModule, RouterLink],
+  imports: [InputTextModule, FloatLabelModule, MessageModule, FormField, FormsModule, PasswordModule, DividerModule, ToastModule, LucideAngularModule, SelectModule, RouterLink],
   templateUrl: './register-form.component.html',
   styleUrl: './register-form.component.css',
   providers: [MessageService]
@@ -36,9 +57,9 @@ export class RegisterFormComponent {
   public router = inject(Router);
 
   private messageService = inject(MessageService);
+  private userService = inject(UserService);
 
-  @ViewChild('avatarInput') avatarElement!: ElementRef<HTMLInputElement>;
-  readonly meses = [
+  readonly meses: Month[] = [
     { name: 'Enero', code: '1' },
     { name: 'Febrero', code: '2' },
     { name: 'Marzo', code: '3' },
@@ -53,40 +74,89 @@ export class RegisterFormComponent {
     { name: 'Diciembre', code: '12' }
   ];
 
-  public registerForm: FormGroup;
-
   public currentYear = new Date().getFullYear();
-
-  submitBtnDisabled = signal(false);
 
   public imagePreview = signal<string | null>(null);
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private userService: UserService
-  ) {
-    this.registerForm = this.formBuilder.group({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      name: new FormControl('', [Validators.required, Validators.minLength(2)]),
-      surname: new FormControl('', [Validators.required, Validators.minLength(2)]),
-      username: new FormControl('', [Validators.required, Validators.minLength(5), Validators.pattern('^[a-zA-Z0-9._]+$')]),
-      birthDay: new FormControl('', [Validators.required, Validators.min(1), Validators.max(31)]),
-      birthMonth: new FormControl(null, [Validators.required, Validators.min(1), Validators.max(12)]),
-      birthYear: new FormControl('', [Validators.required, Validators.min(1900), Validators.max(this.currentYear)]),
-      bio: new FormControl('', [Validators.maxLength(250)]),
-      password: new FormControl('', [Validators.required, Validators.minLength(8)]),
-      confirmPassword: new FormControl('', [Validators.required]),
-      avatar: new FormControl(null, [Validators.required, fileTypeMustBeValid([
-        'jpeg',
-        'png',
-        'webp',
-        'jpg',
-        'jfif'
-      ])]),
-    }, {
-      validators: [passwordsMustMatch(), passwordsMustBeSecure()]
+  private readonly initialModel: RegisterModel = {
+    email: '',
+    name: '',
+    surname: '',
+    username: '',
+    birthDay: null,
+    birthMonth: null,
+    birthYear: null,
+    bio: '',
+    password: '',
+    confirmPassword: '',
+    avatar: '',
+  };
+
+  private readonly registerModel = signal<RegisterModel>({ ...this.initialModel });
+
+  /**
+   * Los errores del backend (emailExists / usernameExists) se devuelven desde la accion de submit.
+   * Signal Forms los asocia al campo y los limpia solo cuando el usuario modifica ese campo,
+   * por lo que ya no se pisan al revalidar el formulario.
+   */
+  public registerForm = form(this.registerModel, (path) => {
+    required(path.email);
+    email(path.email);
+
+    required(path.name);
+    minLength(path.name, 2);
+
+    required(path.surname);
+    minLength(path.surname, 2);
+
+    required(path.username);
+    minLength(path.username, 5);
+    pattern(path.username, /^[a-zA-Z0-9._]+$/);
+
+    required(path.birthDay);
+    min(path.birthDay, 1);
+    max(path.birthDay, 31);
+
+    required(path.birthMonth);
+    validate(path.birthMonth, ({ value }) => {
+      const selected = value();
+      if (!selected) return undefined;
+      const month = Number(selected.code);
+      return isNaN(month) || month < 1 || month > 12 ? { kind: 'invalidMonth' } : undefined;
     });
-  }
+
+    required(path.birthYear);
+    min(path.birthYear, 1900);
+    max(path.birthYear, this.currentYear);
+
+    maxLength(path.bio, 250);
+
+    required(path.password);
+    minLength(path.password, 8);
+
+    required(path.confirmPassword);
+
+    // Validaciones cruzadas entre contraseñas
+    validate(path.confirmPassword, ({ value, valueOf }) =>
+      value() !== '' && value() !== valueOf(path.password) ? { kind: 'noMatch' } : undefined
+    );
+    validate(path.password, ({ value, valueOf }) => {
+      const regex = /^(?=.*[A-Z])(?=.*\d).+$/;
+      const pass = value();
+      const confirm = valueOf(path.confirmPassword);
+      if (pass === '' || confirm === '') return undefined;
+      return !regex.test(pass) || !regex.test(confirm) ? { kind: 'notSecure' } : undefined;
+    });
+
+    required(path.avatar);
+    validate(path.avatar, ({ value }) => {
+      const file = value();
+      if (!file) return undefined;
+      const lastDot = file.lastIndexOf('.');
+      const ext = lastDot !== -1 ? file.substring(lastDot + 1).toLowerCase() : '';
+      return ALLOWED_AVATAR_TYPES.includes(ext) ? undefined : { kind: 'invalidFileType' };
+    });
+  });
 
   onAvatarChange(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -96,6 +166,8 @@ export class RegisterFormComponent {
     }
 
     this.selectedFile = input.files[0];
+    this.registerForm.avatar().value.set(this.selectedFile.name);
+    this.registerForm.avatar().markAsTouched();
 
     const reader = new FileReader();
 
@@ -107,63 +179,51 @@ export class RegisterFormComponent {
   }
 
   onRegisterSubmit() {
-
     if (this.selectedFile == undefined) return;
-    if (this.registerForm.valid) {
-      this.submitBtnDisabled.set(true);
-      const email = this.registerForm.get('email')!!.value;
-      const name = this.registerForm.get('name')!!.value;
-      const surname = this.registerForm.get('surname')!!.value;
-      const username = this.registerForm.get('username')!!.value;
-      const birthDay = this.registerForm.get('birthDay')!!.value;
-      const birthMonth = this.registerForm.get('birthMonth')!!.value;
-      const birthYear = this.registerForm.get('birthYear')!!.value;
-      const bio = this.registerForm.get('bio')!!.value;
-      const password = this.registerForm.get('password')!!.value;
-      const confirmPassword = this.registerForm.get('confirmPassword')!!.value;
 
-      const userFullName: string = `${name} ${surname}`;
+    submit(this.registerForm, async (f) => {
+      const value = this.registerModel();
+      const userFullName: string = `${value.name} ${value.surname}`;
       const birthDate: Date = new Date();
-      birthDate.setFullYear(birthYear);
-      birthDate.setMonth((Number(birthMonth.code) - 1));
-      birthDate.setDate(birthDay);
+      birthDate.setFullYear(value.birthYear!);
+      birthDate.setMonth(Number(value.birthMonth!.code) - 1);
+      birthDate.setDate(value.birthDay!);
 
-      const newUser: User = new User('0', userFullName, email, username, birthDate, bio, '', UserRole.USER, true, new Date());
-      this.userService.createUser(newUser, password, confirmPassword, this.selectedFile).subscribe({
-        next: () => {
-          this.registerForm.reset();
+      const newUser: User = new User('0', userFullName, value.email, value.username, birthDate, value.bio, '', UserRole.USER, true, new Date());
 
-          if (this.userService.isUserLoggedIn()) {
-            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-              this.router.navigate(['/dashboard']);
-            });
-          } else {
-            this.router.navigate(['/auth/login']);
-          }
-        },
-        error: (err: HttpErrorResponse) => {
-          switch (err.status) {
-            case 400: {
-              if(err.error.message.includes('email')) {
-                this.registerForm.get('email')?.setErrors({ emailExists: true });
-              } else {
-                this.registerForm.get('username')?.setErrors({ usernameExists: true });
-              }
-            } break;
-            default: {
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al procesar la solicitud. Intentelo nuevamente mas tarde.', life: 3000 });
-              console.log(err);
-            }
-          }
-          this.submitBtnDisabled.set(false);
-        },
-      });
+      try {
+        await firstValueFrom(this.userService.createUser(newUser, value.password, value.confirmPassword, this.selectedFile!));
+      } catch (e) {
+        const err = e as HttpErrorResponse;
+        if (err.status === 400) {
+          const isEmailError = err.error?.message?.includes('email');
+          return isEmailError
+            ? { kind: 'emailExists', fieldTree: f.email }
+            : { kind: 'usernameExists', fieldTree: f.username };
+        }
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al procesar la solicitud. Intentelo nuevamente mas tarde.', life: 3000 });
+        console.log(err);
+        return undefined;
+      }
 
-    }
+      this.registerForm().reset({ ...this.initialModel });
+      this.selectedFile = undefined;
+      this.imagePreview.set(null);
+
+      if (this.userService.isUserLoggedIn()) {
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+          this.router.navigate(['/dashboard']);
+        });
+      } else {
+        this.router.navigate(['/auth/login']);
+      }
+      return undefined;
+    });
   }
 
   randomizeData() {
-    this.registerForm.patchValue({
+    this.registerModel.update(model => ({
+      ...model,
       username: demoUsernames[Math.floor(Math.random() * demoUsernames.length)],
       name: demoNames[Math.floor(Math.random() * demoNames.length)],
       surname: demoNames[Math.floor(Math.random() * demoNames.length)],
@@ -174,21 +234,25 @@ export class RegisterFormComponent {
       bio: demoContents[Math.floor(Math.random() * demoContents.length)],
       password: 'Federico99',
       confirmPassword: 'Federico99'
-    });
+    }));
   }
 
-  isInvalid(field: string): boolean {
-    const control = this.registerForm.get(field);
-
-    return !!(
-      control?.invalid &&
-      (control?.dirty || control?.touched)
-    );
+  /**
+   * Para componentes de PrimeNG que tienen un input propio 'pattern' (p-password, p-select) y por eso
+   * no pueden usar [formField] directamente: se enlazan con ngModel y se sincronizan con el campo.
+   */
+  setValue<T>(state: { value: WritableSignal<T>; markAsDirty(): void }, value: T) {
+    state.value.set(value);
+    state.markAsDirty();
   }
 
-  errorCheck(field: string, error: string): boolean {
-    const control = this.registerForm.get(field);
+  /** Muestra errores de validacion solo cuando el campo fue tocado o modificado */
+  isInvalid<T>(field: FieldTree<T>): boolean {
+    const state = field();
+    return state.invalid() && (state.dirty() || state.touched());
+  }
 
-    return !!control?.errors?.[error]!;
+  errorCheck<T>(field: FieldTree<T>, error: string): boolean {
+    return field().errors().some(e => e.kind === error);
   }
 }

@@ -51,6 +51,9 @@ export class PostComponent {
 
   private commentsCursor?: string;
 
+  // Comentarios creados por el usuario en esta sesión (se mantienen al final de la lista).
+  private localComments: Comment[] = [];
+
   showPrompter: boolean = true;
 
   displayedText = signal('');
@@ -86,9 +89,13 @@ export class PostComponent {
           this.commentsCursor = comments[comments.length - 1].getId();
         }
         if (cursor) {
-          // Un comentario escrito en esta sesión puede venir también en la página del servidor.
-          const loadedIds = new Set(this.comments().map((comment: Comment) => comment.getId()));
-          this.comments.set([...this.comments(), ...comments.filter((comment: Comment) => !loadedIds.has(comment.getId()))]);
+          // Los comentarios escritos en esta sesión se mantienen siempre al final,
+          // y se descartan de la página del servidor si vienen duplicados.
+          const localIds = new Set(this.localComments.map((comment: Comment) => comment.getId()));
+          const serverLoaded = this.comments().filter((comment: Comment) => !localIds.has(comment.getId()));
+          const loadedIds = new Set(serverLoaded.map((comment: Comment) => comment.getId()));
+          const newOnes = comments.filter((comment: Comment) => !loadedIds.has(comment.getId()) && !localIds.has(comment.getId()));
+          this.comments.set([...serverLoaded, ...newOnes, ...this.localComments]);
         } else {
           this.comments.set(comments);
         }
@@ -140,7 +147,8 @@ export class PostComponent {
   }
 
   addNewComment(comment: Comment) {
-    this.comments().push(comment);
+    this.localComments.push(comment);
+    this.comments.update(current => [...current, comment]);
   }
 
   goToProfile() {

@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 import { ClosingSessionComponent } from '../closing-session/closing-session.component';
 import { User, UserRole } from '../../../classes/user/user';
 import { SkeletonModule } from 'primeng/skeleton';
-const EXPIRY_WARNING_MS = 5 * 60 * 1000;
+const EXPIRY_WARNING_MS = 1 * 60 * 1000;
 
 @Component({
   selector: 'app-sidebar',

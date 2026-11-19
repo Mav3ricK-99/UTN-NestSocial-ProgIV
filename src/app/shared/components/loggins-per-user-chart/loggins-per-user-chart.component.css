@@ -6,5 +6,5 @@
 }
 
 :host ::ng-deep .p-motion {
-    z-index: 99999999;
+    z-index: 99;
 }

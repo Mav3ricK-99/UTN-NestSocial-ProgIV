@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChartModule } from 'primeng/chart';
 import { StatsService } from '../../../core/services/Stats/stats.service';
-import { map } from 'rxjs';
+import { EMPTY, catchError, switchMap } from 'rxjs';
 import { CardModule } from 'primeng/card';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { cartesianOptions, chartColors, dateRangeChanges } from '../../utils/chart-utils';
 
 @Component({
   selector: 'app-post-per-user-chart',
@@ -16,99 +17,53 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 })
 export class PostPerUserChartComponent implements OnInit {
 
-  today: Date;
+  private destroyRef = inject(DestroyRef);
 
-  public data: any;
-  public options: any;
+  today = new Date();
+
+  // Signals: la app es zoneless, asignar una propiedad común no refresca la vista.
+  data = signal<any>(null);
+  empty = signal(false);
+
+  options = cartesianOptions('Publicaciones por usuario');
 
   formFilter: FormGroup;
 
   constructor(private formBuilder: FormBuilder, private statsService: StatsService) {
     this.formFilter = this.formBuilder.group({
-      createdAtRange: [''],
+      createdAtRange: [null],
     });
-
-    this.options = {
-      responsive: true,
-      maintainAspectRatio: false,
-
-      plugins: {
-        legend: {
-          display: true,
-          position: 'top'
-        },
-
-        title: {
-          display: true,
-          text: 'Publicaciones por usuario'
-        }
-      },
-
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            stepSize: 5
-          }
-        }
-      }
-    };
-
-    this.today = new Date();
   }
 
   ngOnInit() {
-
-    this.getPostPerUser();
-
-    this.formFilter.valueChanges
+    dateRangeChanges(this.formFilter.controls['createdAtRange'])
       .pipe(
-        debounceTime(400),
-        distinctUntilChanged(),
-        filter(() => this.formFilter.valid),
+        // switchMap cancela la consulta anterior: una respuesta vieja no pisa a la nueva.
+        switchMap(({ minDate, maxDate }) =>
+          this.statsService.postsPerUser(minDate, maxDate).pipe(
+            catchError(err => {
+              console.error(err);
+              return EMPTY;
+            }),
+          ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(filterValues => {
-        if (Array.isArray(filterValues.createdAtRange) && filterValues.createdAtRange.filter((date: any) => date == null).length == 1) return;
-
-        const minDate = filterValues.createdAtRange[0].getTime() / 1000;
-        const maxDate = (filterValues.createdAtRange[1].getTime() + 86400) / 1000;
-        this.getPostPerUser(minDate, maxDate);
-      });
-
-  }
-
-  getPostPerUser(minDate?: number, maxDate?: number) {
-    this.statsService.postsPerUser(minDate, maxDate).pipe(
-      map((response: any) => ({
-        labels: response.map((x: any) => x.username),
-        datasets: [
-          {
-            label: 'Cantidad de publicaciones',
-            data: response.map((x: any) => x.postsCount),
-            backgroundColor: [
-              '#42A5F5',
-              '#66BB6A',
-              '#FFA726',
-              '#AB47BC',
-              '#EF5350'
-            ],
-            borderColor: [
-              '#1E88E5',
-              '#43A047',
-              '#FB8C00',
-              '#8E24AA',
-              '#E53935'
-            ],
-            borderWidth: 1
-          }
-        ]
-      }))).subscribe({
-        next: (chartData) => {
-          this.data = chartData;
-        },
-        error: (err) => {
-          console.error(err);
-        }
+      .subscribe((response: any[]) => {
+        this.empty.set(response.length === 0);
+        this.data.set({
+          labels: response.map(x => x.username),
+          datasets: [
+            {
+              label: 'Cantidad de publicaciones',
+              data: response.map(x => x.postsCount),
+              backgroundColor: chartColors(response.length, 0.85),
+              borderColor: chartColors(response.length),
+              borderWidth: 1,
+              borderRadius: 6,
+            },
+          ],
+        });
       });
   }
 }

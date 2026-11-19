@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChartModule } from 'primeng/chart';
 import { StatsService } from '../../../core/services/Stats/stats.service';
-import { map } from 'rxjs';
+import { EMPTY, catchError, map, switchMap } from 'rxjs';
 import { CardModule } from 'primeng/card';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { cartesianOptions, dateRangeChanges, fillMissingDays } from '../../utils/chart-utils';
 
 @Component({
   selector: 'app-likes-per-day-chart',
@@ -16,98 +17,61 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 })
 export class LikesPerDayChartComponent implements OnInit {
 
-  today: Date;
+  private destroyRef = inject(DestroyRef);
 
-  public data: any;
-  public options: any;
+  today = new Date();
+
+  data = signal<any>(null);
+  empty = signal(false);
+
+  options = cartesianOptions('Me gusta por día');
 
   formFilter: FormGroup;
 
   constructor(private formBuilder: FormBuilder, private statsService: StatsService) {
     this.formFilter = this.formBuilder.group({
-      createdAtRange: [''],
+      createdAtRange: [null],
     });
-
-    this.options = {
-      responsive: true,
-      maintainAspectRatio: false,
-
-      plugins: {
-        legend: {
-          display: true,
-          position: 'top'
-        },
-
-        title: {
-          display: true,
-          text: 'Likes en el dia'
-        }
-      },
-
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            stepSize: 5
-          }
-        }
-      }
-    };
-
-    this.today = new Date();
   }
 
   ngOnInit() {
-    this.getLikesPerDay();
-
-    this.formFilter.valueChanges
+    dateRangeChanges(this.formFilter.controls['createdAtRange'])
       .pipe(
-        debounceTime(400),
-        distinctUntilChanged(),
-        filter(() => this.formFilter.valid),
+        switchMap(range =>
+          this.statsService.likesPerDay(range.minDate, range.maxDate).pipe(
+            map((response: any[]) => ({ response, range })),
+            catchError(err => {
+              console.error(err);
+              return EMPTY;
+            }),
+          ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(filterValues => {
-        if (Array.isArray(filterValues.createdAtRange) && filterValues.createdAtRange.filter((date: any) => date == null).length == 1) return;
+      .subscribe(({ response, range }) => {
+        // Los días sin likes no vienen de la API: se completan con 0 para no distorsionar la línea.
+        const { labels, values } = fillMissingDays(
+          response.map(x => ({ year: x._id.year, month: x._id.month, day: x._id.day, count: x.likes })),
+          range,
+        );
 
-        const minDate = filterValues.createdAtRange[0].getTime() / 1000;
-        const maxDate = (filterValues.createdAtRange[1].getTime() + 86400) / 1000;
-        this.getLikesPerDay(minDate, maxDate);
+        this.empty.set(response.length === 0);
+        this.data.set({
+          labels,
+          datasets: [
+            {
+              label: 'Cantidad de me gusta',
+              data: values,
+              fill: true,
+              tension: 0.35,
+              borderColor: '#EF5350',
+              backgroundColor: 'rgba(239, 83, 80, 0.18)',
+              pointBackgroundColor: '#EF5350',
+              pointRadius: values.length > 60 ? 0 : 3,
+              borderWidth: 2,
+            },
+          ],
+        });
       });
-  }
-
-  getLikesPerDay(minDate?: number, maxDate?: number) {
-    this.statsService.likesPerDay(minDate, maxDate).pipe(
-      map((response: any) => ({
-        labels: response.map((x: any) => `${x._id.day}/${x._id.month}/${x._id.year}`),
-        datasets: [
-          {
-            label: 'Cantidad de me gusta',
-            data: response.map((x: any) => x.likes),
-            backgroundColor: [
-              '#42A5F5',
-              '#66BB6A',
-              '#FFA726',
-              '#AB47BC',
-              '#EF5350'
-            ],
-            borderColor: [
-              '#1E88E5',
-              '#43A047',
-              '#FB8C00',
-              '#8E24AA',
-              '#E53935'
-            ],
-            borderWidth: 1
-          }
-        ]
-      }))
-    ).subscribe({
-      next: (chartData) => {
-        this.data = chartData;
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    });
   }
 }

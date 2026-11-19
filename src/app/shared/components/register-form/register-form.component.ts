@@ -1,4 +1,5 @@
-import { Component, signal, inject, WritableSignal } from '@angular/core';
+import { Component, signal, inject, input, WritableSignal } from '@angular/core';
+import { CreateUserFormComponent } from '../create-user-form/create-user-form.component';
 import { LucideAngularModule, Dices, Heart, Upload } from 'lucide-angular';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -42,7 +43,7 @@ const ALLOWED_AVATAR_TYPES = ['jpeg', 'png', 'webp', 'jpg', 'jfif'];
 
 @Component({
   selector: 'app-register-form',
-  imports: [InputTextModule, FloatLabelModule, MessageModule, FormField, FormsModule, PasswordModule, DividerModule, ToastModule, LucideAngularModule, SelectModule, RouterLink],
+  imports: [InputTextModule, FloatLabelModule, MessageModule, FormField, FormsModule, PasswordModule, DividerModule, ToastModule, LucideAngularModule, SelectModule, RouterLink, CreateUserFormComponent],
   templateUrl: './register-form.component.html',
   styleUrl: './register-form.component.css',
   providers: [MessageService]
@@ -51,6 +52,12 @@ export class RegisterFormComponent {
   readonly Dices = Dices;
   readonly Heart = Heart;
   readonly Upload = Upload;
+
+  /**
+   * false (por defecto): formulario de registro para el usuario invitado.
+   * true: formulario del Administrador, con select de Rol (CreateUserFormComponent).
+   */
+  readonly withRole = input<boolean>(false);
 
   selectedFile: File | undefined;
 
@@ -192,7 +199,7 @@ export class RegisterFormComponent {
       const newUser: User = new User('0', userFullName, value.email, value.username, birthDate, value.bio, '', UserRole.USER, true, new Date());
 
       try {
-        await firstValueFrom(this.userService.createUser(newUser, value.password, value.confirmPassword, this.selectedFile!));
+        await firstValueFrom(this.userService.register(newUser, value.password, value.confirmPassword, this.selectedFile!));
       } catch (e) {
         const err = e as HttpErrorResponse;
         if (err.status === 400) {

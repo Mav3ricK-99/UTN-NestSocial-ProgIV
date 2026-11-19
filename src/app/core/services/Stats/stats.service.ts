@@ -35,8 +35,11 @@ export class StatsService {
   }
 
   likesPerDay(minDate?: number, maxDate?: number) {
+    // El día de cada like se agrupa en la zona horaria del navegador (no en UTC).
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     return this.httpClient.get<any>(this.apiPath + 'likes-per-day', {
-      params: this.buildDateParams(minDate, maxDate),
+      params: this.buildDateParams(minDate, maxDate).set('timezone', timezone),
       withCredentials: true,
     });
   }

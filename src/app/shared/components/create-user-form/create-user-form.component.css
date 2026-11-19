@@ -1,0 +1,49 @@
+.create-user-card {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.svg-container {
+    position: absolute;
+    width: 100%;
+    left: -50%;
+    top: -34%;
+    animation: rotate 350s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.p-inputtext.p-invalid:not(.show-invalid) {
+  border-color: var(--p-inputtext-border-color);
+}
+
+.p-inputtext.p-invalid:not(.show-invalid)::placeholder {
+  color: var(--p-inputtext-placeholder-color);
+}
+
+.p-inputtext.p-invalid:not(.show-invalid) .p-float-label {
+  border-color: var(--p-inputtext-border-color);
+}
+
+.p-inputtext.p-invalid:not(.show-invalid) .p-float-label::placeholder {
+  color: var(--p-inputtext-placeholder-color);
+}
+
+.p-floatlabel:has(.p-invalid:not(.show-invalid)) {
+  --p-floatlabel-invalid-color: var(--p-floatlabel-color);
+}
+
+.p-floatlabel:has(.p-invalid:not(.show-invalid)):has(.p-inputtext.p-filled) {
+  --p-floatlabel-invalid-color: var(--p-floatlabel-active-color);
+}
+
+.p-floatlabel:has(.p-invalid:not(.show-invalid)):has(.p-inputtext:focus) {
+  --p-floatlabel-invalid-color: var(--p-floatlabel-focus-color);
+}

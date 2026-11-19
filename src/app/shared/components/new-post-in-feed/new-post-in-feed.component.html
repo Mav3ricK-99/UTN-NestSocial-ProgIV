@@ -1,5 +1,5 @@
 <div>
-    <div [class.showPost]="showForm()" [class.-top-full]="!showForm()"
+    <div [class.showPost]="showForm() && !hidingForm()" [class.hidePost]="hidingForm()" [class.-top-full]="!showForm()"
         class="absolute w-[900px] flex flex-col mb-5 z-90 bg-olive/70 backdrop-blur-md rounded-3xl shadow-xl p-4">
         <p-toast />
         <form [formGroup]="formNewPost" (ngSubmit)="onSubmit()">

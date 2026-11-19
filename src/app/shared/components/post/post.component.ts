@@ -14,9 +14,13 @@ import { CreateCommentComponent } from '../create-comment/create-comment.compone
 import { PopoverModule } from 'primeng/popover';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TimeAgoPipe } from '../../pipes/timeAgo/time-ago.pipe';
+import { CompactNumberPipe } from '../../pipes/compactNumber/compact-number.pipe';
+import { ActionHighlightDirective } from '../../directives/actionHighlight/action-highlight.directive';
+import { HasRoleDirective } from '../../directives/hasRole/has-role.directive';
+import { LazyImageDirective } from '../../directives/lazyImage/lazy-image.directive';
 @Component({
   selector: 'app-post',
-  imports: [LucideAngularModule, ToastModule, PopoverModule, CommentComponent, CreateCommentComponent, SkeletonModule, TimeAgoPipe],
+  imports: [LucideAngularModule, ToastModule, PopoverModule, CommentComponent, CreateCommentComponent, SkeletonModule, TimeAgoPipe, CompactNumberPipe, ActionHighlightDirective, HasRoleDirective, LazyImageDirective],
   templateUrl: './post.component.html',
   styleUrl: './post.component.css',
   providers: [MessageService]
@@ -57,7 +61,6 @@ export class PostComponent {
   showPrompter: boolean = true;
 
   displayedText = signal('');
-  imageLoaded = signal(false);
 
   constructor(public userService: UserService, private postService: PostService) { }
 

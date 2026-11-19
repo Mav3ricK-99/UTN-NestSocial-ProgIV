@@ -1,5 +1,5 @@
 import { Component, inject, input, OnInit } from '@angular/core';
-import { AvatarModule } from 'primeng/avatar';
+import { DatePipe } from '@angular/common';
 import { User } from '../../../classes/user/user';
 import { RouterLink } from '@angular/router';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -7,10 +7,12 @@ import { FormGroup, FormsModule, FormBuilder, FormControl, ReactiveFormsModule }
 import { UserService } from '../../../core/services/User/user.service';
 import { MessageService } from 'primeng/api';
 import { finalize } from 'rxjs';
+import { HasRoleDirective } from '../../directives/hasRole/has-role.directive';
+import { LazyImageDirective } from '../../directives/lazyImage/lazy-image.directive';
 
 @Component({
   selector: 'app-user-card',
-  imports: [AvatarModule, RouterLink, CheckboxModule, FormsModule, ReactiveFormsModule],
+  imports: [RouterLink, CheckboxModule, FormsModule, ReactiveFormsModule, DatePipe, HasRoleDirective, LazyImageDirective],
   templateUrl: './user-card.component.html',
   styleUrl: './user-card.component.css',
 })

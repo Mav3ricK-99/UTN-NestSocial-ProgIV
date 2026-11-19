@@ -47,6 +47,11 @@
     animation: moveButtonUp .6s reverse ease-in-out;
 }
 
+.hidePost {
+    top: calc(var(--spacing) * -50);
+    animation: moveButtonUp .6s ease-in-out;
+}
+
 @keyframes moveButtonUp {
     0% {
         top: calc(var(--spacing) * 8);

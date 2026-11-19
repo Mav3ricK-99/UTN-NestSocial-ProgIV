@@ -4,10 +4,12 @@ import { EditorModule } from 'primeng/editor';
 import { ButtonModule } from 'primeng/button';
 import { CreateCommentComponent } from '../create-comment/create-comment.component';
 import { TimeAgoPipe } from '../../pipes/timeAgo/time-ago.pipe';
+import { TruncatePipe } from '../../pipes/truncate/truncate.pipe';
+import { LazyImageDirective } from '../../directives/lazyImage/lazy-image.directive';
 
 @Component({
   selector: 'app-comment',
-  imports: [EditorModule, ButtonModule, CreateCommentComponent, TimeAgoPipe],
+  imports: [EditorModule, ButtonModule, CreateCommentComponent, TimeAgoPipe, TruncatePipe, LazyImageDirective],
   templateUrl: './comment.component.html',
   styleUrl: './comment.component.css',
 })

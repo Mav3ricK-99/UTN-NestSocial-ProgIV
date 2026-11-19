@@ -27,6 +27,8 @@ export class NewPostInFeedComponent {
 
   showForm = signal<boolean>(false);
 
+  hidingForm = signal<boolean>(false);
+
   showButton = signal<boolean>(true);
 
   formNewPost: FormGroup;
@@ -62,6 +64,7 @@ export class NewPostInFeedComponent {
           post.setOp(op);
 
           this.newPostEmitted.emit(post);
+          this.hidePostForm();
         },
         error: (err: HttpErrorResponse) => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al procesar la solicitud. Intentelo nuevamente mas tarde.', life: 3000 });
@@ -85,6 +88,18 @@ export class NewPostInFeedComponent {
     this.showButton.set(false);
     setTimeout(() => {
       this.showForm.set(true)
+    }, 1000);
+  }
+
+  // Proceso inverso a showPostForm: primero sube el formulario y luego baja el boton
+  hidePostForm() {
+    this.hidingForm.set(true);
+    setTimeout(() => {
+      this.showForm.set(false);
+      this.hidingForm.set(false);
+    }, 600);
+    setTimeout(() => {
+      this.showButton.set(true);
     }, 1000);
   }
 

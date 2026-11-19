@@ -3,7 +3,8 @@
     <div>
         <p-toast />
         <div class="flex flex-row gap-2" (click)="showPost()">
-            <img [src]="post()!.getOp()!.getAvatarPathUrl()" alt="profile" class="w-14 h-14 rounded-full object-cover">
+            <img [appLazyImage]="post()!.getOp()!.getAvatarPathUrl()" fallbackSrc="/default-avatar.jfif" alt="profile"
+                class="w-14 h-14 rounded-full object-cover">
             <div>
                 <div class="flex justify-between">
                     <div class="flex gap-3">
@@ -30,9 +31,8 @@
                 </div>
                 @if(post()!.getPostImage() != undefined && post()!.getPostImage()?.length != 0) {
 
-                <img [src]="post()!.getPostImage()" alt="post image" (load)="imageLoaded.set(true)"
-                    [class.opacity-0]="!imageLoaded()" [class.opacity-100]="imageLoaded()"
-                    class="mt-4 rounded-2xl w-full max-h-[450px] object-cover transition-opacity duration-500" />
+                <img [appLazyImage]="post()!.getPostImage()" alt="post image"
+                    class="mt-4 rounded-2xl w-full max-h-[450px] object-cover" />
                 }
             </div>
 
@@ -46,33 +46,32 @@
                         <span class="font-medium text-surface-900 block mb-2">Opciones</span>
                     </div>
                     <div class="flex flex-col gap-3">
-                        <button class="flex items-center gap-2 w-full cursor-pointer text-gray-500 hover:text-gray-800">
+                        <button appActionHighlight="gray" [base]="500" [highlight]="800"
+                            class="flex items-center gap-2 w-full cursor-pointer">
                             <lucide-icon [img]="UserRoundPlus" class="size-4"></lucide-icon>
                             Seguir a @{{ post()!.op?.getUserName() }}
                         </button>
-                        <button (click)="showPost()"
-                            class="flex items-center gap-2 w-full cursor-pointer text-gray-500 hover:text-gray-800">
+                        <button (click)="showPost()" appActionHighlight="gray" [base]="500" [highlight]="800"
+                            class="flex items-center gap-2 w-full cursor-pointer">
                             <lucide-icon [img]="Eye" class="size-4"></lucide-icon>
                             Ir al post
                         </button>
-                        @if((post()!.getOp()!.getId() == this.userService.loggedInUser()?.getId() ||
-                        this.userService.loggedInUser()?.isAdmin()))
-                        {
-                        @if(!post()!.getDeleted())
-                        {
-                        <button (click)="deletePost()"
-                            class="flex items-center gap-2 w-full cursor-pointer text-red-400 hover:text-red-600">
-                            <lucide-icon [img]="Trash" class="size-4"></lucide-icon>
-                            Eliminar
-                        </button>
-                        } @else {
-                        <button (click)="deletePost()"
-                            class="flex items-center gap-2 w-full cursor-pointer text-green-400 hover:text-green-600">
-                            <lucide-icon [img]="ArchiveRestore" class="size-4"></lucide-icon>
-                            Restaurar
-                        </button>
-                        }
-                        }
+                        <ng-container *appHasRole="'ADMIN'; orOwner: post()!.getOp()?.getId()">
+                            @if(!post()!.getDeleted())
+                            {
+                            <button (click)="deletePost()" appActionHighlight="red" [base]="400" [highlight]="600"
+                                class="flex items-center gap-2 w-full cursor-pointer">
+                                <lucide-icon [img]="Trash" class="size-4"></lucide-icon>
+                                Eliminar
+                            </button>
+                            } @else {
+                            <button (click)="deletePost()" appActionHighlight="green" [base]="400" [highlight]="600"
+                                class="flex items-center gap-2 w-full cursor-pointer">
+                                <lucide-icon [img]="ArchiveRestore" class="size-4"></lucide-icon>
+                                Restaurar
+                            </button>
+                            }
+                        </ng-container>
 
                     </div>
                 </div>
@@ -80,25 +79,21 @@
         </div>
         <div class="w-full flex justify-around mt-5 pt-4 border-t border-gray-100">
 
-            <button
-                class="flex items-center gap-2 cursor-pointer text-blue-300 transition duration-300 ease-in-out commentButton">
-                <lucide-icon [img]="MessageCircle" id="comment-icon"
-                    class="size-4 text-blue-300 fill-current"></lucide-icon>
-                {{ post()!.getCommentsCount() }}
+            <button appActionHighlight="blue"
+                class="flex items-center gap-2 cursor-pointer commentButton">
+                <lucide-icon [img]="MessageCircle" id="comment-icon" class="size-4 fill-current"></lucide-icon>
+                {{ post()!.getCommentsCount() | compactNumber }}
             </button>
 
-            <button [class.text-red-500]="post()!.getLiked()" [class.text-red-300]="!post()!.getLiked()"
-                [disabled]="likeBtnDisabled"
-                class="flex items-center gap-2 cursor-pointer transition duration-300 ease-in-out likeButton">
-                <lucide-icon [img]="Heart" (click)="giveLike()" [class.text-red-500]="post()!.getLiked() "
-                    [class.text-red-300]="!post()!.getLiked()" class="size-4 fill-current"></lucide-icon>
-                {{ post()!.getLikesCount() }}
+            <button appActionHighlight="red" [active]="post()!.getLiked()" [disabled]="likeBtnDisabled"
+                class="flex items-center gap-2 cursor-pointer likeButton">
+                <lucide-icon [img]="Heart" (click)="giveLike()" class="size-4 fill-current"></lucide-icon>
+                {{ post()!.getLikesCount() | compactNumber }}
             </button>
 
-            <button
-                class="flex items-center gap-2 cursor-pointer text-green-300 transition duration-300 ease-in-out repostButton">
-                <lucide-icon [img]="Repeat" id="repost-icon" class="size-4 text-green-300 fill-current"></lucide-icon>
-                {{ post()!.getSharesCount() }}
+            <button appActionHighlight="green" class="flex items-center gap-2 cursor-pointer repostButton">
+                <lucide-icon [img]="Repeat" id="repost-icon" class="size-4 fill-current"></lucide-icon>
+                {{ post()!.getSharesCount() | compactNumber }}
             </button>
 
         </div>

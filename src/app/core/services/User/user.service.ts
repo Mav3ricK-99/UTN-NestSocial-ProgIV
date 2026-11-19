@@ -31,7 +31,7 @@ export class UserService {
 
   constructor() { }
 
-  createUser(user: User, password: string, passwordConfirm: string, avatar: Blob): Observable<User> {
+  register(user: User, password: string, passwordConfirm: string, avatar: Blob): Observable<User> {
     const formData = new FormData();
 
     formData.append('userFullName', user.getUserFullName());
@@ -45,6 +45,25 @@ export class UserService {
     formData.append('profileAvatar', avatar);
 
     return this.httpClient.post<User>(this.apiPath + 'register', formData);
+  }
+
+  createUser(user: User, password: string, passwordConfirm: string, avatar: Blob): Observable<User> {
+    const formData = new FormData();
+
+    formData.append('userFullName', user.getUserFullName());
+    formData.append('email', user.getEmail());
+    formData.append('username', user.getUserName());
+    formData.append('password', password);
+    formData.append('passwordConfirm', passwordConfirm);
+    formData.append('birthDate', user.getBirthDate().toISOString().split('T')[0]);
+    formData.append('bio', user.getBio());
+    formData.append('role', user.getRole());
+
+    formData.append('profileAvatar', avatar);
+
+    return this.httpClient.post<User>(this.apiPath + 'createUser', formData, {
+      withCredentials: true
+    });
   }
 
   login(email: string, password: string): Observable<User> {

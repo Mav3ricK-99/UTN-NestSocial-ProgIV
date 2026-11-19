@@ -6,36 +6,12 @@
     animation: grow .5s 2s ease-in-out;
 }
 
-.likeButton:hover {
-    color: var(--color-red-500) !important;
-
-    lucide-icon {
-        color: var(--color-red-500) !important;
-    }
-}
-
 .asidePost {
     width: 380px;
 }
 
-.repostButton:hover {
-    color: var(--color-green-500) !important;
-
-    lucide-icon {
-        color: var(--color-green-500) !important;
-    }
-}
-
 .post-content, .post-content p {
     word-break: break-all !important;
-}
-
-.commentButton:hover {
-    color: var(--color-blue-500) !important;
-
-    lucide-icon {
-        color: var(--color-blue-500) !important;
-    }
 }
 
 .typing-cursor::after {

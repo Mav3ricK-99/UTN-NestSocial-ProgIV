@@ -3,7 +3,7 @@
     <div class="flex flex-col">
 
         <div class="flex gap-3">
-            <img [src]="comment().getAuthor()?.getAvatarPathUrl()" alt="avatar"
+            <img [appLazyImage]="comment().getAuthor()?.getAvatarPathUrl()" fallbackSrc="/default-avatar.jfif" alt="avatar"
                 class="w-12 h-12 rounded-full object-cover shrink-0" />
 
             <div class="flex-1">
@@ -29,9 +29,8 @@
                 </div>
 
                 @if(comment().getParentAuthor(); as parent) {
-                @let parentContent = comment().getParentComment()?.getContent() ?? '';
                 <div class="text-slate-400 italic text-xs">
-                    Respondiendole a @{{ parent.username }}: "{{ parentContent.slice(0, 10) }}{{ parentContent.length > 10 ? '...' : '' }}"
+                    Respondiendole a @{{ parent.username }}: "{{ comment().getParentComment()?.getContent() | truncate:10:'...':true }}"
                 </div>
                 }
 

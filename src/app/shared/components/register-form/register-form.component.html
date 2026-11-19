@@ -1,3 +1,6 @@
+@if (withRole()) {
+<app-create-user-form />
+} @else {
 <p-toast />
 <div class="w-full max-w-xl rounded-3xl register-card animate-slide-from-bottom
          backdrop-blur-md p-10 shadow-2xl relative overflow-hidden">
@@ -411,3 +414,4 @@
     </form>
 
 </div>
+}

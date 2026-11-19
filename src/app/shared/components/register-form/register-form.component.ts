@@ -117,7 +117,7 @@ export class RegisterFormComponent {
     minLength(path.surname, 2);
 
     required(path.username);
-    minLength(path.username, 5);
+    minLength(path.username, 6);
     pattern(path.username, /^[a-zA-Z0-9._]+$/);
 
     required(path.birthDay);

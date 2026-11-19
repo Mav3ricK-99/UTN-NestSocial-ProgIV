@@ -61,7 +61,26 @@ export class UserService {
 
     formData.append('profileAvatar', avatar);
 
-    return this.httpClient.post<User>(this.apiPath + 'createUser', formData, {
+    return this.httpClient.post<User>(this.userApiPath + 'createUser', formData, {
+      withCredentials: true
+    });
+  }
+
+  /** Modifica los datos del usuario logueado (PATCH /users/me). birthDate va en formato YYYY-MM-DD. */
+  updateProfile(data: { userFullName: string; email: string; username: string; birthDate: string; bio: string }, avatar?: Blob): Observable<User> {
+    const formData = new FormData();
+
+    formData.append('userFullName', data.userFullName);
+    formData.append('email', data.email);
+    formData.append('username', data.username);
+    formData.append('birthDate', data.birthDate);
+    formData.append('bio', data.bio);
+
+    if (avatar) {
+      formData.append('profileAvatar', avatar);
+    }
+
+    return this.httpClient.patch<User>(this.userApiPath + 'me', formData, {
       withCredentials: true
     });
   }

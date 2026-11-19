@@ -1,5 +1,5 @@
 @if(!isLoading()) {
-<div [class]="inAside() ? 'asidePost' : 'w-180'" class="bg-olive-100 rounded-3xl shadow-lg p-5">
+<div [class]="inAside() ? 'asidePost' : 'w-180'" class="bg-cream-50 rounded-3xl shadow-lg p-5">
     <div>
         <p-toast />
         <div class="flex flex-row gap-2" (click)="showPost()">
@@ -12,17 +12,17 @@
                             <div class="font-semibold cursor-default hover:underline">
                                 {{ post()!.op?.getUserFullName() }}
                             </div>
-                            <div class="text-sm text-gray-500 cursor-pointer" (click)="goToProfile()">
+                            <div class="text-sm text-stone-500 cursor-pointer" (click)="goToProfile()">
                                 @{{ post()!.op?.getUserName() }}
                             </div>
-                            <div class="text-xs text-gray-400">
+                            <div class="text-xs text-stone-400">
                                 {{ post()!.getCreatedAt() | timeAgo }}
                             </div>
                         </div>
                     </div>
                 </div>
                 <div [class.min-w-xl]="!inAside()" [class.w-80]="!inAside()" [class.whitespace-pre-line]="!isDummyPost()!"
-                    class="mt-4 text-gray-800" [class.typing-cursor]="showPrompter && isDummyPost()!">
+                    class="mt-4 text-stone-800" [class.typing-cursor]="showPrompter && isDummyPost()!">
                     @if(isDummyPost()!) {
                     {{ displayedText() }}
                     } @else {
@@ -36,7 +36,7 @@
                 }
             </div>
 
-            <button class="place-self-start cursor-pointer text-gray-500 hover:text-black"
+            <button class="place-self-start cursor-pointer text-stone-500 hover:text-black"
                 (click)="postConfig.toggle($event); $event.stopPropagation()">
                 <lucide-icon [img]="Ellipsis" class="size-5"></lucide-icon>
             </button>
@@ -65,7 +65,7 @@
                                 Eliminar
                             </button>
                             } @else {
-                            <button (click)="deletePost()" appActionHighlight="green" [base]="400" [highlight]="600"
+                            <button (click)="deletePost()" appActionHighlight="primary" [base]="400" [highlight]="600"
                                 class="flex items-center gap-2 w-full cursor-pointer">
                                 <lucide-icon [img]="ArchiveRestore" class="size-4"></lucide-icon>
                                 Restaurar
@@ -77,9 +77,9 @@
                 </div>
             </p-popover>
         </div>
-        <div class="w-full flex justify-around mt-5 pt-4 border-t border-gray-100">
+        <div class="w-full flex justify-around mt-5 pt-4 border-t border-stone-100">
 
-            <button appActionHighlight="blue"
+            <button appActionHighlight="primary"
                 class="flex items-center gap-2 cursor-pointer commentButton">
                 <lucide-icon [img]="MessageCircle" id="comment-icon" class="size-4 fill-current"></lucide-icon>
                 {{ post()!.getCommentsCount() | compactNumber }}
@@ -91,7 +91,7 @@
                 {{ post()!.getLikesCount() | compactNumber }}
             </button>
 
-            <button appActionHighlight="green" class="flex items-center gap-2 cursor-pointer repostButton">
+            <button appActionHighlight="secondary" class="flex items-center gap-2 cursor-pointer repostButton">
                 <lucide-icon [img]="Repeat" id="repost-icon" class="size-4 fill-current"></lucide-icon>
                 {{ post()!.getSharesCount() | compactNumber }}
             </button>
@@ -100,15 +100,15 @@
 
         @if(!isDummyPost()!) {
         <div>
-            <hr class="text-olive-200 my-2">
+            <hr class="text-cream-300 my-2">
             @if(comments().length > 0) {
             @for(comment of comments(); track comment.getId()) {
             <app-comment [comment]="comment" (newCommentEmitted)="addNewComment($event)"/>
             }
             }
             @if(loadMoreComments()) {
-            <div (click)="loadComments()" class="cursor-pointer flex justify-center flex-col p-2 mt-4 bg-olive-200">
-                <button class="text-olive-500 hover:text-olive-700">
+            <div (click)="loadComments()" class="cursor-pointer flex justify-center flex-col p-2 mt-4 bg-cream-200">
+                <button class="text-primary-600 hover:text-primary-800">
                     Cargar más comentarios
                 </button>
             </div>
@@ -124,7 +124,7 @@
 
 </div>
 } @else {
-<div [class]="inAside() ? 'asidePost' : 'w-180'" class="bg-olive-100 rounded-3xl shadow-lg p-5">
+<div [class]="inAside() ? 'asidePost' : 'w-180'" class="bg-cream-50 rounded-3xl shadow-lg p-5">
     <div [class]="inAside() ? 'w-30' : 'w-180'" class="w-full space-y-4">
         <div class="flex items-start gap-4">
             <p-skeleton shape="circle" size="3.5rem" />

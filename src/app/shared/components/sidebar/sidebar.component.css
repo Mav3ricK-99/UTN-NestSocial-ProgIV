@@ -5,13 +5,13 @@
     position: sticky;
     top: 0;
 
-    background: var(--color-surface-800);
+    background: var(--p-surface-800);
     overflow-y: auto;
 }
 
 .sidebar {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-surface-400) transparent;
+    scrollbar-color: var(--p-surface-400) transparent;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -23,13 +23,13 @@
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-    background: var(--color-surface-400);
+    background: var(--p-surface-400);
     border-radius: 999px;
     border: 2px solid transparent;
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-    background: var(--color-surface-400);
+    background: var(--p-surface-400);
 }
 
 .smallTitleNest {
@@ -51,7 +51,7 @@
 }
 
 :host ::ng-deep .smallButton:hover {
-    background: var(--color-surface-600) !important;
+    background: var(--p-surface-600) !important;
     color: #94a3b8 !important;
     outline: none !important;
     border: none !important;
@@ -68,13 +68,13 @@
 
 :host ::ng-deep .sideBarMenu .p-menu-list,
 .p-menu {
-    background-color: var(--color-surface-800);
+    background-color: var(--p-surface-800);
     border: none !important;
     padding: 0;
 }
 
 :host ::ng-deep .p-menu {
-    background-color: var(--color-surface-800);
+    background-color: var(--p-surface-800);
     border: 0px !important;
     padding: 0;
 }
@@ -94,7 +94,7 @@
     width: 100px !important;
     height: 100px !important;
 
-    border: 2.5px solid var(--color-green-500) !important;
+    border: 2.5px solid var(--p-primary-500) !important;
 }
 
 :host ::ng-deep .p-button-sm.p-button-icon-only {
@@ -103,9 +103,9 @@
 }
 
 :host ::ng-deep .text-primary {
-    color: var(--color-surface-300) !important;
+    color: var(--p-surface-300) !important;
 }
 
 :host ::ng-deep .p-menu-item[data-p-disabled="false"] .p-menu-item-content {
-    color: var(--color-surface-400);
+    color: var(--p-surface-400);
 }

@@ -1,4 +1,4 @@
-<div class="bg-olive-50 rounded-2xl border mt-3 border-slate-200 p-4 transition-all duration-200 hover:shadow-sm">
+<div class="bg-cream-100 rounded-2xl border mt-3 border-stone-200 p-4 transition-all duration-200 hover:shadow-sm">
 
     <div class="flex flex-col">
 
@@ -10,31 +10,31 @@
 
                 <div class="flex items-center gap-2 flex-wrap">
 
-                    <span class="font-semibold text-slate-800">
+                    <span class="font-semibold text-stone-800">
                         {{ comment().getAuthor()?.getUserFullName() }}
                     </span>
 
-                    <span class="text-sm text-slate-500">
+                    <span class="text-sm text-stone-500">
                         @{{ comment().getAuthor()?.getUserName() }}
                     </span>
 
-                    <span class="text-xs text-slate-400">
+                    <span class="text-xs text-stone-400">
                         ·
                     </span>
 
-                    <span class="text-xs text-slate-400">
+                    <span class="text-xs text-stone-400">
                         {{ comment().getCreatedAt() | timeAgo }}
                     </span>
 
                 </div>
 
                 @if(comment().getParentAuthor(); as parent) {
-                <div class="text-slate-400 italic text-xs">
+                <div class="text-stone-400 italic text-xs">
                     Respondiendole a @{{ parent.username }}: "{{ comment().getParentComment()?.getContent() | truncate:10:'...':true }}"
                 </div>
                 }
 
-                <div class="mt-2 text-slate-700 leading-6" [innerHTML]="comment().getContent()">
+                <div class="mt-2 text-stone-700 leading-6" [innerHTML]="comment().getContent()">
                 </div>
 
                 <div class="flex items-center gap-4 mt-4 justify-end">

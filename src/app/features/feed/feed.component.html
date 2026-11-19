@@ -1,4 +1,4 @@
-<div class="flex bg-olive-50/90">
+<div class="flex bg-cream-100">
 
     <app-sidebar></app-sidebar>
 
@@ -16,15 +16,15 @@
             <p-divider />
             }
             } @else if(feedStatus() == 'error') {
-            <div class="w-180 py-10 flex flex-col items-center gap-3 text-slate-600">
+            <div class="w-180 py-10 flex flex-col items-center gap-3 text-stone-600">
                 <p>No se pudieron cargar las publicaciones.</p>
                 <button (click)="retryLoadPosts()"
-                    class="px-4 py-2 rounded-xl bg-blue-600 text-white cursor-pointer hover:bg-blue-700 transition">
+                    class="px-4 py-2 rounded-xl bg-primary-600 text-white cursor-pointer hover:bg-primary-700 transition">
                     Reintentar
                 </button>
             </div>
             } @else if(feedStatus() == 'loaded') {
-            <p class="w-180 py-10 text-center text-slate-500">
+            <p class="w-180 py-10 text-center text-stone-500">
                 No hay publicaciones para mostrar.
             </p>
             } @else {
@@ -37,16 +37,16 @@
             <p-divider />
             }
             <div #loadMoreTrigger class="h-10 flex justify-center items-center p-2" [class.hidden]="!loadMorePost()">
-                <i class="pi pi-spin pi-spinner text-gray-700" style="font-size: 3rem;"></i>
+                <i class="pi pi-spin pi-spinner text-stone-700" style="font-size: 3rem;"></i>
             </div>
         </div>
 
     </main>
 
-    <section class="flex flex-col bg-olive-100 p-3">
+    <section class="flex flex-col bg-cream-200 p-3">
         <article>
             <p-card class="sticky filterCard top-10 mb-5">
-                <h1 class="mb-3 cursor-default text-slate-700 font-semibold">
+                <h1 class="mb-3 cursor-default text-stone-700 font-semibold">
                     Feed <span class="ml-2 pi pi-sliders-h"></span>
                 </h1>
 
@@ -75,7 +75,7 @@
         </article>
         <article>
             <p-card class="mb-2">
-                <h1 class="mb-3 cursor-default text-slate-700 font-semibold">
+                <h1 class="mb-3 cursor-default text-stone-700 font-semibold">
                     Destacados <span class="ml-2 pi pi-crown"></span>
                 </h1>
                 @if(sidePosts().length > 0) {
@@ -85,9 +85,9 @@
                 <p-divider />
                 }
                 } @else if(sidePostsStatus() == 'error') {
-                <p class="text-center text-slate-500">No se pudieron cargar los destacados.</p>
+                <p class="text-center text-stone-500">No se pudieron cargar los destacados.</p>
                 } @else if(sidePostsStatus() == 'loaded') {
-                <p class="text-center text-slate-500">Aún no hay publicaciones destacadas.</p>
+                <p class="text-center text-stone-500">Aún no hay publicaciones destacadas.</p>
                 } @else {
                 <app-post [isLoading]="true" [inAside]="true"/>
 

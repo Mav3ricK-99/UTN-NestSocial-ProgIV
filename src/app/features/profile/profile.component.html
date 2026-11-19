@@ -1,4 +1,4 @@
-<div class="flex bg-olive-50/90">
+<div class="flex bg-cream-100">
 
     <app-sidebar></app-sidebar>
 
@@ -13,29 +13,21 @@
             }
 
             @if(user() != null) {
-            <h2 class="mt-4 text-3xl font-bold text-slate-100">
+            <h2 class="mt-4 text-3xl font-bold text-stone-100">
                 {{ user()!.getUserFullName() }}
             </h2>
 
-            <span class="text-slate-400">
+            <span class="text-stone-400">
                 @{{ user()!.getUserName() }}
             </span>
             }
 
-            <div class="mt-4 flex gap-8 text-slate-100">
+            <div class="mt-4 flex gap-8 text-stone-100">
 
                 <div class="text-center">
-                    <div class="font-bold">10</div>
-                    <small>Seguidores</small>
-                </div>
-
-                <div class="text-center">
-                    <div class="font-bold">5</div>
-                    <small>Seguidos</small>
-                </div>
-
-                <div class="text-center">
-                    <div class="font-bold">1</div>
+                    @if(posts() != null && posts()!.length > 0) {
+                        <div class="font-bold">{{ posts().length }}</div>
+                    }
                     <small>Posts</small>
                 </div>
 
@@ -50,9 +42,11 @@
                     Publicaciones
                 </p-tab>
 
+                @if(isOwner()) {
                 <p-tab value="1">
-                    Multimedia
+                    Editar mis datos
                 </p-tab>
+                }
 
                 <p-tab value="2">
                     Seguidores
@@ -74,21 +68,21 @@
                     <p-divider />
                     }
                     } @else if(loadError()) {
-                    <p class="py-8 text-center text-slate-500">
+                    <p class="py-8 text-center text-stone-500">
                         No se pudo cargar el perfil. Verifica que el usuario exista e inténtalo nuevamente.
                     </p>
                     } @else if(postsLoaded()) {
-                    <p class="py-8 text-center text-slate-500">
+                    <p class="py-8 text-center text-stone-500">
                         Este usuario aún no tiene publicaciones.
                     </p>
                     }
                 </p-tabpanel>
 
+                @if(isOwner()) {
                 <p-tabpanel value="1">
-
-                    Grid de imágenes
-
+                    <app-edit-profile-form [user]="user()!" (profileUpdated)="onProfileUpdated($event)" />
                 </p-tabpanel>
+                }
 
                 <p-tabpanel value="2">
 

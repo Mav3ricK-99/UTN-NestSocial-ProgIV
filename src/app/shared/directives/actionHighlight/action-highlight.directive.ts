@@ -1,18 +1,25 @@
 import { computed, Directive, input, signal } from '@angular/core';
+import { DANGER, PRIMARY, SECONDARY, SURFACE } from '../../../core/theme/palette';
 
-export type HighlightColor = 'red' | 'blue' | 'green' | 'gray';
+export type HighlightColor = 'red' | 'primary' | 'secondary' | 'gray';
 export type HighlightShade = 300 | 400 | 500 | 600 | 800;
 
 /**
- * Paleta propia (valores de la escala de Tailwind) para no depender de que Tailwind
- * genere las variables CSS `--color-*`, que solo emite las que detecta en uso.
+ * Paleta propia (core/theme/palette.ts) para no depender de que Tailwind genere las variables
+ * CSS `--color-*`, que solo emite las que detecta en uso.
+ *  - primary / secondary: colores de marca (verde bosque / terracota).
+ *  - red: semántico (likes, eliminar). gray: neutros cálidos.
  */
 const PALETTE: Record<HighlightColor, Record<HighlightShade, string>> = {
-  red: { 300: '#fca5a5', 400: '#f87171', 500: '#ef4444', 600: '#dc2626', 800: '#991b1b' },
-  blue: { 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 800: '#1e40af' },
-  green: { 300: '#86efac', 400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 800: '#166534' },
-  gray: { 300: '#d1d5db', 400: '#9ca3af', 500: '#6b7280', 600: '#4b5563', 800: '#1f2937' },
+  red: pick(DANGER),
+  primary: pick(PRIMARY),
+  secondary: pick(SECONDARY),
+  gray: pick(SURFACE),
 };
+
+function pick(scale: Partial<Record<number, string>>): Record<HighlightShade, string> {
+  return { 300: scale[300]!, 400: scale[400]!, 500: scale[500]!, 600: scale[600]!, 800: scale[800]! };
+}
 
 /**
  * Directiva de atributo que "resalta" el color de un botón (y de su ícono, que hereda `currentColor`).
@@ -37,7 +44,7 @@ const PALETTE: Record<HighlightColor, Record<HighlightShade, string>> = {
   },
 })
 export class ActionHighlightDirective {
-  /** Color de la acción: red | blue | green | gray. */
+  /** Color de la acción: red | primary | secondary | gray. */
   readonly appActionHighlight = input.required<HighlightColor>();
 
   /** Fuerza el estado resaltado (ej.: like dado). */

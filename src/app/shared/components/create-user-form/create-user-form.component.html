@@ -7,8 +7,8 @@
             xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 800 800">
             <defs>
                 <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="vvvortex-grad">
-                    <stop stop-color="#2563eb" stop-opacity="1" offset="0%"></stop>
-                    <stop stop-color="#dc2626" stop-opacity="1" offset="100%"></stop>
+                    <stop stop-color="#2F6B4F" stop-opacity="1" offset="0%"></stop>
+                    <stop stop-color="#B4531F" stop-opacity="1" offset="100%"></stop>
                 </linearGradient>
             </defs>
             <g stroke="url(#vvvortex-grad)" fill="none" stroke-linecap="round">
@@ -62,21 +62,21 @@
 
     <div class="flex items-center justify-center gap-3 mb-4">
         <h1 class="text-3xl">
-            <span class="font-extrabold text-red-600 tracking-tight font-nest">
+            <span class="font-extrabold text-secondary-600 tracking-tight font-nest">
                 Nest
             </span>
-            <span class="text-blue-600 italic font-semibold font-social ">
+            <span class="text-primary-600 italic font-semibold font-social ">
                 Social
             </span>
         </h1>
-        <lucide-icon [img]="Heart" class="size-6 text-red-600 fill-current"></lucide-icon>
+        <lucide-icon [img]="Heart" class="size-6 text-secondary-600 fill-current"></lucide-icon>
     </div>
 
     <h2 class="text-center text-2xl font-semibold mb-1">
         Crear usuario
     </h2>
 
-    <p class="text-center text-gray-500 mb-4">
+    <p class="text-center text-stone-500 mb-4">
         Da de alta un nuevo usuario y asígnale un rol
     </p>
 
@@ -91,7 +91,7 @@
 
                 <p-floatlabel variant="on">
                     <input pInputText id="label_nombre" autofocus [formField]="createUserForm.name" [class.show-invalid]="isInvalid(createUserForm.name)"
-                        class="w-full rounded-xl border border-gray-300 p-3" autocomplete="off" />
+                        class="w-full rounded-xl border border-stone-300 p-3" autocomplete="off" />
                     <label for="label_nombre">Nombre</label>
                 </p-floatlabel>
                 @if(isInvalid(createUserForm.name)){
@@ -115,7 +115,7 @@
 
                 <p-floatlabel variant="on">
                     <input pInputText id="label_apellido" [formField]="createUserForm.surname" [class.show-invalid]="isInvalid(createUserForm.surname)"
-                        class="w-full rounded-xl border border-gray-300 p-3" autocomplete="off" />
+                        class="w-full rounded-xl border border-stone-300 p-3" autocomplete="off" />
                     <label for="label_apellido">Apellido</label>
                 </p-floatlabel>
                 @if(isInvalid(createUserForm.surname)){
@@ -141,7 +141,7 @@
 
             <p-floatlabel variant="on">
                 <input type="email" pInputText id="label_email" [formField]="createUserForm.email" [class.show-invalid]="isInvalid(createUserForm.email)"
-                    class="w-full rounded-xl border border-gray-300 p-3" />
+                    class="w-full rounded-xl border border-stone-300 p-3" />
                 <label for="label_email">Correo electrónico</label>
             </p-floatlabel>
             @if(isInvalid(createUserForm.email)){
@@ -170,7 +170,7 @@
 
             <p-floatlabel variant="on">
                 <input type="text" pInputText id="label_username" [formField]="createUserForm.username" [class.show-invalid]="isInvalid(createUserForm.username)"
-                    class="w-full rounded-xl border border-gray-300 p-3" />
+                    class="w-full rounded-xl border border-stone-300 p-3" />
                 <label for="label_username">Nombre de usuario</label>
             </p-floatlabel>
             @if(isInvalid(createUserForm.username)){
@@ -186,7 +186,7 @@
             }
             @if(errorCheck(createUserForm.username, 'minLength')){
             <p-message severity="error" variant="simple" size="small">
-                El nombre de usuario debe tener al menos 5 caracteres
+                El nombre de usuario debe tener al menos 6 caracteres
             </p-message>
             }
             @if(errorCheck(createUserForm.username, 'usernameExists')){
@@ -206,7 +206,7 @@
 
                 <p-floatlabel variant="on">
                     <p-password [ngModel]="createUserForm.password().value()" (ngModelChange)="setValue(createUserForm.password(), $event)" (onBlur)="createUserForm.password().markAsTouched()" inputId="on_password" [toggleMask]="true"
-                        placeholder="********" class="rounded-xl border border-gray-300" weakLabel="Demasiado simple"
+                        placeholder="********" class="rounded-xl border border-stone-300" weakLabel="Demasiado simple"
                         mediumLabel="Complejidad media" promptLabel="Ingrese una contraseña"
                         strongLabel="Contraseña segura">
                         <ng-template #header>
@@ -249,7 +249,7 @@
 
                 <p-floatlabel variant="on">
                     <p-password [ngModel]="createUserForm.confirmPassword().value()" (ngModelChange)="setValue(createUserForm.confirmPassword(), $event)" (onBlur)="createUserForm.confirmPassword().markAsTouched()" inputId="on_repeatPassword" [toggleMask]="true"
-                        placeholder="********" class="rounded-xl border border-gray-300" [feedback]="false" />
+                        placeholder="********" class="rounded-xl border border-stone-300" [feedback]="false" />
                     <label for="on_repeatPassword">Repetir contraseña</label>
                 </p-floatlabel>
                 @if(isInvalid(createUserForm.confirmPassword)){
@@ -276,7 +276,7 @@
                 <div>
                     <p-floatlabel variant="on">
                         <input pInputText type="number" id="label_dia" [formField]="createUserForm.birthDay" [class.show-invalid]="isInvalid(createUserForm.birthDay)"
-                            class="w-full rounded-xl border border-gray-300 p-3" autocomplete="off" />
+                            class="w-full rounded-xl border border-stone-300 p-3" autocomplete="off" />
                         <label for="label_dia">Dia</label>
                     </p-floatlabel>
                     @if(isInvalid(createUserForm.birthDay)){
@@ -311,7 +311,7 @@
                 <div>
                     <p-floatlabel variant="on">
                         <input pInputText type="number" id="label_anio" [formField]="createUserForm.birthYear" [class.show-invalid]="isInvalid(createUserForm.birthYear)"
-                            class="w-full rounded-xl border border-gray-300 p-3" autocomplete="off" />
+                            class="w-full rounded-xl border border-stone-300 p-3" autocomplete="off" />
                         <label for="label_anio">Año</label>
                     </p-floatlabel>
                     @if(isInvalid(createUserForm.birthYear)){
@@ -334,9 +334,17 @@
             <label class="block mb-2 font-medium">
                 Rol
             </label>
-            <p-select [options]="roles" placeholder="Seleccione un rol" [ngModel]="createUserForm.role().value()"
-                (ngModelChange)="setValue(createUserForm.role(), $event)" (onBlur)="createUserForm.role().markAsTouched()"
-                class="w-full" />
+            <div class="flex flex-wrap gap-6">
+                @for (r of roles; track r.value) {
+                <div class="flex items-center gap-2">
+                    <p-radiobutton name="role" [inputId]="'role_' + r.value" [value]="r.value"
+                        [ngModel]="createUserForm.role().value()"
+                        (ngModelChange)="setValue(createUserForm.role(), $event)"
+                        (onBlur)="createUserForm.role().markAsTouched()" />
+                    <label [for]="'role_' + r.value" class="cursor-pointer">{{ r.label }}</label>
+                </div>
+                }
+            </div>
             @if(isInvalid(createUserForm.role)){
             @if(errorCheck(createUserForm.role, 'required')){
             <p-message severity="error" variant="simple" size="small">
@@ -353,7 +361,7 @@
                 </label>
 
                 <textarea rows="4" [formField]="createUserForm.bio"
-                    class="w-full rounded-xl border border-gray-300 p-3 resize-none"></textarea>
+                    class="w-full rounded-xl border border-stone-300 p-3 resize-none"></textarea>
                 @if(isInvalid(createUserForm.bio)){
                 @if(errorCheck(createUserForm.bio, 'required')){
                 <p-message severity="error" variant="simple" size="small">
@@ -378,13 +386,13 @@
 
                 @if(imagePreview()) {
                 <div (click)="avatarInput.click()"
-                    class="w-26 h-26 cursor-pointer self-center rounded-full border-4 border-green-600 bg-gray-100 flex items-center justify-center">
+                    class="w-26 h-26 cursor-pointer self-center rounded-full border-4 border-primary-600 bg-stone-100 flex items-center justify-center">
                     <img [src]="imagePreview()" alt="Preview" class="w-25 h-25 rounded-full object-cover" />
                 </div>
                 } @else {
                 <div (click)="avatarInput.click()"
-                    class="w-26 h-26 cursor-pointer self-center rounded-full border-4 border-red-200 bg-gray-100 flex items-center justify-center">
-                    <lucide-icon [img]="Upload" class="size-10 text-red-300 fill-current"></lucide-icon>
+                    class="w-26 h-26 cursor-pointer self-center rounded-full border-4 border-secondary-200 bg-stone-100 flex items-center justify-center">
+                    <lucide-icon [img]="Upload" class="size-10 text-secondary-300 fill-current"></lucide-icon>
                 </div>
                 }
 
@@ -407,11 +415,11 @@
 
         <div class="flex flex-row items-center gap-4 mt-4">
             <lucide-icon [img]="Dices" (click)="randomizeData()"
-                class="size-5 text-gray-600 cursor-pointer transition ease-in-out active:scale-110"></lucide-icon>
+                class="size-5 text-stone-600 cursor-pointer transition ease-in-out active:scale-110"></lucide-icon>
 
             <button type="submit" [disabled]="createUserForm().invalid() || createUserForm().submitting()" class="w-full h-12 rounded-xl
-             bg-blue-600 text-white font-semibold cursor-pointer disabled:bg-blue-300 disabled:cursor-not-allowed
-             hover:bg-blue-700 transition">
+             bg-primary-600 text-white font-semibold cursor-pointer disabled:bg-primary-300 disabled:cursor-not-allowed
+             hover:bg-primary-700 transition">
                 Crear usuario
             </button>
         </div>

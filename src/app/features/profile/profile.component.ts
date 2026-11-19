@@ -1,4 +1,5 @@
-import { Component, Input, OnChanges, OnDestroy, signal } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, computed, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AvatarModule } from 'primeng/avatar';
 import { TabsModule } from 'primeng/tabs';
@@ -9,12 +10,13 @@ import { PostService } from '../../core/services/Post/post.service';
 import { Post } from '../../classes/post/post';
 import { PostComponent } from '../../shared/components/post/post.component';
 import { DividerModule } from 'primeng/divider';
+import { EditProfileFormComponent } from '../../shared/components/edit-profile-form/edit-profile-form.component';
 
 const MAX_PROFILE_POSTS = 3;
 
 @Component({
   selector: 'app-profile',
-  imports: [SidebarComponent, PostComponent, AvatarModule, TabsModule, DividerModule],
+  imports: [SidebarComponent, PostComponent, AvatarModule, TabsModule, DividerModule, EditProfileFormComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
@@ -29,7 +31,7 @@ export class ProfileComponent implements OnChanges, OnDestroy {
 
   private loadSub = new Subscription();
 
-  constructor(private userService: UserService, private postService: PostService) { }
+  constructor(private userService: UserService, private postService: PostService, private router: Router) { }
 
   // Se ejecuta al crear el componente y cada vez que cambia :username en la ruta
   // (Angular reutiliza la instancia al ir de /profile/a a /profile/b).
@@ -76,6 +78,27 @@ export class ProfileComponent implements OnChanges, OnDestroy {
         this.loadError.set(true);
       }
     }));
+  }
+
+  /** El perfil que se esta viendo es el del usuario logueado */
+  isOwner = computed(() => {
+    const loggedIn = this.userService.loggedInUser();
+    const profile = this.user();
+    return !!loggedIn && !!profile && loggedIn.getId() === profile.getId();
+  });
+
+  onProfileUpdated(updated: User) {
+    // El token y el usuario de la sesion llevan los datos viejos: se renueva para reflejar los cambios (nav, sidebar, etc.)
+    this.userService.refreshSession().subscribe();
+
+    if (updated.getUserName() !== this.username) {
+      // La URL del perfil depende del username: se navega a la nueva (ngOnChanges recarga todo)
+      this.router.navigate(['/profile', updated.getUserName()]);
+      return;
+    }
+
+    this.user.set(updated);
+    this.posts().forEach(post => post.setOp(updated));
   }
 
   giveLike(postLiked: Post) {

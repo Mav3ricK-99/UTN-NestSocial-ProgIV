@@ -5,14 +5,48 @@
 @import 'tailwindcss';
 @import "tailwindcss-primeui";
 
+/*
+ * Paleta "Bosque otoñal". Fuente de verdad: src/app/core/theme/palette.ts
+ *  - primary / surface -> los define el preset de PrimeNG (nest-preset.ts) y tailwindcss-primeui
+ *    los expone como bg-primary-600, text-surface-700, etc.
+ *  - secondary / cream -> se declaran acá. `static` fuerza a emitir todas las variables, así se pueden
+ *    usar con var(--color-cream-50) desde los CSS de los componentes.
+ */
+@theme static {
+  --color-secondary-50: #FDF5EF;
+  --color-secondary-100: #F3DCCB;
+  --color-secondary-200: #E8BC9C;
+  --color-secondary-300: #DB9A6E;
+  --color-secondary-400: #CC7640;
+  --color-secondary-500: #C0622B;
+  --color-secondary-600: #B4531F;
+  --color-secondary-700: #8F4018;
+  --color-secondary-800: #6E3114;
+  --color-secondary-900: #4D230E;
+  --color-secondary-950: #2A1207;
+
+  --color-cream-50: #FFFBF2;
+  --color-cream-100: #F7F1E3;
+  --color-cream-200: #EDE4CE;
+  --color-cream-300: #DFD2B4;
+  --color-cream-400: #CDBB92;
+  --color-cream-500: #B5A073;
+  --color-cream-600: #8F7C52;
+  --color-cream-700: #6E5F3D;
+}
+
 :root,
 :host {
-  --primary-color: #2563eb;
-  --secondary-color: #dc2626;
-  --p-select-option-selected-color: #2563eb !important;
-  --p-list-option-selected-focus-color: #4f80eb !important;
+  --primary-color: var(--p-primary-600);
+  --secondary-color: #B4531F;
+  --p-select-option-selected-color: var(--p-primary-600) !important;
+  --p-list-option-selected-focus-color: var(--p-primary-500) !important;
   --p-select-placeholder-color: var(--p-floatlabel-color) !important;
-  --p-content-border-color: var(--color-slate-500) !important;
+  --p-content-border-color: var(--p-surface-500) !important;
+}
+
+body {
+  background-color: var(--color-cream-100);
 }
 
 .p-password-input {
@@ -25,30 +59,30 @@
 }
 
 .p-select-option.p-select-option-selected.p-focus {
-  background: #e0e7ff !important;
+  background: var(--p-primary-100) !important;
 }
 
 .p-inputtext:focus {
-  border-color: #2563eb !important;
+  border-color: var(--p-primary-600) !important;
 }
 
 .p-select-option.p-select-option-selected {
-  background: #e0e7ff !important;
+  background: var(--p-primary-100) !important;
 }
 
 .p-select:not(.p-disabled).p-focus {
-  border-color: #2563eb !important;
+  border-color: var(--p-primary-600) !important;
 }
 
 .p-select-label {
-  border-color: #2563eb;
+  border-color: var(--p-primary-600);
 }
 
 .p-floatlabel:has(input:focus) label,
 .p-floatlabel:has(input:-webkit-autofill) label,
 .p-floatlabel:has(textarea:focus) label,
 .p-floatlabel:has(.p-inputwrapper-focus) label {
-  color: #2563eb !important;
+  color: var(--p-primary-600) !important;
 }
 
 @theme {

@@ -5,6 +5,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { FormField, FieldTree, form, required, email, minLength, maxLength, min, max, pattern, validate, submit } from '@angular/forms/signals';
 import { SelectModule } from 'primeng/select';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { MessageModule } from 'primeng/message';
 import { PasswordModule } from "primeng/password";
 import { DividerModule } from 'primeng/divider';
@@ -48,7 +49,7 @@ const ALLOWED_AVATAR_TYPES = ['jpeg', 'png', 'webp', 'jpg', 'jfif'];
  */
 @Component({
   selector: 'app-create-user-form',
-  imports: [InputTextModule, FloatLabelModule, MessageModule, FormField, FormsModule, PasswordModule, DividerModule, ToastModule, LucideAngularModule, SelectModule],
+  imports: [InputTextModule, FloatLabelModule, MessageModule, FormField, FormsModule, PasswordModule, DividerModule, ToastModule, LucideAngularModule, SelectModule, RadioButtonModule],
   templateUrl: './create-user-form.component.html',
   styleUrl: './create-user-form.component.css',
   providers: [MessageService]
@@ -80,8 +81,11 @@ export class CreateUserFormComponent {
     { name: 'Diciembre', code: '12' }
   ];
 
-  /** Opciones del select de Rol: los valores del enum UserRole */
-  readonly roles: UserRole[] = Object.values(UserRole);
+  /** Opciones del selector de Rol (radio buttons) */
+  readonly roles: { value: UserRole; label: string }[] = [
+    { value: UserRole.USER, label: 'Usuario' },
+    { value: UserRole.ADMIN, label: 'Administrador' },
+  ];
 
   public currentYear = new Date().getFullYear();
 
@@ -119,7 +123,7 @@ export class CreateUserFormComponent {
     minLength(path.surname, 2);
 
     required(path.username);
-    minLength(path.username, 5);
+    minLength(path.username, 6);
     pattern(path.username, /^[a-zA-Z0-9._]+$/);
 
     required(path.birthDay);

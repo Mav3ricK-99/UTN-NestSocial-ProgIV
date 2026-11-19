@@ -3,7 +3,7 @@ import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
 import { routes } from './app.routes';
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
+import { NestPreset } from './core/theme/nest-preset';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/authInterceptor/auth.interceptor';
 
@@ -17,7 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding()),
     providePrimeNG({
       theme: {
-        preset: Aura,
+        preset: NestPreset,
         options: {
           darkModeSelector: false // Ensures it locks to light mode, or use '.my-dark-mode'
         }

@@ -1,0 +1,176 @@
+<p-toast />
+
+<form class="w-full max-w-xl space-y-4 p-6" ngNoForm novalidate (submit)="$event.preventDefault(); onSubmit()">
+
+    <h3 class="text-xl font-semibold text-center">Editar mis datos</h3>
+
+    <div class="flex flex-col items-center gap-2">
+        <input type="file" #avatarInput accept=".jpg,.jpeg,.png,.webp" (change)="onAvatarChange($event)"
+            style="display:none" />
+
+        <div (click)="avatarInput.click()" title="Cambiar imagen de perfil"
+            class="size-26 cursor-pointer rounded-full border-4 border-primary-600 bg-stone-100 flex items-center justify-center overflow-hidden">
+            @if(imagePreview()) {
+            <img [src]="imagePreview()" alt="Nueva imagen de perfil" class="size-full object-cover" />
+            } @else if(user().getAvatarPathUrl()) {
+            <img [src]="user().getAvatarPathUrl()" alt="Imagen de perfil actual" class="size-full object-cover" />
+            } @else {
+            <lucide-icon [img]="Upload" class="size-10 text-secondary-300 fill-current"></lucide-icon>
+            }
+        </div>
+        <small class="text-stone-500">Hacé click en la imagen para cambiarla</small>
+
+        @if(errorCheck(editProfileForm.avatar, 'invalidFileType')) {
+        <p-message severity="error" variant="simple" size="small">
+            Solo se permiten archivos de imagen (jpg, png, webp)
+        </p-message>
+        }
+    </div>
+
+    <div>
+        <label class="block mb-2 font-medium">Nombre completo</label>
+        <p-floatlabel variant="on">
+            <input pInputText id="edit_fullname" [formField]="editProfileForm.userFullName"
+                [class.show-invalid]="isInvalid(editProfileForm.userFullName)"
+                class="w-full rounded-xl border border-stone-300 p-3" autocomplete="off" />
+            <label for="edit_fullname">Nombre completo</label>
+        </p-floatlabel>
+        @if(isInvalid(editProfileForm.userFullName)){
+        @if(errorCheck(editProfileForm.userFullName, 'required')){
+        <p-message severity="error" variant="simple" size="small">El nombre es requerido</p-message>
+        }
+        @if(errorCheck(editProfileForm.userFullName, 'minLength')){
+        <p-message severity="error" variant="simple" size="small">El nombre debe tener al menos 6 caracteres</p-message>
+        }
+        }
+    </div>
+
+    <div>
+        <label class="block mb-2 font-medium">Correo electrónico</label>
+        <p-floatlabel variant="on">
+            <input type="email" pInputText id="edit_email" [formField]="editProfileForm.email"
+                [class.show-invalid]="isInvalid(editProfileForm.email)"
+                class="w-full rounded-xl border border-stone-300 p-3" />
+            <label for="edit_email">Correo electrónico</label>
+        </p-floatlabel>
+        @if(isInvalid(editProfileForm.email)){
+        @if(errorCheck(editProfileForm.email, 'required')){
+        <p-message severity="error" variant="simple" size="small">El correo electrónico es requerido</p-message>
+        }
+        @if(errorCheck(editProfileForm.email, 'email')){
+        <p-message severity="error" variant="simple" size="small">El correo electrónico no es válido</p-message>
+        }
+        }
+        @if(errorCheck(editProfileForm.email, 'emailExists')){
+        <p-message severity="error" variant="simple" size="small">
+            El correo electronico ingresado ya pertenece a una cuenta
+        </p-message>
+        }
+    </div>
+
+    <div>
+        <label class="block mb-2 font-medium">Nombre de usuario</label>
+        <p-floatlabel variant="on">
+            <input type="text" pInputText id="edit_username" [formField]="editProfileForm.username"
+                [class.show-invalid]="isInvalid(editProfileForm.username)"
+                class="w-full rounded-xl border border-stone-300 p-3" />
+            <label for="edit_username">Nombre de usuario</label>
+        </p-floatlabel>
+        @if(isInvalid(editProfileForm.username)){
+        @if(errorCheck(editProfileForm.username, 'required')){
+        <p-message severity="error" variant="simple" size="small">El nombre de usuario es requerido</p-message>
+        }
+        @if(errorCheck(editProfileForm.username, 'pattern')){
+        <p-message severity="error" variant="simple" size="small">
+            El nombre de usuario solo puede contener letras, números, puntos y guiones bajos
+        </p-message>
+        }
+        @if(errorCheck(editProfileForm.username, 'minLength')){
+        <p-message severity="error" variant="simple" size="small">
+            El nombre de usuario debe tener al menos 6 caracteres
+        </p-message>
+        }
+        }
+        @if(errorCheck(editProfileForm.username, 'usernameExists')){
+        <p-message severity="error" variant="simple" size="small">El nombre de usuario ya está registrado</p-message>
+        }
+    </div>
+
+    <div class="flex flex-col">
+        <label class="block mb-2 font-medium">Fecha de nacimiento</label>
+        <div class="grid md:grid-cols-3 gap-4">
+            <div>
+                <p-floatlabel variant="on">
+                    <input pInputText type="number" id="edit_dia" [formField]="editProfileForm.birthDay"
+                        [class.show-invalid]="isInvalid(editProfileForm.birthDay)"
+                        class="w-full rounded-xl border border-stone-300 p-3" autocomplete="off" />
+                    <label for="edit_dia">Día</label>
+                </p-floatlabel>
+                @if(isInvalid(editProfileForm.birthDay)){
+                @if(errorCheck(editProfileForm.birthDay, 'required')){
+                <p-message severity="error" variant="simple" size="small">El día de nacimiento es requerido</p-message>
+                }
+                @if(errorCheck(editProfileForm.birthDay, 'min') || errorCheck(editProfileForm.birthDay, 'max')){
+                <p-message severity="error" variant="simple" size="small">
+                    El día de nacimiento debe ser un número entre 1 y 31
+                </p-message>
+                }
+                }
+            </div>
+            <div>
+                <p-select [options]="meses" placeholder="Mes" optionLabel="name" class="w-full"
+                    [ngModel]="editProfileForm.birthMonth().value()"
+                    (ngModelChange)="setValue(editProfileForm.birthMonth(), $event)"
+                    (onBlur)="editProfileForm.birthMonth().markAsTouched()" />
+                @if(isInvalid(editProfileForm.birthMonth)){
+                @if(errorCheck(editProfileForm.birthMonth, 'required')){
+                <p-message severity="error" variant="simple" size="small">El mes de nacimiento es requerido</p-message>
+                }
+                }
+            </div>
+            <div>
+                <p-floatlabel variant="on">
+                    <input pInputText type="number" id="edit_anio" [formField]="editProfileForm.birthYear"
+                        [class.show-invalid]="isInvalid(editProfileForm.birthYear)"
+                        class="w-full rounded-xl border border-stone-300 p-3" autocomplete="off" />
+                    <label for="edit_anio">Año</label>
+                </p-floatlabel>
+                @if(isInvalid(editProfileForm.birthYear)){
+                @if(errorCheck(editProfileForm.birthYear, 'required')){
+                <p-message severity="error" variant="simple" size="small">El año de nacimiento es requerido</p-message>
+                }
+                @if(errorCheck(editProfileForm.birthYear, 'min') || errorCheck(editProfileForm.birthYear, 'max')){
+                <p-message severity="error" variant="simple" size="small">
+                    El año de nacimiento debe ser un número entre 1900 y {{currentYear}}
+                </p-message>
+                }
+                @if(errorCheck(editProfileForm.birthYear, 'underAge')){
+                <p-message severity="error" variant="simple" size="small">
+                    Debés ser mayor de 13 años
+                </p-message>
+                }
+                }
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <label class="block mb-2 font-medium">Descripción breve</label>
+        <textarea rows="4" [formField]="editProfileForm.bio"
+            class="w-full rounded-xl border border-stone-300 p-3 resize-none"></textarea>
+        @if(isInvalid(editProfileForm.bio)){
+        @if(errorCheck(editProfileForm.bio, 'maxLength')){
+        <p-message severity="error" variant="simple" size="small">
+            La descripción no debe exceder los 255 caracteres
+        </p-message>
+        }
+        }
+    </div>
+
+    <button type="submit" [disabled]="editProfileForm().invalid() || editProfileForm().submitting()" class="w-full h-12 rounded-xl
+         bg-primary-600 text-white font-semibold cursor-pointer disabled:bg-primary-300 disabled:cursor-not-allowed
+         hover:bg-primary-700 transition">
+        Guardar cambios
+    </button>
+
+</form>

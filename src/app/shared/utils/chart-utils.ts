@@ -7,9 +7,10 @@ export interface DateRangeSeconds {
   maxDate?: number;
 }
 
+/** Paleta de gráficos: verdes, terracotas, ocres y marrones (tonos de bosque otoñal). */
 export const CHART_PALETTE = [
-  '#42A5F5', '#66BB6A', '#FFA726', '#AB47BC', '#EF5350',
-  '#26C6DA', '#FFEE58', '#8D6E63', '#EC407A', '#7E57C2',
+  '#2F6B4F', '#B4531F', '#D99A2B', '#8FB573', '#7B4B2A',
+  '#4F8A8B', '#9C3A26', '#C9A66B', '#6B7F3A', '#D9785C',
 ];
 
 /** Devuelve `count` colores, repitiendo la paleta si hace falta. */

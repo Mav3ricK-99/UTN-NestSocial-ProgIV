@@ -1,12 +1,12 @@
 :host ::ng-deep .post-editor .p-editor-toolbar {
-    background: var(--color-slate-900);
+    background: var(--p-surface-900);
     border: none !important;
     border-radius: 1.25rem 1.25rem 0 0 !important;
     padding: .75rem 1rem;
 }
 
 :host ::ng-deep .post-editor .ql-picker-label {
-    color: var(--color-surface-300) !important;
+    color: var(--p-surface-300) !important;
 }
 
 :host ::ng-deep .post-editor .p-editor-content {
@@ -18,12 +18,12 @@
     transition: height .2s ease-in-out;
     border-radius: 0 0 1.25rem 1.25rem !important;
     padding: 1rem 1.25rem;
-    border-left: 1px solid var(--color-slate-900) !important;
-    border-right: 1px solid var(--color-slate-900) !important;
-    border-bottom: 1px solid var(--color-slate-900) !important;
+    border-left: 1px solid var(--p-surface-900) !important;
+    border-right: 1px solid var(--p-surface-900) !important;
+    border-bottom: 1px solid var(--p-surface-900) !important;
 
-    color: var(--color-slate-800) !important;
-    background: var(--color-olive-50) !important;
+    color: var(--p-surface-800) !important;
+    background: var(--color-cream-50) !important;
     font-size: .95rem;
 }
 

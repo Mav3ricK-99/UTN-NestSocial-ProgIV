@@ -2,10 +2,10 @@
 <aside class="border-r border-surface-800 sidebar">
     <app-closing-session [visible]="modalShown()" />
     <div routerLink="/feed" class="flex items-center p-3 pb-0 cursor-pointer justify-center select-none">
-        <span class="smallTitleNest font-extrabold text-red-400/90 tracking-tight font-nest">
+        <span class="smallTitleNest font-extrabold text-secondary-400/90 tracking-tight font-nest">
             Nest
         </span>
-        <span class="smallTitleSocial text-blue-400/90 italic font-semibold font-social ">
+        <span class="smallTitleSocial text-primary-400/90 italic font-semibold font-social ">
             Social
         </span>
     </div>
@@ -54,10 +54,10 @@
 <aside class="border-r border-surface-800 sidebar">
     <app-closing-session [visible]="modalShown()" />
     <div routerLink="/feed" class="flex items-center p-3 pb-0 cursor-pointer justify-center select-none">
-        <span class="smallTitleNest font-extrabold text-red-400/90 tracking-tight font-nest">
+        <span class="smallTitleNest font-extrabold text-secondary-400/90 tracking-tight font-nest">
             Nest
         </span>
-        <span class="smallTitleSocial text-blue-400/90 italic font-semibold font-social ">
+        <span class="smallTitleSocial text-primary-400/90 italic font-semibold font-social ">
             Social
         </span>
     </div>
@@ -65,16 +65,16 @@
         <p-avatar class="cursor-pointer" routerLink="/profile/{{ currentUser()?.getUserName() }}" size="xlarge"
             image="{{ currentUser()?.getAvatarPathUrl() }}" shape="circle">
         </p-avatar>
-        <div class="text-xl text-slate-100">
+        <div class="text-xl text-stone-100">
             {{ currentUser()?.getUserFullName() }}
         </div>
 
-        <div class="text-sm cursor-pointer text-slate-300" (click)="copyUsername()">
+        <div class="text-sm cursor-pointer text-stone-300" (click)="copyUsername()">
             @{{ currentUser()?.getUserName() }}
             <p-button icon="pi pi-clock" [pTooltip]="timeLeft()" severity="secondary" size="small" aria-label="Save" />
         </div>
 
-        <div class="text-base text-slate-400">
+        <div class="text-base text-stone-400">
             1.2k seguidores
         </div>
     </div>
@@ -97,44 +97,44 @@
         </ng-template>
     </p-menu>
     <!--
-    <div class="flex cursor-pointer items-center gap-1 rounded-xl p-1 transition-colors hover:bg-slate-800">
+    <div class="flex cursor-pointer items-center gap-1 rounded-xl p-1 transition-colors hover:bg-stone-800">
 
         <p-avatar size="large" routerLink="/profile/Mav3ricK99" image="https://i.pravatar.cc/150?img=12" shape="circle">
         </p-avatar>
 
         <div class="flex-1">
-            <div class="font-medium text-slate-100">
+            <div class="font-medium text-stone-100">
                 Federico Gutierrez
             </div>
-            <div class="text-xs text-slate-300">
+            <div class="text-xs text-stone-300">
                 @fedegutierrez
             </div>
-            <div class="text-sm text-slate-400">
+            <div class="text-sm text-stone-400">
                 1.2k seguidores
             </div>
         </div>
 
-        <i class="pi pi-angle-right followAngle text-slate-500"></i>
+        <i class="pi pi-angle-right followAngle text-stone-500"></i>
 
     </div>
-    <div class="flex cursor-pointer items-center gap-1 rounded-xl p-1 transition-colors hover:bg-slate-800">
+    <div class="flex cursor-pointer items-center gap-1 rounded-xl p-1 transition-colors hover:bg-stone-800">
 
         <p-avatar size="large" image="https://i.pravatar.cc/150?img=12" shape="circle">
         </p-avatar>
 
         <div class="flex-1">
-            <div class="font-medium text-slate-100">
+            <div class="font-medium text-stone-100">
                 Federico Gutierrez
             </div>
-            <div class="text-xs text-slate-300">
+            <div class="text-xs text-stone-300">
                 @fedegutierrez
             </div>
-            <div class="text-sm text-slate-400">
+            <div class="text-sm text-stone-400">
                 1.2k seguidores
             </div>
         </div>
 
-        <i class="pi pi-angle-right followAngle text-slate-500"></i>
+        <i class="pi pi-angle-right followAngle text-stone-500"></i>
 
     </div>
     -->

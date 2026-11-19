@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 import { ClosingSessionComponent } from '../closing-session/closing-session.component';
 import { User, UserRole } from '../../../classes/user/user';
 import { SkeletonModule } from 'primeng/skeleton';
-const EXPIRY_WARNING_MS = 1 * 60 * 1000;
+const EXPIRY_WARNING_MS = 1 * 30 * 1000;
 
 @Component({
   selector: 'app-sidebar',
@@ -74,7 +74,7 @@ export class SidebarComponent implements OnInit {
           {
             label: 'Cerrar sesion',
             icon: 'pi pi-sign-out',
-            linkClass: '!text-red-500 dark:!text-red-400',
+            linkClass: '!text-secondary-500 dark:!text-secondary-400',
             command: () => {
               this.logOut();
             }

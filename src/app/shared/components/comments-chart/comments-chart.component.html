@@ -1,15 +1,15 @@
-<section class="flex flex-col bg-olive-100 p-3">
+<section class="flex flex-col bg-cream-50 p-3">
 
     <p-chart class="w-full h-full" width="400" height="400" type="doughnut" [data]="data()" [options]="options">
     </p-chart>
 
     @if (empty()) {
-    <p class="text-center text-slate-500 mt-2">No hay datos para el rango seleccionado.</p>
+    <p class="text-center text-stone-500 mt-2">No hay datos para el rango seleccionado.</p>
     }
 
     <article>
         <p-card class="sticky filterCard top-10 mb-5">
-            <h1 class="mb-3 cursor-default text-slate-700 font-semibold">
+            <h1 class="mb-3 cursor-default text-stone-700 font-semibold">
                 Filtros <span class="ml-2 pi pi-sliders-h"></span>
             </h1>
 

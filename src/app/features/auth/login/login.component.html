@@ -6,21 +6,21 @@
 
     <div class="flex items-center justify-center gap-3 mb-8">
       <h1 class="text-3xl">
-        <span class="font-extrabold text-red-600 tracking-tight font-nest">
+        <span class="font-extrabold text-secondary-600 tracking-tight font-nest">
           Nest
         </span>
-        <span class="text-blue-600 italic font-semibold font-social ">
+        <span class="text-primary-600 italic font-semibold font-social ">
           Social
         </span>
       </h1>
-      <lucide-icon [img]="Heart" class="size-6 text-red-600 fill-current"></lucide-icon>
+      <lucide-icon [img]="Heart" class="size-6 text-secondary-600 fill-current"></lucide-icon>
     </div>
 
     <h2 class="text-center text-2xl font-semibold mb-2">
       ¡Bienvenido de vuelta!
     </h2>
 
-    <p class="text-center text-gray-500 mb-6">
+    <p class="text-center text-stone-500 mb-6">
       Inicia sesión para continuar
     </p>
 
@@ -33,7 +33,7 @@
 
         <p-floatlabel variant="in">
           <input type="email" pInputText id="label_email" formControlName="email"
-            class="w-full rounded-xl border border-gray-300 p-3" />
+            class="w-full rounded-xl border border-stone-300 p-3" />
           <label for="label_email">Correo electrónico</label>
         </p-floatlabel>
 
@@ -58,7 +58,7 @@
 
         <p-floatlabel variant="in">
           <p-password formControlName="password" inputId="on_password" [toggleMask]="true" placeholder="********"
-            class="w-full rounded-xl border border-gray-300" [feedback]="false" autocomplete="off" />
+            class="w-full rounded-xl border border-stone-300" [feedback]="false" autocomplete="off" />
           <label for="on_password">Contraseña</label>
         </p-floatlabel>
 
@@ -87,24 +87,24 @@
       </div>
 
       <button type="submit" [disabled]="!loginForm.valid || loginBtnDisabled()" class="w-full h-12 rounded-xl
-             bg-blue-600 text-white font-semibold cursor-pointer disabled:bg-blue-300 disabled:cursor-not-allowed
-             hover:bg-blue-700 transition">
+             bg-primary-600 text-white font-semibold cursor-pointer disabled:bg-primary-300 disabled:cursor-not-allowed
+             hover:bg-primary-700 transition">
         Iniciar sesión
       </button>
 
       <div class="relative py-4">
 
         <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-200"></div>
+          <div class="w-full border-t border-stone-200"></div>
         </div>
 
       </div>
 
-      <p class="text-center text-gray-600 ">
+      <p class="text-center text-stone-600 ">
 
         ¿No tienes cuenta?
 
-        <a routerLink="/auth/register" class="ml-1 font-semibold text-blue-600 hover:text-blue-700">
+        <a routerLink="/auth/register" class="ml-1 font-semibold text-primary-600 hover:text-primary-700">
           Regístrate
         </a>
 

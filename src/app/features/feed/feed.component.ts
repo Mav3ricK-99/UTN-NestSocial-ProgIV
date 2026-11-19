@@ -15,6 +15,7 @@ import { PostService } from '../../core/services/Post/post.service';
 import { orders, PostFilter } from '../../classes/postFilter/post-filter';
 import { UserService } from '../../core/services/User/user.service';
 import { User } from '../../classes/user/user';
+import { toDateRange } from '../../shared/utils/chart-utils';
 @Component({
   selector: 'app-feed',
   imports: [ReactiveFormsModule, FormsModule, SidebarComponent, PostComponent, NewPostInFeedComponent, DividerModule, CardModule, SelectButtonModule, DatePickerModule, FloatLabelModule, AutoCompleteModule],
@@ -68,7 +69,7 @@ export class FeedComponent implements OnInit {
 
       this.observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && this.loadMorePost() && this.postLoaded()) {
-          const filters = new PostFilter(this.formFilter.value.createdAtRange[0], this.formFilter.value.createdAtRange[1], this.formFilter.value.orderBy, undefined, 5);
+          const filters = this.buildFilters(this.formFilter.value) ?? this.lastFilters;
           const cursor = this.posts()[this.posts().length - 1].getId();
           this.callGetPosts(filters, cursor);
         } else {
@@ -116,11 +117,22 @@ export class FeedComponent implements OnInit {
         filter(() => this.formFilter.valid),
       )
       .subscribe(filterValues => {
-        if (Array.isArray(filterValues.createdAtRange) && filterValues.createdAtRange.filter((date: any) => date == null).length == 1) return;
-        const filters = new PostFilter(filterValues.createdAtRange[0], filterValues.createdAtRange[1], filterValues.orderBy, undefined, 5);
+        const filters = this.buildFilters(filterValues);
+
+        // Rango de fechas incompleto (solo se eligió el inicio): se espera a que elija el fin.
+        if (!filters) return;
 
         this.callGetPosts(filters);
       });
+  }
+
+  /** Arma el PostFilter con las fechas en segundos UNIX (lo que espera la API). null si el rango está incompleto. */
+  private buildFilters(values: { createdAtRange: unknown; orderBy: string }): PostFilter | null {
+    const range = toDateRange(values.createdAtRange);
+
+    if (!range) return null;
+
+    return new PostFilter(range.minDate, range.maxDate, values.orderBy, undefined, 5);
   }
 
   addNewPost(post: Post) {

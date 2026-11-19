@@ -56,7 +56,7 @@ export class CommentsChartComponent implements OnInit {
               label: 'Cantidad de comentarios',
               data: response.map(x => x.commentsCount),
               backgroundColor: chartColors(response.length),
-              borderColor: '#ffffff',
+              borderColor: '#FFFBF2',
               borderWidth: 2,
             },
           ],
